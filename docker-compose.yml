@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mosaku-v2-db
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: mosaku
+      POSTGRES_PASSWORD: mosaku
+      POSTGRES_DB: mosaku_v2
+    volumes:
+      - v2_postgres_data:/var/lib/postgresql/data
+volumes:
+  v2_postgres_data:
