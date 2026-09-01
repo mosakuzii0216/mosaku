@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import type { Memo } from '../../generated/prisma/client';
+import type { Memo, Prisma } from '../../generated/prisma/client';
 
 @Injectable()
 export class MemoService {
@@ -8,7 +8,7 @@ export class MemoService {
 
   async create(input: {
     title: string;
-    content: unknown;
+    content: Prisma.InputJsonValue;
     userId: string;
   }): Promise<Memo> {
     return this.prisma.memo.create({
