@@ -35,4 +35,22 @@ describe('MemoService', () => {
     expect(saved).toHaveLength(1);
     expect(saved[0].id).toBe(memo.id);
   });
+
+  it('findAll()は自分のメモだけを返す', async () => {
+    await service.create({
+      title: 'わたしのメモ',
+      content: { type: 'doc', content: [] },
+      userId: 'user-1',
+    });
+    await service.create({
+      title: '他人のメモ',
+      content: { type: 'doc', content: [] },
+      userId: 'user-2',
+    });
+
+    const memos = await service.findAll('user-1');
+
+    expect(memos).toHaveLength(1);
+    expect(memos[0].title).toBe('わたしのメモ');
+  });
 });

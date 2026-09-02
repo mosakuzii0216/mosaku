@@ -19,4 +19,11 @@ export class MemoService {
       },
     });
   }
+
+  async findAll(userId: string): Promise<Memo[]> {
+    return this.prisma.memo.findMany({
+      where: { userId },
+      orderBy: { updatedAt: 'desc' },
+    });
+  }
 }
