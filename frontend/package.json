@@ -11,6 +11,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@tiptap/pm": "^3.31.0",
+    "@tiptap/react": "^3.31.0",
+    "@tiptap/starter-kit": "^3.31.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
