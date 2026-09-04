@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { apiMemoRepository } from "./memo/apiMemoRepository";
+import type { Memo } from "./memo/types";
 
 export default function App() {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("");
+  const [memos, setMemos] = useState<Memo[]>([]);
 
   const editor = useEditor({
     extensions: [StarterKit],
     content: "<p></p>",
   });
+
+  const reload = async () => {
+    setMemos(await apiMemoRepository.findAll());
+  };
+
+  useEffect(() => {
+    void reload();
+  }, []);
 
   const save = async () => {
     if (!editor) return;
@@ -21,6 +31,7 @@ export default function App() {
         content: editor.getJSON(),
       });
       setStatus(`保存しました (${memo.id})`);
+      await reload();
     } catch (e) {
       setStatus(`失敗: ${String(e)}`);
     }
@@ -42,6 +53,13 @@ export default function App() {
         保存
       </button>
       <p>{status}</p>
+
+      <h2>保存済み</h2>
+      <ul>
+        {memos.map((memo) => (
+          <li key={memo.id}>{memo.title}</li>
+        ))}
+      </ul>
     </div>
   );
 }
