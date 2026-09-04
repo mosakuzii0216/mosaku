@@ -37,6 +37,12 @@ export default function App() {
     }
   };
 
+  const open = (memo: Memo) => {
+    setTitle(memo.title);
+    editor?.commands.setContent(memo.content as never);
+    setStatus(`開いた (${memo.id})`);
+  };
+
   return (
     <div style={{ maxWidth: 640, margin: "40px auto", padding: "0 16px" }}>
       <h1>mosaku v2</h1>
@@ -57,7 +63,9 @@ export default function App() {
       <h2>保存済み</h2>
       <ul>
         {memos.map((memo) => (
-          <li key={memo.id}>{memo.title}</li>
+          <li key={memo.id}>
+            <button onClick={() => open(memo)}>{memo.title}</button>
+          </li>
         ))}
       </ul>
     </div>
