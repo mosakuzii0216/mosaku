@@ -1,5 +1,5 @@
 {
-  "name": "mosaku-v2",
+  "name": "mosaku",
   "private": true,
   "workspaces": [
     "frontend",
