@@ -16,7 +16,10 @@ describe('MemoService', () => {
   });
 
   beforeEach(async () => {
-    await prisma.memo.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.user.createMany({
+      data: [{ id: 'user-1' }, { id: 'user-2' }],
+    });
   });
 
   afterAll(async () => {

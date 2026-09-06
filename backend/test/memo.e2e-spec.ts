@@ -19,7 +19,8 @@ describe('Memo (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await prisma.memo.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.user.create({ data: { id: 'user-1' } });
   });
 
   afterAll(async () => {
