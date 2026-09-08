@@ -1,7 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { UserSerivce } from './user.service';
+import { UserService } from './user.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { beforeEach } from 'node:test';
 
 describe('UserService', () => {
   let service: UserService;
@@ -9,10 +8,10 @@ describe('UserService', () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [UserSerivce, PrismaService],
+      providers: [UserService, PrismaService],
     }).compile();
 
-    service = module.get(UserSerivce);
+    service = module.get(UserService);
     prisma = module.get(PrismaService);
   });
 
@@ -25,10 +24,10 @@ describe('UserService', () => {
   });
 
   it('IDを持たない相手にはユーザを1件作ってIDを返す', async () => {
-    const user awwait service.findOrCreate(undefined);
+    const user = await service.findOrCreate(undefined);
 
     expect(user.id).toBeDefined();
-    expect(await prisma.user.count().toBe(1));
+    expect(await prisma.user.count()).toBe(1);
   });
 
   it('既存のIDを持つ相手には作らずにそのユーザを返す', async () => {
