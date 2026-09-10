@@ -20,15 +20,12 @@ describe('Memo (e2e)', () => {
 
   beforeEach(async () => {
     await prisma.user.deleteMany();
-    await prisma.user.create({ data: { id: 'user-1' } });
-  });
-
-  afterAll(async () => {
-    await app.close();
   });
 
   it('POST /memos でメモを作れる', async () => {
-    const res = await request(app.getHttpServer())
+    const agent = request.agent(app.getHttpServer());
+
+    const res = await agent
       .post('/memos')
       .send({ title: 'テスト', content: { type: 'doc', content: [] } })
       .expect(201);
@@ -38,14 +35,36 @@ describe('Memo (e2e)', () => {
   });
 
   it('GET /memos で一覧が取れる', async () => {
-    await request(app.getHttpServer())
+    const agent = request.agent(app.getHttpServer());
+
+    await agent
       .post('/memos')
       .send({ title: 'テスト', content: { type: 'doc', content: [] } })
       .expect(201);
 
-    const res = await request(app.getHttpServer()).get('/memos').expect(200);
+    const res = await agent.get('/memos').expect(200);
 
     expect(res.body).toHaveLength(1);
     expect(res.body[0].title).toBe('テスト');
+  });
+
+  it('別のブラウザのメモは見えない', async () => {
+    const alice = request.agent(app.getHttpServer());
+    const bob = request.agent(app.getHttpServer());
+
+    await alice
+      .post('/memos')
+      .send({ title: 'アタシのメモ', content: { type: 'doc', content: [] } })
+      .expect(201);
+
+    await bob
+      .post('/memos')
+      .send({ title: '他人のメモ', content: { type: 'doc', content: [] } })
+      .expect(201);
+
+    const res = await alice.get('/memos').expect(200);
+
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0].title).toBe('アタシのメモ');
   });
 });

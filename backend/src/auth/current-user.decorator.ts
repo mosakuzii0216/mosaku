@@ -1,10 +1,13 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-
-// 認証を入れるまでの仮実装。差し替えるのはこの関数の中だけ
-const TEMP_USER_ID = 'user-1';
+import type { Request } from 'express';
+import type { User } from '../../generated/prisma/client';
 
 export const CurrentUser = createParamDecorator(
-  (_data: unknown, _ctx: ExecutionContext): { id: string } => {
-    return { id: TEMP_USER_ID };
+  (_data: unknown, ctx: ExecutionContext): User => {
+    const request = ctx.switchToHttp().getRequest<Request>();
+    if (!request.user) {
+      throw new Error('AnonymousUserMiddleware が動いていません');
+    }
+    return request.user;
   },
 );
