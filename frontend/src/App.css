@@ -24,6 +24,22 @@
   min-height: 160px;
 }
 
+.editor-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ghost-button {
+  padding: 6px 14px;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 .save-button {
   margin-top: 12px;
   padding: 6px 14px;
@@ -40,16 +56,8 @@
   min-height: 1.4em;
 }
 
-.memo-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.memo-list button {
-  width: 100%;
+.memo-open {
+  flex: 1;
   padding: 8px 12px;
   font: inherit;
   text-align: left;
@@ -58,6 +66,34 @@
   border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
+}
+
+.memo-delete {
+  padding: 8px 12px;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.memo-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.memo-list li {
+  display: flex;
+  gap: 8px;
+}
+
+.memo-list li.is-editing .memo-open {
+  color: var(--accent);
+  border-color: var(--accent-border);
 }
 
 .theme-switch {
