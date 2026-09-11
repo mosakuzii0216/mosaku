@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { MemoService } from './memo.service';
 import { CurrentUser } from '../auth/current-user.decorator';
 import type { Prisma } from '../../generated/prisma/client';
@@ -27,5 +37,11 @@ export class MemoController {
     @Body() body: { title: string; content: Prisma.InputJsonValue },
   ) {
     return this.memoService.update(user.id, id, body);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@CurrentUser() user: { id: string }, @Param('id') id: string) {
+    return this.memoService.remove(user.id, id);
   }
 }

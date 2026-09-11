@@ -42,4 +42,14 @@ export class MemoService {
     }
     return this.prisma.memo.findUniqueOrThrow({ where: { id } });
   }
+
+  async remove(userId: string, id: string): Promise<void> {
+    const { count } = await this.prisma.memo.deleteMany({
+      where: { id, userId },
+    });
+
+    if (count === 0) {
+      throw new NotFoundException();
+    }
+  }
 }

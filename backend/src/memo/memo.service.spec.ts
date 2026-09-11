@@ -92,4 +92,30 @@ describe('MemoService', () => {
     });
     expect(saved.title).toBe('他人のメモ');
   });
+
+  it('remove()は自分のメモを削除する', async () => {
+    const memo = await service.create({
+      title: '消すメモ',
+      content: { type: 'doc', content: [] },
+      userId: 'user-1',
+    });
+
+    await service.remove('user-1', memo.id);
+
+    expect(await prisma.memo.count()).toBe(0);
+  });
+
+  it('remove()は他人のメモを削除しない', async () => {
+    const memo = await service.create({
+      title: '他人のメモ',
+      content: { type: 'doc', content: [] },
+      userId: 'user-2',
+    });
+
+    await expect(service.remove('user-1', memo.id)).rejects.toThrow(
+      NotFoundException,
+    );
+
+    expect(await prisma.memo.count()).toBe(1);
+  });
 });
