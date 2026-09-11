@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, NotFoundException } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
@@ -81,5 +81,20 @@ describe('Memo (e2e)', () => {
       .patch(`/memos/${created.body.id}`)
       .send({ title: '乗っ取り', content: { type: 'doc', content: [] } })
       .expect(404);
+  });
+
+  it('他人のメモはDELETEできない', async () => {
+    const alice = request.agent(app.getHttpServer());
+    const bob = request.agent(app.getHttpServer());
+
+    const created = await alice
+      .post('/memos')
+      .send({ title: 'アタシのメモ', content: { type: 'doc', content: [] } })
+      .expect(201);
+
+    await bob.delete(`/memos/${created.body.id}`).expect(404);
+
+    const res = await alice.get('/memos').expect(200);
+    expect(res.body).toHaveLength(1);
   });
 });
