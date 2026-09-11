@@ -3,6 +3,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { apiMemoRepository } from "./memo/apiMemoRepository";
 import type { Memo } from "./memo/types";
+import "./App.css";
 
 export default function App() {
   const [title, setTitle] = useState("");
@@ -44,24 +45,24 @@ export default function App() {
   };
 
   return (
-    <div style={{ maxWidth: 640, margin: "40px auto", padding: "0 16px" }}>
-      <h1>mosaku v2</h1>
+    <div className="page">
+      <h1>mosaku</h1>
       <input
+        className="title-input"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="タイトル"
-        style={{ width: "100%", padding: 8, marginBottom: 12 }}
       />
-      <div style={{ border: "1px solid #ccc", padding: 12, minHeight: 160 }}>
+      <div className="editor">
         <EditorContent editor={editor} />
       </div>
-      <button onClick={save} style={{ marginTop: 12 }}>
+      <button className="save-button" onClick={save}>
         保存
       </button>
-      <p>{status}</p>
+      <p className="status">{status}</p>
 
       <h2>保存済み</h2>
-      <ul>
+      <ul className="memo-list">
         {memos.map((memo) => (
           <li key={memo.id}>
             <button onClick={() => open(memo)}>{memo.title}</button>
