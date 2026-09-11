@@ -6,7 +6,10 @@
     "backend"
   ],
   "scripts": {
-    "dev": "npm run -w frontend dev",
-    "test": "npm run -w frontend test"
+    "dev": "concurrently -k -n back,front -c blue,magenta \"npm run -w backend start:dev\" \"npm run -w frontend dev\"",
+    "test": "npm run --workspaces --if-present test"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
   }
 }
