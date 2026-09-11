@@ -4,11 +4,23 @@ import StarterKit from "@tiptap/starter-kit";
 import { apiMemoRepository } from "./memo/apiMemoRepository";
 import type { Memo } from "./memo/types";
 import "./App.css";
+import {
+  THEMES,
+  THEME_LABELS,
+  readTheme,
+  applyTheme,
+  type Theme,
+} from "./theme";
 
 export default function App() {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("");
   const [memos, setMemos] = useState<Memo[]>([]);
+  const [theme, setTheme] = useState<Theme>(readTheme);
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -47,6 +59,17 @@ export default function App() {
   return (
     <div className="page">
       <h1>mosaku</h1>
+      <div className="theme-switch">
+        {THEMES.map((t) => (
+          <button
+            key={t}
+            className={t === theme ? "is-active" : ""}
+            onClick={() => setTheme(t)}
+          >
+            {THEME_LABELS[t]}
+          </button>
+        ))}
+      </div>
       <input
         className="title-input"
         value={title}

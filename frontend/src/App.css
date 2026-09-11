@@ -1,4 +1,4 @@
-.page {
+.page {,
   max-width: 640px;
   margin: 40px auto;
   padding: 0 16px;
@@ -58,4 +58,27 @@
   border: 1px solid var(--border);
   border-radius: 6px;
   cursor: pointer;
+}
+
+.theme-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.theme-switch button {
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.theme-switch button.is-active {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
 }
