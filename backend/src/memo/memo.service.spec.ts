@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { MemoService } from './memo.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotFoundException } from '@nestjs/common';
 
 describe('MemoService', () => {
   let service: MemoService;
@@ -55,5 +56,40 @@ describe('MemoService', () => {
 
     expect(memos).toHaveLength(1);
     expect(memos[0].title).toBe('わたしのメモ');
+  });
+
+  it('update()は自分のメモを更新する', async () => {
+    const memo = await service.create({
+      title: 'もとのタイトル',
+      content: { type: 'doc', content: [] },
+      userId: 'user-1',
+    });
+
+    const updated = await service.update('user-1', memo.id, {
+      title: '新しいタイトル',
+      content: { type: 'doc', content: [] },
+    });
+
+    expect(updated.title).toBe('新しいタイトル');
+  });
+
+  it('update()は他人のメモを更新しない', async () => {
+    const memo = await service.create({
+      title: '他人のメモ',
+      content: { type: 'doc', content: [] },
+      userId: 'user-2',
+    });
+
+    await expect(
+      service.update('user-1', memo.id, {
+        title: '乗っ取り',
+        content: { type: 'doc', content: [] },
+      }),
+    ).rejects.toThrow(NotFoundException);
+
+    const saved = await prisma.memo.findUniqueOrThrow({
+      where: { id: memo.id },
+    });
+    expect(saved.title).toBe('他人のメモ');
   });
 });
