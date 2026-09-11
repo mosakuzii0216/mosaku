@@ -67,4 +67,19 @@ describe('Memo (e2e)', () => {
     expect(res.body).toHaveLength(1);
     expect(res.body[0].title).toBe('アタシのメモ');
   });
+
+  it('他人のメモはPATCHで更新できない', async () => {
+    const alice = request.agent(app.getHttpServer());
+    const bob = request.agent(app.getHttpServer());
+
+    const created = await alice
+      .post('/memos')
+      .send({ title: 'アタシのメモ', content: { type: 'doc', content: [] } })
+      .expect(201);
+
+    await bob
+      .patch(`/memos/${created.body.id}`)
+      .send({ title: '乗っ取り', content: { type: 'doc', content: [] } })
+      .expect(404);
+  });
 });
