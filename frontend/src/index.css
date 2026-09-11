@@ -1,7 +1,7 @@
 :root {
   color-scheme: light dark;
 
-  --text: light-dark(#6b6375, "9ca3af");
+  --text: light-dark(#6b6375, "#9ca3af");
   --text-h: light-dark(#08060d, #f3f4f6);
   --bg: light-dark(#fff, #16171d);
   --border: light-dark(#e5e4e7, #2e303a);
@@ -19,7 +19,6 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
