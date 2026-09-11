@@ -8,5 +8,7 @@ export type Memo = {
 
 export interface MemoRepository {
   create(input: { title: string; content: unknown }): Promise<Memo>;
+  update(id: string, input: { title: string; content: unknown }): Promise<Memo>;
+  remove(id: string): Promise<void>;
   findAll(): Promise<Memo[]>;
 }

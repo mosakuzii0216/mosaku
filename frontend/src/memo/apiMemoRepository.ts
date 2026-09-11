@@ -10,8 +10,27 @@ export const apiMemoRepository: MemoRepository = {
       credentials: "include",
       body: JSON.stringify(input),
     });
-    if (!res.ok) throw new Error(`create failed: $(res.status}`);
+    if (!res.ok) throw new Error(`create failed: ${res.status}`);
     return res.json() as Promise<Memo>;
+  },
+
+  async update(id, input) {
+    const res = await fetch(`${API_BASE}/memos/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(input),
+    });
+    if (!res.ok) throw new Error(`update failed: ${res.status}`);
+    return res.json() as Promise<Memo>;
+  },
+
+  async remove(id) {
+    const res = await fetch(`${API_BASE}/memos/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error(`remove failed: ${res.status}`);
   },
 
   async findAll() {
