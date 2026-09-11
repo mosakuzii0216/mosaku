@@ -9,7 +9,7 @@
       (function () {
         try {
           var t = localStorage.getItem("mosaku-theme");
-          if (t === "light" || t === "dark") {
+          if (t && t !== "system") {
             document.documentElement.setAttribute("data-theme", t);
           }
         } catch (e) {}
