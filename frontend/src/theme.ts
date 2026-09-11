@@ -1,10 +1,11 @@
-export const THEMES = ["system", "light", "dark"] as const;
+export const THEMES = ["system", "light", "dark", "mori"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_LABELS: Record<Theme, string> = {
   system: "OSに従う",
   light: "ライト",
   dark: "ダーク",
+  mori: "森",
 };
 
 const STORAGE_KEY = "mosaku-theme";

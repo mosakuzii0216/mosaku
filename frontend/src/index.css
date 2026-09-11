@@ -39,6 +39,19 @@
   color-scheme: dark;
 }
 
+:root[data-theme="mori"] {
+  color-scheme: dark;
+
+  --text: #e7f5ec;
+  --text-h: #f0fdf4;
+  --bg: #042118;
+  --border: rgba(134, 239, 172, 0.2);
+  --code-bg: #0a3726;
+  --accent: #86efac;
+  --accent-bg: rgba(134, 239, 172, 0.12);
+  --accent-border: rgba(134, 239, 172, 0.4);
+}
+
 #root {
   width: 1126px;
   max-width: 100%;
