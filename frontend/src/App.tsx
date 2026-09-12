@@ -3,27 +3,18 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { apiMemoRepository } from "./memo/apiMemoRepository";
 import type { Memo } from "./memo/types";
-import "./App.css";
-import {
-  THEMES,
-  THEME_LABELS,
-  readTheme,
-  applyTheme,
-  type Theme,
-} from "./theme";
 import { MemoList } from "./memo/MemoList";
 import { MemoForm } from "./memo/MemoForm";
+import { ThemeSwitch } from "./ThemeSwitch";
+import { useTheme } from "./useTheme";
+import "./App.css";
 
 export default function App() {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("");
   const [memos, setMemos] = useState<Memo[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [theme, setTheme] = useState<Theme>(readTheme);
-
-  useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
+  const [theme, setTheme] = useTheme();
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -84,17 +75,7 @@ export default function App() {
   return (
     <div className="page">
       <h1>mosaku</h1>
-      <div className="theme-switch">
-        {THEMES.map((t) => (
-          <button
-            key={t}
-            className={t === theme ? "is-active" : ""}
-            onClick={() => setTheme(t)}
-          >
-            {THEME_LABELS[t]}
-          </button>
-        ))}
-      </div>
+      <ThemeSwitch theme={theme} onChange={setTheme} />
 
       <MemoForm
         title={title}
