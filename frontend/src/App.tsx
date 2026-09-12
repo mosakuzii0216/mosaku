@@ -12,6 +12,7 @@ import {
   type Theme,
 } from "./theme";
 import { MemoList } from "./memo/MemoList";
+import { MemoForm } from "./memo/MemoForm";
 
 export default function App() {
   const [title, setTitle] = useState("");
@@ -94,27 +95,17 @@ export default function App() {
           </button>
         ))}
       </div>
-      <input
-        className="title-input"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="タイトル"
-      />
-      <div className="editor">
-        <EditorContent editor={editor} />
-      </div>
 
-      <div className="editor-actions">
-        <button className="save-button" onClick={save}>
-          {editingId ? "更新" : "保存"}
-        </button>
-        {editingId && (
-          <button className="ghost-button" onClick={startNew}>
-            新規
-          </button>
-        )}
-      </div>
-      <p className="status">{status}</p>
+      <MemoForm
+        title={title}
+        status={status}
+        isEditing={editingId !== null}
+        onTitleChange={setTitle}
+        onSave={save}
+        onNew={startNew}
+      >
+        <EditorContent editor={editor} />
+      </MemoForm>
 
       <h2>保存済み</h2>
       <MemoList
