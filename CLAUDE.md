@@ -49,6 +49,7 @@
 - 本登録はパスキーで行い、メールアドレスは必須にしない。ただし1ユーザが複数のパスキーを持てる形にする。日本はwindows PC + iphoneの組み合わせが多く、エコシステムを跨ぐとパスキーが同期されないから。
 - frontendのテスト環境はhappy-domを選んだ。vitestの推奨でjsdomより5~10倍速いらしい。詰まったらenvironment一行で変えられるらしい。
 - rootのnpm testは全workspaceを走らせ、npm run devはconcurrentlyでbackendとfrontendを並列起動する。frontendしか動かない状態を3回踏み、backendのテストもサーバ起動も確認せずに「緑だからOK」と判断する事故が起きたから。
+- v1のデータは開発者のデータしか無いため、メモデータ(memoテーブル)のみ移行する。
 
   （設計判断を下すたびに、理由ごと1行ずつ足す）
 
