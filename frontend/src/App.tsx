@@ -11,6 +11,7 @@ import {
   applyTheme,
   type Theme,
 } from "./theme";
+import { MemoList } from "./memo/MemoList";
 
 export default function App() {
   const [title, setTitle] = useState("");
@@ -116,25 +117,12 @@ export default function App() {
       <p className="status">{status}</p>
 
       <h2>保存済み</h2>
-      <ul className="memo-list">
-        {memos.map((memo) => (
-          <li
-            key={memo.id}
-            className={memo.id === editingId ? "is-editing" : ""}
-          >
-            <button className="memo-open" onClick={() => open(memo)}>
-              {memo.title || "(無題)"}
-            </button>
-            <button
-              className="memo-delete"
-              onClick={() => remove(memo)}
-              aria-label={`${memo.title}を削除`}
-            >
-              削除
-            </button>
-          </li>
-        ))}
-      </ul>
+      <MemoList
+        memos={memos}
+        editingId={editingId}
+        onOpen={open}
+        onRemove={remove}
+      />
     </div>
   );
 }
