@@ -16,7 +16,7 @@ import { AnonymousUserMiddleware } from './auth/anonymous-user.middleware';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(cookieParser(), AnonymousUserMiddleware)
+      .apply(cookieParser(process.env.COOKIE_SECRET), AnonymousUserMiddleware)
       .forRoutes(MemoController);
   }
 }
