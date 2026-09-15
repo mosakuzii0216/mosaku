@@ -1,0 +1,48 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: mosaku
+          POSTGRES_PASSWORD: mosaku
+          POSTGRES_DB: mosaku
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://mosaku:mosaku@localhost:5432/mosaku?schema=public
+      COOKIE_SECRET: ci-test-secret
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      # generated/prisma は gitignore されているので CI で作る
+      - run: npx prisma generate
+        working-directory: backend
+
+      - run: npx prisma migrate deploy
+        working-directory: backend
+
+      - run: npm test
+      - run: npm run -w backend test:e2e
