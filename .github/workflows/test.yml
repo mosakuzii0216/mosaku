@@ -46,3 +46,42 @@ jobs:
 
       - run: npm test
       - run: npm run -w backend test:e2e
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    # WIF でトークンを受け取るのに必要
+    permissions:
+      contents: read
+      id-token: write
+
+    # 同時デプロイを防ぐ
+    concurrency:
+      group: deploy-backend
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: projects/129805115778/locations/global/workloadIdentityPools/github/providers/github
+          service_account: github-actions@igneous-core-480923-j0.iam.gserviceaccount.com
+
+      - uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: igneous-core-480923-j0
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy mosaku-backend \
+            --source . \
+            --region asia-northeast1 \
+            --allow-unauthenticated \
+            --set-secrets=DATABASE_URL=mosaku-database-url:latest,COOKIE_SECRET=mosaku-cookie-secret:latest \
+            --set-env-vars=^@^NODE_ENV=production@CORS_ORIGIN=https://mosaku.jp,http://localhost:5173
+
+      - name: Verify
+        run: curl -fsS https://api.mosaku.jp/health
