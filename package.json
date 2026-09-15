@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev": "concurrently -k -n back,front -c blue,magenta \"npm run -w backend start:dev\" \"npm run -w frontend dev\"",
-    "test": "npm run --workspaces --if-present test"
+    "test": "npm run --workspaces --if-present test && npm run -w frontend build"
   },
   "devDependencies": {
     "concurrently": "^10.0.5"
