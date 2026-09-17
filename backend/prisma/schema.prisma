@@ -26,9 +26,29 @@ model Memo {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String    @id @default(cuid())
+  createdAt DateTime  @default(now()) @map("created_at")
   memos     Memo[]
+  passkeys  Passkey[]
 
   @@map("users")
+}
+
+model Passkey {
+  // credential ID (base64url)　WebAuthnが世界で一意に発行するのでそのまま主キーにする
+  id         String    @id
+  userId     String    @map("user_id")
+  publicKey  Bytes     @map("public_key")
+  // 署名カウンタ。使用上は最大2^32だが、パスキーは基本0を返す。必要になったらBigIntへ移す
+  counter    Int       @default(0)
+  // 'internal'(この端末) / 'hybrid'(QRで別端末)など
+  transports String[]
+  // 「Macbook」「iphone」など、複数持つときの見分け用
+  name       String?
+  createdAt  DateTime  @default(now()) @map("created_at")
+  lastUsedAt DateTime? @map("last_used_at")
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("passkeys")
 }
