@@ -118,3 +118,10 @@
   background: var(--accent-bg);
   border-color: var(--accent-border);
 }
+
+.passkey {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}

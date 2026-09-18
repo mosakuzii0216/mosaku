@@ -6,6 +6,7 @@ import type { Memo } from "./memo/types";
 import { MemoList } from "./memo/MemoList";
 import { MemoForm } from "./memo/MemoForm";
 import { ThemeSwitch } from "./ThemeSwitch";
+import { PasskeyRegister } from "./auth/PasskeyRegister";
 import { useTheme } from "./useTheme";
 import "./App.css";
 
@@ -76,6 +77,7 @@ export default function App() {
     <div className="page">
       <h1>mosaku</h1>
       <ThemeSwitch theme={theme} onChange={setTheme} />
+      <PasskeyRegister />
 
       <MemoForm
         title={title}
