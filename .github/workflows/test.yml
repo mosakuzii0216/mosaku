@@ -81,7 +81,7 @@ jobs:
             --region asia-northeast1 \
             --allow-unauthenticated \
             --set-secrets=DATABASE_URL=mosaku-database-url:latest,COOKIE_SECRET=mosaku-cookie-secret:latest \
-            --set-env-vars=^@^NODE_ENV=production@CORS_ORIGIN=https://mosaku.jp,http://localhost:5173
+          --set-env-vars=^@^NODE_ENV=production@CORS_ORIGIN=https://mosaku.jp,http://localhost:5173@RP_ID=mosaku.jp@RP_ORIGIN=https://mosaku.jp
 
       - name: Verify
         run: curl -fsS https://api.mosaku.jp/health
