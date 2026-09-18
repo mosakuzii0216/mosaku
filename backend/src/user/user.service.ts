@@ -16,4 +16,23 @@ export class UserService {
     }
     return this.prisma.user.create({ data: {} });
   }
+
+  // 匿名湯＝座のメモを本登録ユーザに引き継いで、匿名ユーザを消す
+  async merge(fromUserId: string, toUserId: string): Promise<void> {
+    if (fromUserId === toUserId) return;
+
+    // パスキーを持つユーザは別人なので統合しない
+    const passkeyCount = await this.prisma.passkey.count({
+      where: { userId: fromUserId },
+    });
+    if (passkeyCount > 0) return;
+
+    await this.prisma.$transaction([
+      this.prisma.memo.updateMany({
+        where: { userId: fromUserId },
+        data: { userId: toUserId },
+      }),
+      this.prisma.user.delete({ where: { id: fromUserId } }),
+    ]);
+  }
 }

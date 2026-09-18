@@ -2,10 +2,13 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   generateRegistrationOptions,
   verifyRegistrationResponse,
+  generateAuthenticationOptions,
+  verifyAuthenticationResponse,
 } from '@simplewebauthn/server';
 import type {
   AuthenticatorTransport,
   RegistrationResponseJSON,
+  AuthenticationResponseJSON,
 } from '@simplewebauthn/server';
 import { PrismaService } from '../../prisma/prisma.service';
 
@@ -77,5 +80,52 @@ export class PasskeyService {
         name,
       },
     });
+  }
+
+  async buildAuthenticationOptions() {
+    // allowCredentials を渡さない = 「どのパスキーでもいい」
+    // residentKey: 'required'で登録したので、ブラウザが候補を出してくれる
+    return generateAuthenticationOptions({
+      rpID: this.rpID,
+      userVerification: 'preferred',
+    });
+  }
+
+  async verifyAuthentication(
+    response: AuthenticationResponseJSON,
+    expectedChallenge: string,
+  ): Promise<string> {
+    const passkey = await this.prisma.passkey.findUnique({
+      where: { id: response.id },
+    });
+    if (!passkey) {
+      throw new BadRequestException('登録されていないパスキーです');
+    }
+
+    const result = await verifyAuthenticationResponse({
+      response,
+      expectedChallenge,
+      expectedOrigin: this.origin,
+      expectedRPID: this.rpID,
+      credential: {
+        id: passkey.id,
+        publicKey: passkey.publicKey,
+        counter: passkey.counter,
+        transports: passkey.transports as AuthenticatorTransport[],
+      },
+    });
+
+    if (!result.verified) {
+      throw new BadRequestException('パスキーの認証に失敗しました');
+    }
+
+    await this.prisma.passkey.update({
+      where: { id: passkey.id },
+      data: {
+        counter: result.authenticationInfo.newCounter,
+        lastUsedAt: new Date(),
+      },
+    });
+    return passkey.userId;
   }
 }

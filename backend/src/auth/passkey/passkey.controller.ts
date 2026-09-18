@@ -10,14 +10,22 @@ import type { Request, Response } from 'express';
 import { PasskeyService } from './passkey.service';
 import { CurrentUser } from '../current-user.decorator';
 import type { User } from '../../../generated/prisma/client';
-import type { RegistrationResponseJSON } from '@simplewebauthn/server';
+import type {
+  RegistrationResponseJSON,
+  AuthenticationResponseJSON,
+} from '@simplewebauthn/server';
+import { UserService } from 'src/user/user.service';
+import { USER_COOKIE } from '../anonymous-user.middleware';
 
 export const CHALLENGE_COOKIE = 'mosaku_challenge';
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
 @Controller('auth/passkey')
 export class PasskeyController {
-  constructor(private readonly passkeyService: PasskeyService) {}
+  constructor(
+    private readonly passkeyService: PasskeyService,
+    private readonly userService: UserService,
+  ) {}
 
   @Post('register/options')
   async registerOptions(
@@ -62,5 +70,55 @@ export class PasskeyController {
     res.clearCookie(CHALLENGE_COOKIE, { path: '/' });
 
     return { id: passkey.id, name: passkey.name, createdAt: passkey.createdAt };
+  }
+
+  @Post('login/options')
+  async loginOptions(@Res({ passthrough: true }) res: Response) {
+    const options = await this.passkeyService.buildAuthenticationOptions();
+
+    res.cookie(CHALLENGE_COOKIE, options.challenge, {
+      httpOnly: true,
+      signed: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: FIVE_MINUTES_MS,
+      path: '/',
+    });
+
+    return options;
+  }
+
+  @Post('login/verify')
+  async loginVerify(
+    @CurrentUser() user: User,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+    @Body() body: { response: AuthenticationResponseJSON },
+  ) {
+    const challenge = req.signedCookies?.[CHALLENGE_COOKIE];
+    if (typeof challenge !== 'string') {
+      throw new BadRequestException('challengeがありません');
+    }
+
+    const ownerId = await this.passkeyService.verifyAuthentication(
+      body.response,
+      challenge,
+    );
+
+    // このデバイスで書いていた匿名メモを引き継ぐ
+    await this.userService.merge(user.id, ownerId);
+
+    // 以後このブラウザは本登録ユーザとして振る舞う
+    res.cookie(USER_COOKIE, ownerId, {
+      httpOnly: true,
+      signed: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
+    res.clearCookie(CHALLENGE_COOKIE, { path: '/' });
+
+    return { userId: ownerId };
   }
 }
