@@ -77,7 +77,7 @@ export default function App() {
     <div className="page">
       <h1>mosaku</h1>
       <ThemeSwitch theme={theme} onChange={setTheme} />
-      <PasskeyRegister />
+      <PasskeyRegister onLogin={reload} />
 
       <MemoForm
         title={title}

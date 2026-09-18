@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { registerPasskey } from "./passkeyApi";
+import { registerPasskey, loginWithPasskey } from "./passkeyApi";
 
-export function PasskeyRegister() {
+type Props = { onLogin: () => void };
+
+export function PasskeyRegister({ onLogin }: Props) {
   const [status, setStatus] = useState("");
 
   const register = async () => {
@@ -14,10 +16,24 @@ export function PasskeyRegister() {
     }
   };
 
+  const login = async () => {
+    setStatus("ログイン中...");
+    try {
+      await loginWithPasskey();
+      setStatus("ログインしました");
+      onLogin();
+    } catch (e) {
+      setStatus(`失敗: ${String(e)}`);
+    }
+  };
+
   return (
     <div className="passkey">
       <button className="ghost-button" onClick={register}>
         パスキーを登録
+      </button>
+      <button className="ghost-button" onClick={login}>
+        パスキーでログイン
       </button>
       <span className="status">{status}</span>
     </div>
