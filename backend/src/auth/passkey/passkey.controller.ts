@@ -14,7 +14,7 @@ import type {
   RegistrationResponseJSON,
   AuthenticationResponseJSON,
 } from '@simplewebauthn/server';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../../user/user.service';
 import { USER_COOKIE } from '../anonymous-user.middleware';
 
 export const CHALLENGE_COOKIE = 'mosaku_challenge';
