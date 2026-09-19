@@ -7,6 +7,7 @@ import { MemoList } from "./memo/MemoList";
 import { MemoForm } from "./memo/MemoForm";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { PasskeyRegister } from "./auth/PasskeyRegister";
+import { TrashList } from "./memo/TrashList";
 import { useTheme } from "./useTheme";
 import "./App.css";
 
@@ -16,6 +17,8 @@ export default function App() {
   const [memos, setMemos] = useState<Memo[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [theme, setTheme] = useTheme();
+  const [trashed, setTrashed] = useState<Memo[]>([]);
+  const [showTrash, setShowTrash] = useState(false);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -23,7 +26,12 @@ export default function App() {
   });
 
   const reload = async () => {
-    setMemos(await apiMemoRepository.findAll());
+    const [active, inTrash] = await Promise.all([
+      apiMemoRepository.findAll(),
+      apiMemoRepository.findTrashed(),
+    ]);
+    setMemos(active);
+    setTrashed(inTrash);
   };
 
   useEffect(() => {
@@ -72,15 +80,38 @@ export default function App() {
   };
 
   const remove = async (memo: Memo) => {
-    if (!window.confirm(`「${memo.title}」を削除する？`)) return;
     setStatus("削除中...");
     try {
       await apiMemoRepository.remove(memo.id);
       if (editingId === memo.id) startNew();
-      setStatus("削除しました");
+      setStatus("ゴミ箱に移動しました");
       await reload();
     } catch (e) {
       setStatus(`失敗： ${String(e)}`);
+    }
+  };
+
+  const restore = async (memo: Memo) => {
+    setStatus("復元中...");
+    try {
+      await apiMemoRepository.restore(memo.id);
+      setStatus("復元しました");
+      await reload();
+    } catch (e) {
+      setStatus(`失敗: ${String(e)}`);
+    }
+  };
+
+  const purge = async (memo: Memo) => {
+    // ここだけは戻せないので確認する
+    if (!window.confirm(`「${memo.title}」を完全に削除しますか？`)) return;
+    setStatus("削除中...");
+    try {
+      await apiMemoRepository.purge(memo.id);
+      setStatus("完全に削除しました");
+      await reload();
+    } catch (e) {
+      setStatus(`失敗: ${String(e)}`);
     }
   };
 
@@ -108,6 +139,18 @@ export default function App() {
         onOpen={open}
         onRemove={remove}
       />
+
+      <h2>
+        <button
+          className="trash-toggle"
+          onClick={() => setShowTrash((v) => !v)}
+        >
+          ゴミ箱 ({trashed.length}) {showTrash ? "▲" : "▼"}
+        </button>
+      </h2>
+      {showTrash && (
+        <TrashList memos={trashed} onRestore={restore} onPurge={purge} />
+      )}
     </div>
   );
 }

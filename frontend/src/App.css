@@ -200,3 +200,26 @@
   gap: 12px;
   margin-bottom: 24px;
 }
+
+.trash-toggle {
+  font: inherit;
+  font-size: inherit;
+  color: var(--text-h);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.memo-open.is-trashed {
+  flex: 1;
+  padding: 8px 12px;
+  color: var(--text);
+  border: 1px dashed var(--border)l
+  border-radius: 6px;
+}
+
+.empty {
+  color: var(--text);
+  padding: 8px 0;
+}

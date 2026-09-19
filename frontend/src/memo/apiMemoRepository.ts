@@ -40,4 +40,29 @@ export const apiMemoRepository: MemoRepository = {
     if (!res.ok) throw new Error(`findAll failed: ${res.status}`);
     return res.json() as Promise<Memo[]>;
   },
+
+  async findTrashed() {
+    const res = await fetch(`${API_BASE}/memos/trash`, {
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error(`findTrashed failed: ${res.status}`);
+    return res.json() as Promise<Memo[]>;
+  },
+
+  async restore(id) {
+    const res = await fetch(`${API_BASE}/memos/${id}/restore`, {
+      method: "POST",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error(`restore failed: ${res.status}`);
+    return res.json() as Promise<Memo>;
+  },
+
+  async purge(id) {
+    const res = await fetch(`${API_BASE}/memos/${id}/purge`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error(`purge failed: ${res.status}`);
+  },
 };
