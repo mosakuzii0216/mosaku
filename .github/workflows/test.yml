@@ -65,6 +65,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+        working-directory: backend
+
       - uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: projects/129805115778/locations/global/workloadIdentityPools/github/providers/github
@@ -73,6 +81,12 @@ jobs:
       - uses: google-github-actions/setup-gcloud@v3
         with:
           project_id: igneous-core-480923-j0
+
+      - name: Migrate production DB
+        working-directory: backend
+        run: |
+          DATABASE_URL="$(gcloud secrets versions access latest --secret=mosaku-database-url)" \
+            npx prisma migrate deploy
 
       - name: Deploy to Cloud Run
         run: |
