@@ -13,13 +13,14 @@ datasource db {
 }
 
 model Memo {
-  id        String   @id @default(cuid())
-  title     String   @db.VarChar(100)
+  id        String    @id @default(cuid())
+  title     String    @db.VarChar(100)
   content   Json
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  userId    String   @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  trashedAt DateTime? @map("trashed_at")
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("memos")

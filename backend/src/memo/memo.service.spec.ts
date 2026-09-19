@@ -93,16 +93,21 @@ describe('MemoService', () => {
     expect(saved.title).toBe('他人のメモ');
   });
 
-  it('remove()は自分のメモを削除する', async () => {
+  it('remove()は自分のメモをゴミ箱に移す', async () => {
     const memo = await service.create({
       title: '消すメモ',
-      content: { type: 'doc', content: [] },
+      content: {},
       userId: 'user-1',
     });
 
     await service.remove('user-1', memo.id);
 
-    expect(await prisma.memo.count()).toBe(0);
+    // レコードは残っている
+    expect(await prisma.memo.count()).toBe(1);
+    // 一覧には出ない
+    expect(await service.findAll('user-1')).toHaveLength(0);
+    // ゴミ箱には出る
+    expect(await service.findTrashed('user-1')).toHaveLength(1);
   });
 
   it('remove()は他人のメモを削除しない', async () => {
@@ -116,6 +121,33 @@ describe('MemoService', () => {
       NotFoundException,
     );
 
+    expect(await prisma.memo.count()).toBe(1);
+  });
+
+  it('restore()はゴミ箱から戻す', async () => {
+    const memo = await service.create({
+      title: '戻すメモ',
+      content: {},
+      userId: 'user-1',
+    });
+    await service.remove('user-1', memo.id);
+
+    await service.restore('user-1', memo.id);
+
+    expect(await service.findAll('user-1')).toHaveLength(1);
+    expect(await service.findTrashed('user-1')).toHaveLength(0);
+  });
+
+  it('purge()はゴミ箱に入っていないメモを消さない', async () => {
+    const memo = await service.create({
+      title: '生きてるメモ',
+      content: {},
+      userId: 'user-1',
+    });
+
+    await expect(service.purge('user-1', memo.id)).rejects.toThrow(
+      NotFoundException,
+    );
     expect(await prisma.memo.count()).toBe(1);
   });
 });

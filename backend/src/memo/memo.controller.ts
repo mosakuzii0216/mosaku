@@ -30,6 +30,11 @@ export class MemoController {
     return this.memoService.findAll(user.id);
   }
 
+  @Get('trash')
+  findTrashed(@CurrentUser() user: { id: string }) {
+    return this.memoService.findTrashed(user.id);
+  }
+
   @Patch(':id')
   update(
     @CurrentUser() user: { id: string },
@@ -43,5 +48,16 @@ export class MemoController {
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@CurrentUser() user: { id: string }, @Param('id') id: string) {
     return this.memoService.remove(user.id, id);
+  }
+
+  @Post(':id/restore')
+  restore(@CurrentUser() user: { id: string }, @Param('id') id: string) {
+    return this.memoService.restore(user.id, id);
+  }
+
+  @Delete(':id/purge')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  purge(@CurrentUser() user: { id: string }, @Param('id') id: string) {
+    return this.memoService.purge(user.id, id);
   }
 }
