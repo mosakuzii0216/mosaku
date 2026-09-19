@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#042118"/>
+  <!-- 模索=道を探す。分岐する小径 -->
+  <g fill="none" stroke="#86efac" stroke-width="26" stroke-linecap="round">
+    <path d="M256 420 L256 300" />
+    <path d="M256 300 L170 200" />
+    <path d="M256 300 L342 200" />
+    <path d="M342 200 L342 140" />
+  </g>
+  <circle cx="170" cy="200" r="22" fill="#85efac"/>
+  <circle cx="342" cy="140" r="22" fill="#85efac"/>
+</svg>
