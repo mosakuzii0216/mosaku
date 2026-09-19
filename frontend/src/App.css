@@ -24,6 +24,81 @@
   min-height: 160px;
 }
 
+/* エディタの中は本文サイズを基準にする。index.cssの見出しは大きすぎる */
+.editor :is(h1, h2, h3) {
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 1em 0 0.4em;
+}
+.editor h1 {
+  font-size: 1.4em;
+  letter-spacing: normal;
+}
+.editor h2 {
+  font-size: 1.2em;
+  letter-spacing: normal;
+}
+.editor h3 {
+  font-size: 1.05em;
+}
+.editor :is(h1, h2, h3):first-child {
+  margin-top: 0;
+}
+
+.editor p {
+  margin: 0.5em 0;
+}
+
+.editor :is(ul, ol) {
+  margin: 0.5em 0;
+  padding-left: 1.4em;
+}
+.editor li {
+  margin: 0.2em 0;
+}
+.editor li p {
+  margin: 0;
+}
+
+.editor blockquote {
+  margin: 0.6em 0;
+  padding-left: 12px;
+  border-left: 3px solid vat(--accent-border);
+  color: var(--text);
+}
+
+.editor pre {
+  margin: 0.6em 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--code-bg);
+  overflow-x: auto;
+}
+.editor pre code {
+  padding: 0;
+  background: none;
+  display: block;
+}
+
+.editor hr {
+  margin: 1em 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+.editor a {
+  color: var(--accent);
+}
+
+/* フォーカス枠。今はどこを編集中かわかりにくい */
+.editor:focus-within {
+  border-color: var(--accent-border);
+}
+
+.editor .ProseMirror:focus {
+  outline: none;
+}
+
 .editor-actions {
   display: flex;
   gap: 8px;

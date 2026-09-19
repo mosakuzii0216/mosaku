@@ -46,6 +46,17 @@ export default function App() {
     }
   };
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+        e.preventDefault(); // ブラウザの「ページ保存」を止める
+        void save();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
+
   const open = (memo: Memo) => {
     setEditingId(memo.id);
     setTitle(memo.title);
