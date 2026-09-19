@@ -1,7 +1,9 @@
 .page {
   max-width: 640px;
-  margin: 40px auto;
-  padding: 0 16px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  box-sizeing: border-box;
   text-align: left;
 }
 
