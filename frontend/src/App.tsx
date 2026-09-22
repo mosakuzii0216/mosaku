@@ -132,7 +132,7 @@ export default function App() {
         <EditorContent editor={editor} />
       </MemoForm>
 
-      <h2>保存済み</h2>
+      <h2>メモ一覧</h2>
       <MemoList
         memos={memos}
         editingId={editingId}
