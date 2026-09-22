@@ -117,7 +117,6 @@ export default function App() {
 
   return (
     <div className="page">
-      <h1>mosaku</h1>
       <ThemeSwitch theme={theme} onChange={setTheme} />
       <PasskeyRegister onLogin={reload} />
 
