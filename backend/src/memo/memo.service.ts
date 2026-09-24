@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { Memo, Prisma } from '../../generated/prisma/client';
+import { extractText } from './extract-text';
 
 @Injectable()
 export class MemoService {
@@ -16,6 +17,7 @@ export class MemoService {
         title: input.title,
         content: input.content,
         userId: input.userId,
+        contentText: extractText(input.content),
       },
     });
   }
@@ -34,7 +36,11 @@ export class MemoService {
   ): Promise<Memo> {
     const { count } = await this.prisma.memo.updateMany({
       where: { id, userId, trashedAt: null },
-      data: { title: input.title, content: input.content },
+      data: {
+        title: input.title,
+        content: input.content,
+        contentText: extractText(input.content),
+      },
     });
 
     if (count === 0) {
