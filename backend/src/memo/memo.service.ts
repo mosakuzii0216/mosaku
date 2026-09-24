@@ -90,4 +90,22 @@ export class MemoService {
       throw new NotFoundException();
     }
   }
+
+  async search(userId: string, query: string): Promise<Memo[]> {
+    const q = query.trim();
+    if (q === '') return [];
+
+    return this.prisma.memo.findMany({
+      where: {
+        userId,
+        trashedAt: null,
+        OR: [
+          { title: { contains: q, mode: 'insensitive' } },
+          { contentText: { contains: q, mode: 'insensitive' } },
+        ],
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: 50,
+    });
+  }
 }

@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { MemoService } from './memo.service';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -33,6 +34,11 @@ export class MemoController {
   @Get('trash')
   findTrashed(@CurrentUser() user: { id: string }) {
     return this.memoService.findTrashed(user.id);
+  }
+
+  @Get('search')
+  search(@CurrentUser() user: { id: string }, @Query('q') q?: string) {
+    return this.memoService.search(user.id, q ?? '');
   }
 
   @Patch(':id')

@@ -150,4 +150,59 @@ describe('MemoService', () => {
     );
     expect(await prisma.memo.count()).toBe(1);
   });
+
+  it('search()はタイトルと本文の両方から探す', async () => {
+    await service.create({
+      title: '写経の記録',
+      content: { type: 'doc', content: [] },
+      userId: 'user-1',
+    });
+    await service.create({
+      title: '無題',
+      content: {
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [{ type: 'text', text: '今日は写経した' }],
+          },
+        ],
+      },
+      userId: 'user-1',
+    });
+
+    expect(await service.search('user-1', '写経')).toHaveLength(2);
+  });
+
+  it('search()は他人のメモを返さない', async () => {
+    await service.create({
+      title: '他人の写経',
+      content: { type: 'doc', content: [] },
+      userId: 'user-2',
+    });
+
+    expect(await service.search('user-1', '写経')).toHaveLength(0);
+  });
+
+  it('search()はゴミ箱のメモを返さない', async () => {
+    const memo = await service.create({
+      title: '捨てた写経',
+      content: { type: 'doc', content: [] },
+      userId: 'user-1',
+    });
+    await service.remove('user-1', memo.id);
+
+    expect(await service.search('user-1', '写経')).toHaveLength(0);
+  });
+
+  it('search()は空文字で全件を返さない', async () => {
+    await service.create({
+      title: 'メモ',
+      content: { type: 'doc', content: [] },
+      userId: 'user-1',
+    });
+
+    expect(await service.search('user-1', '')).toHaveLength(0);
+    expect(await service.search('user-1', '   ')).toHaveLength(0);
+  });
 });
