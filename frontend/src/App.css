@@ -1,4 +1,4 @@
-.page {
+.page app.css{
   max-width: 640px;
   width: 100%;
   margin: 0 auto;
@@ -224,4 +224,31 @@
 .empty {
   color: var(--text);
   padding: 8px 0;
+}
+
+.memo-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.memo-head h2 {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-input {
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text-h);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-border);
 }

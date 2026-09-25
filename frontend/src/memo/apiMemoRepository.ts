@@ -65,4 +65,13 @@ export const apiMemoRepository: MemoRepository = {
     });
     if (!res.ok) throw new Error(`purge failed: ${res.status}`);
   },
+
+  async search(q) {
+    const res = await fetch(
+      `${API_BASE}/memos/search?q=${encodeURIComponent(q)}`,
+      { credentials: "include" },
+    );
+    if (!res.ok) throw new Error(`search failed: ${res.status}`);
+    return res.json() as Promise<Memo[]>;
+  },
 };

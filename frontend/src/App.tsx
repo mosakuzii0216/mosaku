@@ -19,6 +19,8 @@ export default function App() {
   const [theme, setTheme] = useTheme();
   const [trashed, setTrashed] = useState<Memo[]>([]);
   const [showTrash, setShowTrash] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Memo[]>([]);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -64,6 +66,23 @@ export default function App() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   });
+
+  useEffect(() => {
+    const q = query.trim();
+    if (q === "") {
+      setResults([]);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      apiMemoRepository
+        .search(q)
+        .then(setResults)
+        .catch(() => setResults([]));
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
 
   const open = (memo: Memo) => {
     setEditingId(memo.id);
@@ -131,13 +150,27 @@ export default function App() {
         <EditorContent editor={editor} />
       </MemoForm>
 
-      <h2>メモ一覧</h2>
-      <MemoList
-        memos={memos}
-        editingId={editingId}
-        onOpen={open}
-        onRemove={remove}
-      />
+      <div className="memo-head">
+        <h2>{query.trim() ? `「${query.tirm()}」の検索結果` : "保存済み"}</h2>
+        <input
+          className="search-input"
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="検索"
+        />
+      </div>
+
+      {query.trim() && results.length === 0 ? (
+        <p className="empty">見つかりませんでした</p>
+      ) : (
+        <MemoList
+          memos={query.trim() ? results : memos}
+          editingId={editingId}
+          onOpen={open}
+          onRemove={remove}
+        />
+      )}
 
       <h2>
         <button

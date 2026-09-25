@@ -5,6 +5,7 @@ export type Memo = {
   createdAt: string;
   updatedAt: string;
   trashedAt: string | null;
+  contentText: string | null;
 };
 
 export interface MemoRepository {
@@ -15,4 +16,5 @@ export interface MemoRepository {
   findTrashed(): Promise<Memo[]>;
   restore(id: string): Promise<Memo>;
   purge(id: string): Promise<void>;
+  search(q: string): Promise<Memo[]>;
 }
