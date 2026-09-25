@@ -92,13 +92,13 @@ h2 {
 h1 {
   font-size: 20px;
   font-weight: 600;
-  letter-spacing: 0.04px;
+  letter-spacing: 0.04em;
   margin: 0;
 }
 h2 {
   font-size: 17px;
   font-weight: 600;
-  letter-spacing: 0.02px;
+  letter-spacing: 0.02em;
   margin: 0 0 var(--s2);
 }
 p {
