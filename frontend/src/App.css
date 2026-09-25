@@ -2,7 +2,7 @@
   max-width: 640px;
   width: 100%;
   margin: 0 auto;
-  padding: 24px 16px 48px;
+  padding: var(--s5) var(--s4) var(--s7);
   box-sizing: border-box;
   text-align: left;
 }
@@ -13,7 +13,7 @@
   justify-content: flex-start;
   gap: var(--s4);
   flex-wrap: wrap;
-  margin-bottom: var(--s5);
+  margin-bottom: var(--s6);
 }
 
 .title-input {
@@ -39,7 +39,7 @@
 .editor {
   border: 1px solid var(--border);
   border-radius: 6px;
-  padding: 12px;
+  padding: var(--s3);
   min-height: 160px;
 }
 
@@ -88,7 +88,7 @@
 
 .editor pre {
   margin: 0.6em 0;
-  padding: 10px 12px;
+  padding: var(--s3);
   border-radius: 6px;
   background: var(--code-bg);
   overflow-x: auto;
@@ -120,12 +120,13 @@
 
 .editor-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: var(--s2);
+  margin-top: var(--s4);
+  margin-bottom: var(--s6);
 }
 
 .ghost-button {
-  padding: 6px 14px;
+  padding: var(--s2) var(--s4);
   font: inherit;
   color: var(--text);
   background: none;
@@ -136,7 +137,7 @@
 
 .save-button {
   margin-top: 12px;
-  padding: 6px 14px;
+  padding: var(--s2) var(--s4);
   font: inherit;
   color: var(--accent);
   background: var(--accent-bg);
@@ -187,6 +188,7 @@
 .memo-list {
   list-style: none;
   padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -194,7 +196,7 @@
 
 .memo-list li {
   display: flex;
-  gap: 8px;
+  gap: var(--s2);
 }
 
 .memo-list li.is-editing .memo-open {
@@ -204,11 +206,11 @@
 
 .theme-switch {
   display: flex;
-  gap: 8px;
+  gap: var(--s2);
 }
 
 .theme-switch button {
-  padding: 4px 10px;
+  padding: var(--s1) var(--s3);
   font: inherit;
   font-size: 14px;
   color: var(--text);
@@ -227,8 +229,8 @@
 .passkey {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  gap: var(--s3);
+  margin-bottom: var(--s6);
 }
 
 .trash-toggle {
@@ -243,7 +245,7 @@
 
 .memo-open.is-trashed {
   flex: 1;
-  padding: 8px 12px;
+  padding: var(--s2) var(--s3);
   color: var(--text);
   border: 1px dashed var(--border);
   border-radius: 6px;
@@ -251,14 +253,16 @@
 
 .empty {
   color: var(--text);
-  padding: 8px 0;
+  padding: var(--s2) 0;
 }
 
 .memo-head {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: var(--s3);
   flex-wrap: wrap;
+  margin-top: var(--s6);
+  margin-bottom: var(--s3);
 }
 
 .memo-head h2 {
@@ -267,7 +271,7 @@
 }
 
 .search-input {
-  padding: 6px 12px;
+  padding: var(--s2) var(--s3);
   font: inherit;
   font-size: 14px;
   color: var(--text-h);
