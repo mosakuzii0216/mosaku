@@ -1,16 +1,19 @@
 :root {
   color-scheme: light dark;
 
-  --text: light-dark(#6b6375, #9ca3af);
-  --text-h: light-dark(#08060d, #f3f4f6);
-  --bg: light-dark(#fff, #16171d);
-  --border: light-dark(#e5e4e7, #2e303a);
-  --code-bg: light-dark(#f4f3ec, #1f2028);
-  --accent: light-dark(#aa3bff, #c084fc);
-  --accent-bg: light-dark(rgba(170, 59, 255, 0.1), rgba(192, 132, 252, 0.15));
+  /* 紙と墨。ライトは少し温かい白、ダークは青みを抜いた黒 */
+  --bg: light-dark(#fdfcfa, #14141a);
+  --text: light-dark(#5c5a55, #a8a49c);
+  --text-h: light-dark(#1a1917, #f2f0ec);
+  --border: light-dark(#e6e3dd, #2c2c34);
+  --code-bg: light-dark(#f4f2ec, #1e1e26);
+
+  /* アクセントは藍。日本の伝統色で、森と緑と喧嘩しない */
+  --accent: light-dark(#2f6f8f, #7bb3cc);
+  --accent-bg: light-dark(rgba(47, 111, 143, 0.08), rgba(123, 179, 204, 0.12));
   --accent-border: light-dark(
-    rgba(170, 59, 255, 0.5),
-    rgba(192, 132, 252, 0.5)
+    rgba(47, 111, 143, 0.4),
+    rgba(123, 179, 204, 0.35)
   );
 
   --sans:
@@ -53,14 +56,14 @@
 :root[data-theme="mori"] {
   color-scheme: dark;
 
-  --text: #e7f5ec;
+  --text: #cfe8d8;
   --text-h: #f0fdf4;
-  --bg: #042118;
-  --border: rgba(134, 239, 172, 0.2);
+  --bg: #051d16;
+  --border: rgba(134, 239, 172, 0.18);
   --code-bg: #0a3726;
   --accent: #86efac;
-  --accent-bg: rgba(134, 239, 172, 0.12);
-  --accent-border: rgba(134, 239, 172, 0.4);
+  --accent-bg: rgba(134, 239, 172, 0.1);
+  --accent-border: rgba(134, 239, 172, 0.35);
 }
 
 #root {
