@@ -7,6 +7,15 @@
   text-align: left;
 }
 
+.app-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  flex-wrap: wrap;
+  margin-bottom: var(--s5);
+}
+
 .title-input {
   width: 100%;
   box-sizing: border-box;
@@ -176,7 +185,6 @@
 .theme-switch {
   display: flex;
   gap: 8px;
-  margin-bottom: 24px;
 }
 
 .theme-switch button {

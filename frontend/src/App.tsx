@@ -136,7 +136,9 @@ export default function App() {
 
   return (
     <div className="page">
-      <ThemeSwitch theme={theme} onChange={setTheme} />
+      <header className="app-head">
+        <ThemeSwitch theme={theme} onChange={setTheme} />
+      </header>
       <PasskeyRegister onLogin={reload} />
 
       <MemoForm
