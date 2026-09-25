@@ -1,4 +1,4 @@
-.page app.css{
+.page {
   max-width: 640px;
   width: 100%;
   margin: 0 auto;
@@ -65,7 +65,7 @@
 .editor blockquote {
   margin: 0.6em 0;
   padding-left: 12px;
-  border-left: 3px solid vat(--accent-border);
+  border-left: 3px solid var(--accent-border);
   color: var(--text);
 }
 
@@ -217,7 +217,7 @@
   flex: 1;
   padding: 8px 12px;
   color: var(--text);
-  border: 1px dashed var(--border)l
+  border: 1px dashed var(--border);
   border-radius: 6px;
 }
 

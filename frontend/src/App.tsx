@@ -151,7 +151,7 @@ export default function App() {
       </MemoForm>
 
       <div className="memo-head">
-        <h2>{query.trim() ? `「${query.tirm()}」の検索結果` : "保存済み"}</h2>
+        <h2>{query.trim() ? `「${query.trim()}」の検索結果` : "保存済み"}</h2>
         <input
           className="search-input"
           type="search"
