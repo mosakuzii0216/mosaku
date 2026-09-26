@@ -30,7 +30,7 @@ describe("MemoSection", () => {
     render(<MemoSection {...base} />);
 
     expect(
-      screen.getByRole("heading", { name: "保存済み" }),
+      screen.getByRole("heading", { name: "メモ一覧" }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "普段のメモ" }),
