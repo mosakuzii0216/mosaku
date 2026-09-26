@@ -4,12 +4,13 @@ import StarterKit from "@tiptap/starter-kit";
 import { apiMemoRepository } from "./memo/apiMemoRepository";
 import type { Memo } from "./memo/types";
 import { MemoSection } from "./memo/MemoSection";
+import { TrashSection } from "./memo/TrashSection";
 import { MemoForm } from "./memo/MemoForm";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { PasskeyRegister } from "./auth/PasskeyRegister";
-import { TrashList } from "./memo/TrashList";
 import { useTheme } from "./useTheme";
 import { useSearch } from "./memo/useSearch";
+import { useTrash } from "./memo/useTrash";
 import "./App.css";
 
 export default function App() {
@@ -19,8 +20,8 @@ export default function App() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [theme, setTheme] = useTheme();
   const [trashed, setTrashed] = useState<Memo[]>([]);
-  const [showTrash, setShowTrash] = useState(false);
   const { query, setQuery, results, isSearching } = useSearch();
+  const trash = useTrash(trashed);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -146,17 +147,13 @@ export default function App() {
         onRemove={remove}
       />
 
-      <h2>
-        <button
-          className="trash-toggle"
-          onClick={() => setShowTrash((v) => !v)}
-        >
-          ゴミ箱 ({trashed.length}) {showTrash ? "▲" : "▼"}
-        </button>
-      </h2>
-      {showTrash && (
-        <TrashList memos={trashed} onRestore={restore} onPurge={purge} />
-      )}
+      <TrashSection
+        memos={trashed}
+        isOpen={trash.isOpen}
+        onToggle={trash.toggle}
+        onRestore={restore}
+        onPurge={purge}
+      />
     </div>
   );
 }
