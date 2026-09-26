@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { apiMemoRepository } from "./memo/apiMemoRepository";
-import type { Memo } from "./memo/types";
 import { MemoSection } from "./memo/MemoSection";
 import { TrashSection } from "./memo/TrashSection";
 import { MemoForm } from "./memo/MemoForm";
@@ -11,148 +9,67 @@ import { PasskeyRegister } from "./auth/PasskeyRegister";
 import { useTheme } from "./useTheme";
 import { useSearch } from "./memo/useSearch";
 import { useTrash } from "./memo/useTrash";
+import { useMemos } from "./memo/useMemos";
 import "./App.css";
 
 export default function App() {
-  const [title, setTitle] = useState("");
-  const [status, setStatus] = useState("");
-  const [memos, setMemos] = useState<Memo[]>([]);
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [theme, setTheme] = useTheme();
-  const [trashed, setTrashed] = useState<Memo[]>([]);
   const { query, setQuery, results, isSearching } = useSearch();
-  const trash = useTrash(trashed);
 
   const editor = useEditor({
     extensions: [StarterKit],
     content: "<p></p>",
   });
 
-  const reload = async () => {
-    const [active, inTrash] = await Promise.all([
-      apiMemoRepository.findAll(),
-      apiMemoRepository.findTrashed(),
-    ]);
-    setMemos(active);
-    setTrashed(inTrash);
-  };
-
-  useEffect(() => {
-    void reload();
-  }, []);
-
-  const save = async () => {
-    if (!editor) return;
-    setStatus("保存中...");
-    try {
-      const input = { title, content: editor.getJSON() };
-      const memo = editingId
-        ? await apiMemoRepository.update(editingId, input)
-        : await apiMemoRepository.create(input);
-      setEditingId(memo.id);
-      setStatus(editingId ? "更新しました" : "保存しました");
-      await reload();
-    } catch (e) {
-      setStatus(`失敗: ${String(e)}`);
-    }
-  };
+  const m = useMemos(editor);
+  const trash = useTrash(m.trashed);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "s") {
         e.preventDefault(); // ブラウザの「ページ保存」を止める
-        void save();
+        void m.save();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   });
 
-  const open = (memo: Memo) => {
-    setEditingId(memo.id);
-    setTitle(memo.title);
-    editor?.commands.setContent(memo.content as never);
-    setStatus("");
-  };
-
-  const startNew = () => {
-    setEditingId(null);
-    setTitle("");
-    editor?.commands.setContent("<p></p>");
-    setStatus("");
-  };
-
-  const remove = async (memo: Memo) => {
-    setStatus("削除中...");
-    try {
-      await apiMemoRepository.remove(memo.id);
-      if (editingId === memo.id) startNew();
-      setStatus("ゴミ箱に移動しました");
-      await reload();
-    } catch (e) {
-      setStatus(`失敗： ${String(e)}`);
-    }
-  };
-
-  const restore = async (memo: Memo) => {
-    setStatus("復元中...");
-    try {
-      await apiMemoRepository.restore(memo.id);
-      setStatus("復元しました");
-      await reload();
-    } catch (e) {
-      setStatus(`失敗: ${String(e)}`);
-    }
-  };
-
-  const purge = async (memo: Memo) => {
-    // ここだけは戻せないので確認する
-    if (!window.confirm(`「${memo.title}」を完全に削除しますか？`)) return;
-    setStatus("削除中...");
-    try {
-      await apiMemoRepository.purge(memo.id);
-      setStatus("完全に削除しました");
-      await reload();
-    } catch (e) {
-      setStatus(`失敗: ${String(e)}`);
-    }
-  };
-
   return (
     <div className="page">
       <header className="app-head">
         <ThemeSwitch theme={theme} onChange={setTheme} />
       </header>
-      <PasskeyRegister onLogin={reload} />
+      <PasskeyRegister onLogin={m.reload} />
 
       <MemoForm
-        title={title}
-        status={status}
-        isEditing={editingId !== null}
-        onTitleChange={setTitle}
-        onSave={save}
-        onNew={startNew}
+        title={m.title}
+        status={m.status}
+        isEditing={m.editingId !== null}
+        onTitleChange={m.setTitle}
+        onSave={m.save}
+        onNew={m.startNew}
       >
         <EditorContent editor={editor} />
       </MemoForm>
 
       <MemoSection
-        memos={memos}
+        memos={m.memos}
         results={results}
         query={query}
         isSearching={isSearching}
-        editingId={editingId}
+        editingId={m.editingId}
         onQueryChange={setQuery}
-        onOpen={open}
-        onRemove={remove}
+        onOpen={m.open}
+        onRemove={m.remove}
       />
 
       <TrashSection
-        memos={trashed}
+        memos={m.trashed}
         isOpen={trash.isOpen}
         onToggle={trash.toggle}
-        onRestore={restore}
-        onPurge={purge}
+        onRestore={m.restore}
+        onPurge={m.purge}
       />
     </div>
   );
