@@ -50,6 +50,7 @@
 - frontendのテスト環境はhappy-domを選んだ。vitestの推奨でjsdomより5~10倍速いらしい。詰まったらenvironment一行で変えられるらしい。
 - rootのnpm testは全workspaceを走らせ、npm run devはconcurrentlyでbackendとfrontendを並列起動する。frontendしか動かない状態を3回踏み、backendのテストもサーバ起動も確認せずに「緑だからOK」と判断する事故が起きたから。
 - v1のデータは開発者のデータしか無いため、メモデータ(memoテーブル)のみ移行する。
+- ヘッダーには検索・テーマ・アカウントを載せる。なんか邪魔だったし、メモ体験としてもアプリ体験としても微妙だったから。
 
   （設計判断を下すたびに、理由ごと1行ずつ足す）
 
