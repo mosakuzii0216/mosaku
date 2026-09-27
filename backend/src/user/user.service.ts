@@ -22,10 +22,7 @@ export class UserService {
     if (fromUserId === toUserId) return;
 
     // パスキーを持つユーザは別人なので統合しない
-    const passkeyCount = await this.prisma.passkey.count({
-      where: { userId: fromUserId },
-    });
-    if (passkeyCount > 0) return;
+    if (await this.hasPasskey(fromUserId)) return;
 
     await this.prisma.$transaction([
       this.prisma.memo.updateMany({
@@ -34,5 +31,11 @@ export class UserService {
       }),
       this.prisma.user.delete({ where: { id: fromUserId } }),
     ]);
+  }
+
+  // パスキーを1つでも持っているか (=本登録済みか)
+  async hasPasskey(userId: string): Promise<boolean> {
+    const count = await this.prisma.passkey.count({ where: { userId } });
+    return count > 0;
   }
 }

@@ -78,4 +78,24 @@ describe('UserService', () => {
       await prisma.user.findUnique({ where: { id: other.id } }),
     ).not.toBeNull();
   });
+
+  it('hasPasskey()はパスキーがなければfalseを返す', async () => {
+    const user = await prisma.user.create({ data: {} });
+
+    expect(await service.hasPasskey(user.id)).toBe(false);
+  });
+
+  it('hasPasskey()はパスキーが1つでもあればtrueを返す', async () => {
+    const user = await prisma.user.create({ data: {} });
+    await prisma.passkey.create({
+      data: {
+        id: 'pk-1',
+        userId: user.id,
+        publicKey: Buffer.from([1]),
+        transports: [],
+      },
+    });
+
+    expect(await service.hasPasskey(user.id)).toBe(true);
+  });
 });
