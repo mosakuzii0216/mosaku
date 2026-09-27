@@ -1,6 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { MemoSection } from "./MemoSection";
 import type { Memo } from "./types";
 
@@ -20,7 +19,6 @@ const base = {
   query: "",
   isSearching: false,
   editingId: null,
-  onQueryChange: () => {},
   onOpen: () => {},
   onRemove: () => {},
 };
@@ -52,14 +50,5 @@ describe("MemoSection", () => {
     render(<MemoSection {...base} query="無い" isSearching results={[]} />);
 
     expect(screen.getByText("見つかりませんでした")).toBeInTheDocument();
-  });
-
-  it("検索欄に打つとonQueryChangeが呼ばれる", async () => {
-    const onQueryChange = vi.fn();
-    render(<MemoSection {...base} onQueryChange={onQueryChange} />);
-
-    await userEvent.type(screen.getByRole("searchbox"), "森");
-
-    expect(onQueryChange).toHaveBeenCalledWith("森");
   });
 });

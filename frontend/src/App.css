@@ -16,6 +16,12 @@
   margin-bottom: var(--s6);
 }
 
+/* 検索欄は残りの幅を全部使う。狭い画面では1行丸ごと使う */
+.app-head .search-input {
+  flex: 1;
+  min-width: 10em;
+}
+
 .title-input {
   /* 枠を外して、下線だけにする。タイトルを入力欄に見えなくていい */
   width: 100%;
@@ -230,7 +236,6 @@
   display: flex;
   align-items: center;
   gap: var(--s3);
-  margin-bottom: var(--s6);
 }
 
 .trash-toggle {

@@ -4,12 +4,12 @@ import StarterKit from "@tiptap/starter-kit";
 import { MemoSection } from "./memo/MemoSection";
 import { TrashSection } from "./memo/TrashSection";
 import { MemoForm } from "./memo/MemoForm";
-import { ThemeSwitch } from "./ThemeSwitch";
-import { PasskeyRegister } from "./auth/PasskeyRegister";
+import { AppHeader } from "./AppHeader";
 import { useTheme } from "./useTheme";
 import { useSearch } from "./memo/useSearch";
 import { useTrash } from "./memo/useTrash";
 import { useMemos } from "./memo/useMemos";
+import type { Memo } from "./memo/types";
 import "./App.css";
 
 export default function App() {
@@ -24,6 +24,12 @@ export default function App() {
   const m = useMemos(editor);
   const trash = useTrash(m.trashed);
 
+  // 検索結果から開いたら検索を閉じて、エディタに戻す
+  const openMemo = (memo: Memo) => {
+    m.open(memo);
+    setQuery("");
+  };
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "s") {
@@ -37,21 +43,27 @@ export default function App() {
 
   return (
     <div className="page">
-      <header className="app-head">
-        <ThemeSwitch theme={theme} onChange={setTheme} />
-      </header>
-      <PasskeyRegister onLogin={m.reload} />
+      <AppHeader
+        query={query}
+        theme={theme}
+        onQueryChange={setQuery}
+        onThemeChange={setTheme}
+        onLogin={m.reload}
+      />
 
-      <MemoForm
-        title={m.title}
-        status={m.status}
-        isEditing={m.editingId !== null}
-        onTitleChange={m.setTitle}
-        onSave={m.save}
-        onNew={m.startNew}
-      >
-        <EditorContent editor={editor} />
-      </MemoForm>
+      {/* 検索中は結果だけ見せる。hiddenで隠すだけなので書き換えは消えない */}
+      <div hidden={isSearching}>
+        <MemoForm
+          title={m.title}
+          status={m.status}
+          isEditing={m.editingId !== null}
+          onTitleChange={m.setTitle}
+          onSave={m.save}
+          onNew={m.startNew}
+        >
+          <EditorContent editor={editor} />
+        </MemoForm>
+      </div>
 
       <MemoSection
         memos={m.memos}
@@ -59,8 +71,7 @@ export default function App() {
         query={query}
         isSearching={isSearching}
         editingId={m.editingId}
-        onQueryChange={setQuery}
-        onOpen={m.open}
+        onOpen={openMemo}
         onRemove={m.remove}
       />
 

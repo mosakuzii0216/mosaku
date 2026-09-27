@@ -7,7 +7,6 @@ type Props = {
   query: string;
   isSearching: boolean;
   editingId: string | null;
-  onQueryChange: (q: string) => void;
   onOpen: (memo: Memo) => void;
   onRemove: (memo: Memo) => void;
 };
@@ -18,7 +17,6 @@ export function MemoSection({
   query,
   isSearching,
   editingId,
-  onQueryChange,
   onOpen,
   onRemove,
 }: Props) {
@@ -29,13 +27,6 @@ export function MemoSection({
     <>
       <div className="memo-head">
         <h2>{isSearching ? `「${query.trim()}」の検索結果` : "メモ一覧"}</h2>
-        <input
-          className="search-input"
-          type="search"
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="検索"
-        />
       </div>
 
       {notFound ? (
