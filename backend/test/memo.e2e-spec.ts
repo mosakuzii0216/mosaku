@@ -22,6 +22,10 @@ describe('Memo (e2e)', () => {
     await prisma.user.deleteMany();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   it('POST /memos でメモを作れる', async () => {
     const agent = request.agent(app.getHttpServer());
 
