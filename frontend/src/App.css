@@ -8,6 +8,12 @@
 }
 
 .app-head {
+  /* スクロールしても上に残す。ノッチのある端末ではその下で止まる */
+  position: sticky;
+  top: env(safe-area-inset-top);
+  z-index: 10;
+  padding-block: var(--s3);
+  background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -19,7 +25,7 @@
 /* 検索欄は残りの幅を全部使う。狭い画面では1行丸ごと使う */
 .app-head .search-input {
   flex: 1;
-  min-width: 10em;
+  min-width: 6em;
 }
 
 .title-input {
@@ -288,4 +294,48 @@
 .search-input:focus {
   outline: none;
   border-color: var(--accent-border);
+}
+
+/* ヘッダーのメニュー */
+.menu {
+  position: relative;
+}
+
+.menu-trigger {
+  padding: var(--s1) var(--s3);
+  font: inherit;
+  font-size: 14px;
+  white-space: nowrap;
+  color: var(--text);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.menu-trigger[aria-expanded="true"] {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.menu-panel {
+  position: absolute;
+  top: calc(100% + var(--s2));
+  right: 0;
+  z-index: 20;
+  min-width: 12em;
+  max-width: calc(100vw - 2 * var(--s4));
+  padding: var(--s3);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+
+/* メニューの中では縦に並べる */
+.menu-panel .theme-switch,
+.menu-panel .passkey {
+  flex-direction: column;
+  align-items: stretch;
 }

@@ -1,5 +1,6 @@
 import { ThemeSwitch } from "./ThemeSwitch";
 import { PasskeyRegister } from "./auth/PasskeyRegister";
+import { Menu } from "./Menu";
 import type { Theme } from "./theme";
 
 type Props = {
@@ -26,8 +27,12 @@ export function AppHeader({
         onChange={(e) => onQueryChange(e.target.value)}
         placeholder="検索"
       />
-      <ThemeSwitch theme={theme} onChange={onThemeChange} />
-      <PasskeyRegister onLogin={onLogin} />
+      <Menu label="テーマ">
+        <ThemeSwitch theme={theme} onChange={onThemeChange} />
+      </Menu>
+      <Menu label="アカウント">
+        <PasskeyRegister onLogin={onLogin} />
+      </Menu>
     </header>
   );
 }

@@ -21,10 +21,19 @@ describe("AppHeader", () => {
     expect(onQueryChange).toHaveBeenCalledWith("森");
   });
 
-  it("テーマとパスキーのボタンを並べる", () => {
+  it("テーマのメニューを開くとテーマのボタンが出る", async () => {
     render(<AppHeader {...base} />);
 
+    await userEvent.click(screen.getByRole("button", { name: "テーマ" }));
+
     expect(screen.getByRole("button", { name: "森" })).toBeInTheDocument();
+  });
+
+  it("アカウントのメニューを開くとパスキーのボタンが出る", async () => {
+    render(<AppHeader {...base} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "アカウント" }));
+
     expect(
       screen.getByRole("button", { name: "パスキーでログイン" }),
     ).toBeInTheDocument();
