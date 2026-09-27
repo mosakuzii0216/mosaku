@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 type Props = {
   label: string;
   children: ReactNode;
 };
 
-// 押すと開くメニューj。中を押しても閉じない(テーマを試し比べられるように)
+// 押すと開くメニュー。中を押しても閉じない(テーマを試し比べられるように)
 export function Menu({ label, children }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
