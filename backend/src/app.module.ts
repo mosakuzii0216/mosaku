@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { PasskeyModule } from './auth/passkey/passkey.module';
 import { MemoController } from './memo/memo.controller';
 import { PasskeyController } from './auth/passkey/passkey.controller';
+import { UserController } from './user/user.controller';
 import { AnonymousUserMiddleware } from './auth/anonymous-user.middleware';
 
 @Module({
@@ -19,6 +20,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(cookieParser(process.env.COOKIE_SECRET), AnonymousUserMiddleware)
-      .forRoutes(MemoController, PasskeyController);
+      .forRoutes(MemoController, PasskeyController, UserController);
   }
 }
