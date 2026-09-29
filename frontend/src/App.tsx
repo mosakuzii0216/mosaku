@@ -9,6 +9,7 @@ import { useTheme } from "./useTheme";
 import { useSearch } from "./memo/useSearch";
 import { useTrash } from "./memo/useTrash";
 import { useMemos } from "./memo/useMemos";
+import { useMe } from "./auth/useMe";
 import type { Memo } from "./memo/types";
 import "./App.css";
 
@@ -23,11 +24,18 @@ export default function App() {
 
   const m = useMemos(editor);
   const trash = useTrash(m.trashed);
+  const me = useMe();
 
   // 検索結果から開いたら検索を閉じて、エディタに戻す
   const openMemo = (memo: Memo) => {
     m.open(memo);
     setQuery("");
+  };
+
+  // パスキーでログインしたら、メモも登録状態も読み直す
+  const handleLogin = () => {
+    void m.reload();
+    void me.reload();
   };
 
   useEffect(() => {
@@ -46,9 +54,11 @@ export default function App() {
       <AppHeader
         query={query}
         theme={theme}
+        hasPasskey={me.hasPasskey}
         onQueryChange={setQuery}
         onThemeChange={setTheme}
-        onLogin={m.reload}
+        onLogin={handleLogin}
+        onRegistered={me.reload}
       />
 
       {/* 検索中は結果だけ見せる。hiddenで隠すだけなので書き換えは消えない */}
