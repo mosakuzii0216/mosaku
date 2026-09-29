@@ -6,9 +6,11 @@ import { AppHeader } from "./AppHeader";
 const base = {
   query: "",
   theme: "system" as const,
+  hasPasskey: false,
   onQueryChange: () => {},
   onThemeChange: () => {},
   onLogin: () => {},
+  onRegistered: () => {},
 };
 
 describe("AppHeader", () => {

@@ -6,17 +6,21 @@ import type { Theme } from "./theme";
 type Props = {
   query: string;
   theme: Theme;
+  hasPasskey: boolean;
   onQueryChange: (q: string) => void;
   onThemeChange: (theme: Theme) => void;
   onLogin: () => void;
+  onRegistered: () => void;
 };
 
 export function AppHeader({
   query,
   theme,
+  hasPasskey,
   onQueryChange,
   onThemeChange,
   onLogin,
+  onRegistered,
 }: Props) {
   return (
     <header className="app-head">
@@ -31,7 +35,11 @@ export function AppHeader({
         <ThemeSwitch theme={theme} onChange={onThemeChange} />
       </Menu>
       <Menu label="アカウント">
-        <PasskeyRegister onLogin={onLogin} />
+        <PasskeyRegister
+          hasPasskey={hasPasskey}
+          onLogin={onLogin}
+          onRegistered={onRegistered}
+        />
       </Menu>
     </header>
   );

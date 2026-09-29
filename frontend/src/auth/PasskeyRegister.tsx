@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { registerPasskey, loginWithPasskey } from "./passkeyApi";
 
-type Props = { onLogin: () => void };
+type Props = {
+  hasPasskey: boolean;
+  onLogin: () => void;
+  onRegistered: () => void;
+};
 
-export function PasskeyRegister({ onLogin }: Props) {
+export function PasskeyRegister({ hasPasskey, onLogin, onRegistered }: Props) {
   const [status, setStatus] = useState("");
 
   const register = async () => {
@@ -11,6 +15,7 @@ export function PasskeyRegister({ onLogin }: Props) {
     try {
       await registerPasskey("このデバイス");
       setStatus("パスキーを登録しました");
+      onRegistered();
     } catch (e) {
       setStatus(`失敗: ${String(e)}`);
     }
@@ -29,12 +34,20 @@ export function PasskeyRegister({ onLogin }: Props) {
 
   return (
     <div className="passkey">
+      <p className="passkey-note">
+        {hasPasskey
+          ? "パスキー登録済み"
+          : "未登録。パスキーを登録すると、他の端末からも同じメモを開けます"}
+      </p>
       <button className="ghost-button" onClick={register}>
-        パスキーを登録
+        {hasPasskey ? "パスキーを追加" : "パスキーを登録"}
       </button>
-      <button className="ghost-button" onClick={login}>
-        パスキーでログイン
-      </button>
+      {/* 登録済みの端末はもうログインしているので出さない */}
+      {!hasPasskey && (
+        <button className="ghost-button" onClick={login}>
+          パスキーでログイン
+        </button>
+      )}
       <span className="status">{status}</span>
     </div>
   );
