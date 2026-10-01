@@ -55,6 +55,7 @@
 - ヘッダーのメニューはPopover APIを使わずuseStateで自作する。happy-domのテストで開閉まで確かめられて、古いiOSも気にしなくていいから。
 - GET /meは{ hasPasskey }だけ返す。画面が今ほしいのは登録済みかどうかだけで、idはCookieの中身なのでJSに渡したく無いから。
 - 次の塊はPlaywright E2E → 本番の穴 → OAuth(Google) の順番にする。
+- ブラウザのテストはPlaywrightでrootのplaywright/に置き、npm run test:playwrightで別に回す。サーバ毎に立ち上げて遅いのでnpm testには混ぜず、CIで回すから。
 
   （設計判断を下すたびに、理由ごと1行ずつ足す）
 
