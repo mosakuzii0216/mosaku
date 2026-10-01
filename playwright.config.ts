@@ -15,6 +15,8 @@ export default defineConfig({
     {
       command: "npm run -w backend start:dev",
       url: "http://localhost:3000/health",
+      // CIではNestのビルドから始まるので、起きるまで長めに待つ
+      timeout: 120_000,
       reuseExistingServer: !process.env.CI,
     },
     {

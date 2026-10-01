@@ -47,8 +47,57 @@ jobs:
       - run: npm test
       - run: npm run -w backend test:e2e
 
+  playwright:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: mosaku
+          POSTGRES_PASSWORD: mosaku
+          POSTGRES_DB: mosaku
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://mosaku:mosaku@localhost:5432/mosaku?schema=public
+      COOKIE_SECRET: ci-test-secret
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx prisma generate
+        working-directory: backend
+
+      - run: npx prisma generate deploy
+        working-directory: backend
+
+      # テスト用のChrome本体と、Linuxで動かすのに要る部品を入れる
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run test:playwright
+
+      # 落ちたときだけ、traceを後からダウンロードできるように残す
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+
   deploy:
-    needs: test
+    needs: [test, playwright]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
