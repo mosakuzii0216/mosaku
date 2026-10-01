@@ -28,3 +28,7 @@ dist-ssr
 .env.*
 !.env.example
 .vercel
+
+# Playwrightの実行結果(失敗時の記録など)
+test-results/
+playwright-report/
