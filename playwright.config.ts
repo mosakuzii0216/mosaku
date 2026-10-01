@@ -9,7 +9,7 @@ export default defineConfig({
     // 失敗したときだけ、何が起きたかを後から再生できる記録を残す
     trace: "retain-on-failure",
   },
-  projects: [{ name: "chronium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   // テストの前にbackendとfrontendを立ち上げる。もう動いていればそれを使う
   webServer: [
     {
