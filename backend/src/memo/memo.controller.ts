@@ -12,17 +12,14 @@ import {
 } from '@nestjs/common';
 import { MemoService } from './memo.service';
 import { CurrentUser } from '../auth/current-user.decorator';
-import type { Prisma } from '../../generated/prisma/client';
+import { SaveMemoDto } from './memo.dto';
 
 @Controller('memos')
 export class MemoController {
   constructor(private readonly memoService: MemoService) {}
 
   @Post()
-  create(
-    @CurrentUser() user: { id: string },
-    @Body() body: { title: string; content: Prisma.InputJsonValue },
-  ) {
+  create(@CurrentUser() user: { id: string }, @Body() body: SaveMemoDto) {
     return this.memoService.create({ ...body, userId: user.id });
   }
 
@@ -45,7 +42,7 @@ export class MemoController {
   update(
     @CurrentUser() user: { id: string },
     @Param('id') id: string,
-    @Body() body: { title: string; content: Prisma.InputJsonValue },
+    @Body() body: SaveMemoDto,
   ) {
     return this.memoService.update(user.id, id, body);
   }

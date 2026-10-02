@@ -101,4 +101,35 @@ describe('Memo (e2e)', () => {
     const res = await alice.get('/memos').expect(200);
     expect(res.body).toHaveLength(1);
   });
+
+  it('POST /memos は101文字のタイトルを400で断る', async () => {
+    const agent = request.agent(app.getHttpServer());
+
+    await agent
+      .post('/memos')
+      .send({ title: 'あ'.repeat(101), content: { type: 'doc', content: [] } })
+      .expect(400);
+  });
+
+  it('POST /memos はタイトルが無いと400で断る', async () => {
+    const agent = request.agent(app.getHttpServer());
+
+    await agent
+      .post('/memos')
+      .send({ content: { type: 'doc', content: [] } })
+      .expect(400);
+  });
+
+  it('PATCH /memos/:id も101文字のタイトルを400で断る', async () => {
+    const agent = request.agent(app.getHttpServer());
+    const created = await agent
+      .post('/memos')
+      .send({ title: 'テスト', content: { type: 'doc', content: [] } })
+      .expect(201);
+
+    await agent
+      .patch(`/memos/${created.body.id}`)
+      .send({ title: 'あ'.repeat(101), content: { type: 'doc', content: [] } })
+      .expect(400);
+  });
 });
