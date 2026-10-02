@@ -26,6 +26,7 @@ export function MemoForm({
         value={title}
         onChange={(e) => onTitleChange(e.target.value)}
         placeholder="タイトル"
+        maxLength={100}
       />
       <div className="editor">{children}</div>
 
