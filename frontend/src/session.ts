@@ -1,6 +1,6 @@
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
-// 画面を描くたびに1回だけ呼ぶ。匿名IDのCookieを先に受け取っておけば、
+// 画面を描く前に1回だけ呼ぶ。匿名IDのCookieを先に受け取っておけば、
 // そのあと同時に飛ぶリクエストが全部同じCookieを持っていける
 export async function ensureSession(): Promise<void> {
   try {
@@ -10,6 +10,6 @@ export async function ensureSession(): Promise<void> {
       signal: AbortSignal.timeout(5000),
     });
   } catch {
-    //失敗しても画面が出す。そのあとのリクエストが自分dねCookieを受け取る
+    //失敗しても画面は出す。そのあとのリクエストが自分でCookieを受け取る
   }
 }
