@@ -32,6 +32,7 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at")
   memos     Memo[]
   passkeys  Passkey[]
+  accounts  Account[]
 
   @@map("users")
 }
@@ -53,4 +54,22 @@ model Passkey {
 
   @@index([userId])
   @@map("passkeys")
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  // どのサービスか。今は"google"だけ
+  provider          String
+  // そのサービスでの本人ID(googleならsub)。メアドは変わることがあるので、見分けはこちらでする
+  providerAccountId String   @map("provider_account_id")
+  // 表示用。必須にはしない。
+  email             String?
+  createdAt         DateTime @default(now()) @map("created_at")
+  userId            String   @map("user_id")
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 同じGoogleアカウントが2人のユーザに紐づかないようにする
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
 }
