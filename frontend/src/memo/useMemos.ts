@@ -9,6 +9,7 @@ export function useMemos(editor: Editor | null) {
   const [title, setTitle] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [status, setStatus] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const reload = useCallback(async () => {
     const [active, inTrash] = await Promise.all([
@@ -38,7 +39,9 @@ export function useMemos(editor: Editor | null) {
   };
 
   const save = async () => {
-    if (!editor) return;
+    // 保存中にもう一度呼ばれても無視する(連打で新規作成が2回走るのを防ぐ)
+    if (!editor || saving) return;
+    setSaving(true);
     setStatus("保存中...");
     try {
       const input = { title, content: editor.getJSON() };
@@ -50,6 +53,8 @@ export function useMemos(editor: Editor | null) {
       await reload();
     } catch (e) {
       setStatus(`失敗: ${String(e)}`);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -96,6 +101,7 @@ export function useMemos(editor: Editor | null) {
     setTitle,
     editingId,
     status,
+    saving,
     reload,
     startNew,
     open,

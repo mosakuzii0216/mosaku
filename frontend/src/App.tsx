@@ -67,6 +67,7 @@ export default function App() {
           title={m.title}
           status={m.status}
           isEditing={m.editingId !== null}
+          saving={m.saving}
           onTitleChange={m.setTitle}
           onSave={m.save}
           onNew={m.startNew}

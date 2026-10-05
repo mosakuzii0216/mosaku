@@ -7,6 +7,7 @@ const base = {
   title: "",
   status: "",
   isEditing: false,
+  saving: false,
   onTitleChange: () => {},
   onSave: () => {},
   onNew: () => {},
@@ -46,5 +47,11 @@ describe("MemoForm", () => {
     await userEvent.click(screen.getByRole("button", { name: "保存" }));
 
     expect(onSave).toHaveBeenCalled();
+  });
+
+  it("保存中は保存ボタンを押せない", () => {
+    render(<MemoForm {...base} saving />);
+
+    expect(screen.getByRole("button", { name: "保存" })).toBeDisabled();
   });
 });
