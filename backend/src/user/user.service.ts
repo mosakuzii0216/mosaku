@@ -17,12 +17,12 @@ export class UserService {
     return this.prisma.user.create({ data: {} });
   }
 
-  // 匿名湯＝座のメモを本登録ユーザに引き継いで、匿名ユーザを消す
+  // 匿名ユーザのメモを本登録ユーザに引き継いで、匿名ユーザを消す
   async merge(fromUserId: string, toUserId: string): Promise<void> {
     if (fromUserId === toUserId) return;
 
-    // パスキーを持つユーザは別人なので統合しない
-    if (await this.hasPasskey(fromUserId)) return;
+    // パスキーやGoogleで登録済みのユーザは別人なので統合しない
+    if (await this.isRegistered(fromUserId)) return;
 
     await this.prisma.$transaction([
       this.prisma.memo.updateMany({
@@ -37,5 +37,14 @@ export class UserService {
   async hasPasskey(userId: string): Promise<boolean> {
     const count = await this.prisma.passkey.count({ where: { userId } });
     return count > 0;
+  }
+
+  // パスキーかGoogleか、本登録の手段を1つでも持っているか
+  async isRegistered(userId: string): Promise<boolean> {
+    const [passkeys, accounts] = await Promise.all([
+      this.prisma.passkey.count({ where: { userId } }),
+      this.prisma.account.count({ where: { userId } }),
+    ]);
+    return passkeys + accounts > 0;
   }
 }

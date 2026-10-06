@@ -98,4 +98,21 @@ describe('UserService', () => {
 
     expect(await service.hasPasskey(user.id)).toBe(true);
   });
+
+  it('merge()はGoogleで登録したユーザを吸収しない', async () => {
+    const other = await prisma.user.create({ data: {} });
+    const owner = await prisma.user.create({ data: {} });
+    await prisma.account.create({
+      data: {
+        provider: 'google',
+        providerAccountId: 'sub-1',
+        userId: other.id,
+      },
+    });
+    await service.merge(other.id, owner.id);
+
+    expect(
+      await prisma.user.findUnique({ where: { id: other.id } }),
+    ).not.toBeNull();
+  });
 });
