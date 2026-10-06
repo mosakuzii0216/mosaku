@@ -2,10 +2,14 @@ import { Module } from '@nestjs/common';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleController } from './google.controller';
 import { GOOGLE_OAUTH_CLIENT } from './google.constants';
+import { GoogleAccountService } from './google-account.service';
+import { UserModule } from '../../user/user.module';
 
 @Module({
+  imports: [UserModule],
   controllers: [GoogleController],
   providers: [
+    GoogleAccountService,
     {
       provide: GOOGLE_OAUTH_CLIENT,
       // 値が未設定でもアプリは起動できるようにする(テストやCIのため)
