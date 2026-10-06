@@ -16,9 +16,11 @@ import { MemoController } from './memo/memo.controller';
 import { PasskeyController } from './auth/passkey/passkey.controller';
 import { UserController } from './user/user.controller';
 import { AnonymousUserMiddleware } from './auth/anonymous-user.middleware';
+import { GoogleController } from './auth/google/google.controller';
+import { GoogleModule } from './auth/google/google.module';
 
 @Module({
-  imports: [PrismaModule, MemoModule, UserModule, PasskeyModule],
+  imports: [PrismaModule, MemoModule, UserModule, PasskeyModule, GoogleModule],
   controllers: [AppController],
   providers: [
     AppService,
@@ -30,6 +32,11 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(cookieParser(process.env.COOKIE_SECRET), AnonymousUserMiddleware)
-      .forRoutes(MemoController, PasskeyController, UserController);
+      .forRoutes(
+        MemoController,
+        PasskeyController,
+        UserController,
+        GoogleController,
+      );
   }
 }
