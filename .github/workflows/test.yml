@@ -143,8 +143,8 @@ jobs:
             --source . \
             --region asia-northeast1 \
             --allow-unauthenticated \
-            --set-secrets=DATABASE_URL=mosaku-database-url:latest,COOKIE_SECRET=mosaku-cookie-secret:latest \
-          --set-env-vars=^@^NODE_ENV=production@CORS_ORIGIN=https://mosaku.jp,http://localhost:5173@RP_ID=mosaku.jp@RP_ORIGIN=https://mosaku.jp
+          --set-secrets=DATABASE_URL=mosaku-database-url:latest,COOKIE_SECRET=mosaku-cookie-secret:latest,GOOGLE_CLIENT_SECRET=google-client-secret:latest \
+          --set-env-vars=^@^NODE_ENV=production@CORS_ORIGIN=https://mosaku.jp,http://localhost:5173@RP_ID=mosaku.jp@RP_ORIGIN=https://mosaku.jp@GOOGLE_CLIENT_ID=129805115778-hu55soqdadebugtbpf2mrqoji155hgea.apps.googleusercontent.com@GOOGLE_REDIRECT_URI=https://api.mosaku.jp/auth/google/callback@FRONTEND_URL=https://mosaku.jp
 
       - name: Verify
         run: curl -fsS https://api.mosaku.jp/health
