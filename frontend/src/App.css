@@ -347,3 +347,11 @@
   font-size: 13px;
   color: var(--text);
 }
+
+/* Googleで続ける：リンクだが見た目はボタンにそろえる */
+google-login {
+  display: block;
+  margin-bottom: var(--s3);
+  text-align: center;
+  text-decoration: none;
+}

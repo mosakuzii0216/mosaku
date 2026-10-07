@@ -37,7 +37,7 @@ export function PasskeyRegister({ hasPasskey, onLogin, onRegistered }: Props) {
       <p className="passkey-note">
         {hasPasskey
           ? "パスキー登録済み"
-          : "未登録。パスキーを登録すると、他の端末からも同じメモを開けます"}
+          : "パスキー未登録。登録すると、他の端末からも同じメモを開けます"}
       </p>
       <button className="ghost-button" onClick={register}>
         {hasPasskey ? "パスキーを追加" : "パスキーを登録"}

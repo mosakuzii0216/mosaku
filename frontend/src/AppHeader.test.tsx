@@ -7,6 +7,7 @@ const base = {
   query: "",
   theme: "system" as const,
   hasPasskey: false,
+  hasGoogle: false,
   onQueryChange: () => {},
   onThemeChange: () => {},
   onLogin: () => {},
@@ -38,6 +39,16 @@ describe("AppHeader", () => {
 
     expect(
       screen.getByRole("button", { name: "パスキーでログイン" }),
+    ).toBeInTheDocument();
+  });
+
+  it("アカウントのメニューを開くとGoogleで続けるが出る", async () => {
+    render(<AppHeader {...base} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "アカウント" }));
+
+    expect(
+      screen.getByRole("link", { name: "Googleで続ける" }),
     ).toBeInTheDocument();
   });
 });

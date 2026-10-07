@@ -55,6 +55,7 @@ export default function App() {
         query={query}
         theme={theme}
         hasPasskey={me.hasPasskey}
+        hasGoogle={me.hasGoogle}
         onQueryChange={setQuery}
         onThemeChange={setTheme}
         onLogin={handleLogin}
