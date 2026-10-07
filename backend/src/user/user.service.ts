@@ -39,7 +39,7 @@ export class UserService {
     return count > 0;
   }
 
-  // Googgleと連携しているか
+  // Googleと連携しているか
   async hasGoogle(userId: string): Promise<boolean> {
     const count = await this.prisma.account.count({
       where: { userId, provider: 'google' },

@@ -349,7 +349,7 @@
 }
 
 /* Googleで続ける：リンクだが見た目はボタンにそろえる */
-google-login {
+.google-login {
   display: block;
   margin-bottom: var(--s3);
   text-align: center;
