@@ -9,6 +9,10 @@ export class UserController {
   // 画面の出し分けに要るものだけ返す。idはCookieの中身なので返さない。
   @Get()
   async me(@CurrentUser() user: { id: string }) {
-    return { hasPasskey: await this.userService.hasPasskey(user.id) };
+    const [hasPasskey, hasGoogle] = await Promise.all([
+      this.userService.hasPasskey(user.id),
+      this.userService.hasGoogle(user.id),
+    ]);
+    return { hasPasskey, hasGoogle };
   }
 }

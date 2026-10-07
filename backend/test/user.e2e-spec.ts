@@ -26,11 +26,11 @@ describe('Me (e2e)', () => {
     await app.close();
   });
 
-  it('GET /me は初めての相手にhasPasskey: falseだけを返す', async () => {
+  it('GET /me は初めての相手に、登録状態だけを返す', async () => {
     const res = await request(app.getHttpServer()).get('/me').expect(200);
 
     // idなど余計なものが混ざっていないことも確かめる
-    expect(res.body).toEqual({ hasPasskey: false });
+    expect(res.body).toEqual({ hasPasskey: false, hasGoogle: false });
   });
 
   it('GET /me はパスキーを持つユーザにhasPasskey: trueを返す', async () => {
@@ -49,6 +49,19 @@ describe('Me (e2e)', () => {
 
     const res = await agent.get('/me').expect(200);
 
-    expect(res.body).toEqual({ hasPasskey: true });
+    expect(res.body).toEqual({ hasPasskey: true, hasGoogle: false });
+  });
+
+  it('GET /me はGoogleと連携したユーザにhasGoogle: trueを返す', async () => {
+    const agent = request.agent(app.getHttpServer());
+    await agent.get('/me').expect(200);
+    const user = await prisma.user.findFirstOrThrow();
+    await prisma.account.create({
+      data: { provider: 'google', providerAccountId: 'sub-1', userId: user.id },
+    });
+
+    const res = await agent.get('/me').expect(200);
+
+    expect(res.body).toEqual({ hasPasskey: false, hasGoogle: true });
   });
 });

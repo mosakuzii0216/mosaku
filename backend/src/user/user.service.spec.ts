@@ -115,4 +115,19 @@ describe('UserService', () => {
       await prisma.user.findUnique({ where: { id: other.id } }),
     ).not.toBeNull();
   });
+
+  it('hasGoogle()はGoogleと連携していなければfalseを返す', async () => {
+    const user = await prisma.user.create({ data: {} });
+
+    expect(await service.hasGoogle(user.id)).toBe(false);
+  });
+
+  it('hasGoogle()はGoogleと連携していればtrueを返す', async () => {
+    const user = await prisma.user.create({ data: {} });
+    await prisma.account.create({
+      data: { provider: 'google', providerAccountId: 'sub-1', userId: user.id },
+    });
+
+    expect(await service.hasGoogle(user.id)).toBe(true);
+  });
 });
