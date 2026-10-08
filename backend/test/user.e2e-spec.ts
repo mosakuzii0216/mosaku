@@ -64,4 +64,21 @@ describe('Me (e2e)', () => {
 
     expect(res.body).toEqual({ hasPasskey: false, hasGoogle: true });
   });
+
+  it('POST /me/logout は名札を消し、次のアクセスは別の匿名ユーザーになる', async () => {
+    const agent = request.agent(app.getHttpServer());
+    await agent.get('/me').expect(200);
+    const before = await prisma.user.findFirstOrThrow();
+
+    await agent.post('/me/logout').expect(204);
+    const res = await agent.get('/me').expect(200);
+
+    // 名札が消えたので、新しい匿名ユーザーの名札が発行される
+    expect(res.headers['set-cookie']).toBeDefined();
+    expect(await prisma.user.count()).toBe(2);
+    // 前のユーザーとメモはサーバーに残る（パスキーかGoogleでまた入れる）
+    expect(
+      await prisma.user.findUnique({ where: { id: before.id } }),
+    ).not.toBeNull();
+  });
 });
