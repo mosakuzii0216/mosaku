@@ -12,6 +12,7 @@ const base = {
   onThemeChange: () => {},
   onLogin: () => {},
   onRegistered: () => {},
+  onLogout: () => {},
 };
 
 describe("AppHeader", () => {
@@ -50,5 +51,25 @@ describe("AppHeader", () => {
     expect(
       screen.getByRole("link", { name: "Googleで続ける" }),
     ).toBeInTheDocument();
+  });
+
+  it("未登録なら、ログアウトは出さない", async () => {
+    render(<AppHeader {...base} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "アカウント" }));
+
+    expect(
+      screen.queryByRole("button", { name: "ログアウト" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("登録済みならログアウトが出て、押すとonLogoutが呼ばれる", async () => {
+    const onLogout = vi.fn();
+    render(<AppHeader {...base} hasGoogle onLogout={onLogout} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "アカウント" }));
+    await userEvent.click(screen.getByRole("button", { name: "ログアウト" }));
+
+    expect(onLogout).toHaveBeenCalled();
   });
 });

@@ -10,6 +10,7 @@ import { useSearch } from "./memo/useSearch";
 import { useTrash } from "./memo/useTrash";
 import { useMemos } from "./memo/useMemos";
 import { useMe } from "./auth/useMe";
+import { logout } from "./auth/meApi";
 import type { Memo } from "./memo/types";
 import "./App.css";
 
@@ -38,6 +39,12 @@ export default function App() {
     void me.reload();
   };
 
+  // ログアウトしたら、名札が無い状態から読み直す(新しい匿名ユーザになる)
+  const handleLogout = async () => {
+    await logout();
+    window.location.reload();
+  };
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "s") {
@@ -60,6 +67,7 @@ export default function App() {
         onThemeChange={setTheme}
         onLogin={handleLogin}
         onRegistered={me.reload}
+        onLogout={handleLogout}
       />
 
       {/* 検索中は結果だけ見せる。hiddenで隠すだけなので書き換えは消えない */}

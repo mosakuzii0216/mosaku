@@ -355,3 +355,11 @@
   text-align: center;
   text-decoration: none;
 }
+
+/* ログアウトはメニューの一番下に、少し離して置く */
+.logout-button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: var(--s4);
+}

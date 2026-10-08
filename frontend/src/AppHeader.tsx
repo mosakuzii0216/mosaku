@@ -13,6 +13,7 @@ type Props = {
   onThemeChange: (theme: Theme) => void;
   onLogin: () => void;
   onRegistered: () => void;
+  onLogout: () => void;
 };
 
 export function AppHeader({
@@ -24,6 +25,7 @@ export function AppHeader({
   onThemeChange,
   onLogin,
   onRegistered,
+  onLogout,
 }: Props) {
   return (
     <header className="app-head">
@@ -44,6 +46,12 @@ export function AppHeader({
           onLogin={onLogin}
           onRegistered={onRegistered}
         />
+        {/* 匿名のまま押すとメモに二度と戻れないので、登録済みのときだけ出す */}
+        {(hasPasskey || hasGoogle) && (
+          <button className="ghost-button logout-button" onClick={onLogout}>
+            ログアウト
+          </button>
+        )}
       </Menu>
     </header>
   );

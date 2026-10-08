@@ -7,3 +7,11 @@ export async function fetchMe(): Promise<Me> {
   if (!res.ok) throw new Error(`me failed: ${res.status}`);
   return res.json() as Promise<Me>;
 }
+
+export async function logout(): Promise<void> {
+  const res = await fetch(`${API_BASE}/me/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error(`logout failed: ${res.status}`);
+}
