@@ -14,7 +14,7 @@ describe("takeLoginFailed", () => {
   });
 
   it("2回目はもう消えているのでfalseを返す", () => {
-    window.history.replaceState(null, "", "/?lgoin=failed");
+    window.history.replaceState(null, "", "/?login=failed");
     takeLoginFailed();
 
     expect(takeLoginFailed()).toBe(false);
