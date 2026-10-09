@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { MemoSection } from "./memo/MemoSection";
@@ -11,10 +11,18 @@ import { useTrash } from "./memo/useTrash";
 import { useMemos } from "./memo/useMemos";
 import { useMe } from "./auth/useMe";
 import { logout } from "./auth/meApi";
+import { Notice } from "./Notice";
 import type { Memo } from "./memo/types";
 import "./App.css";
 
-export default function App() {
+type Props = { loginFailed?: boolean };
+
+export default function App({ loginFailed = false }: Props) {
+  const [notice, setNotice] = useState(
+    loginFailed
+      ? "Googleでログインできませんでした。もう一度お試しください。"
+      : "",
+  );
   const [theme, setTheme] = useTheme();
   const { query, setQuery, results, isSearching } = useSearch();
 
@@ -69,6 +77,7 @@ export default function App() {
         onRegistered={me.reload}
         onLogout={handleLogout}
       />
+      {notice && <Notice message={notice} onClose={() => setNotice("")} />}
 
       {/* 検索中は結果だけ見せる。hiddenで隠すだけなので書き換えは消えない */}
       <div hidden={isSearching}>

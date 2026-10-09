@@ -363,3 +363,21 @@
   box-sizing: border-box;
   margin-top: var(--s4);
 }
+
+/* 画面の上に出す知らせ */
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin-bottom: var(--s5);
+  padding: var(--s3) var(--s4);
+  color: var(--text-h);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+}
+
+.notice p {
+  margin: 0;
+}
