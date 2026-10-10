@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PasskeyRegister } from "./PasskeyRegister";
+import { registerPasskey } from "./passkeyApi";
 
 // 本物はブラウザの生体認証を呼ぶので、テストでは「成功した」ことにする偽物に差し替える
 vi.mock("./passkeyApi", () => ({
@@ -53,5 +54,18 @@ describe("PasskeyRegister", () => {
       await screen.findByText("パスキーを登録しました"),
     ).toBeInTheDocument();
     expect(onRegistered).toHaveBeenCalled();
+  });
+
+  it("OSの確認をキャンセルしたら、キャンセルしたと出す", async () => {
+    vi.mocked(registerPasskey).mockRejectedValueOnce(
+      Object.assign(new Error("英語の説明"), { name: "NotAllowedError" }),
+    );
+    render(<PasskeyRegister {...base} />);
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "パスキーを登録" }),
+    );
+
+    expect(await screen.findByText("キャンセルしました")).toBeInTheDocument();
   });
 });

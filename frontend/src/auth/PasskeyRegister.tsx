@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { registerPasskey, loginWithPasskey } from "./passkeyApi";
+import { passkeyErrorMessage } from "./passkeyError";
 
 type Props = {
   hasPasskey: boolean;
@@ -17,7 +18,7 @@ export function PasskeyRegister({ hasPasskey, onLogin, onRegistered }: Props) {
       setStatus("パスキーを登録しました");
       onRegistered();
     } catch (e) {
-      setStatus(`失敗: ${String(e)}`);
+      setStatus(passkeyErrorMessage(e));
     }
   };
 
@@ -28,7 +29,7 @@ export function PasskeyRegister({ hasPasskey, onLogin, onRegistered }: Props) {
       setStatus("ログインしました");
       onLogin();
     } catch (e) {
-      setStatus(`失敗: ${String(e)}`);
+      setStatus(passkeyErrorMessage(e));
     }
   };
 
