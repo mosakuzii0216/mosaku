@@ -10,7 +10,7 @@ export async function reasonOf(res: Response, fallback: string) {
   // 500はサーバの中の事故。理由は英語で、見せても役に立たない
   if (res.status >= 500) return fallback;
   try {
-    const body: unknow = await res.json();
+    const body: unknown = await res.json();
     if (
       typeof body === "object" &&
       body !== null &&
