@@ -1,7 +1,8 @@
-export const THEMES = ["system", "light", "dark", "mori"] as const;
+export const THEMES = ["yoru", "system", "light", "dark", "mori"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_LABELS: Record<Theme, string> = {
+  yoru: "夜",
   system: "OSに従う",
   light: "ライト",
   dark: "ダーク",
@@ -9,10 +10,12 @@ export const THEME_LABELS: Record<Theme, string> = {
 };
 
 const STORAGE_KEY = "mosaku-theme";
+// 初めて開いた人は夜の書斎から。index.htmlの先読みも同じ値にそろえる
+const DEFAULT_THEME: Theme = "yoru";
 
 export function readTheme(): Theme {
   const saved = localStorage.getItem(STORAGE_KEY);
-  return THEMES.includes(saved as Theme) ? (saved as Theme) : "system";
+  return THEMES.includes(saved as Theme) ? (saved as Theme) : DEFAULT_THEME;
 }
 
 export function applyTheme(theme: Theme) {

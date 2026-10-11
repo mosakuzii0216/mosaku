@@ -28,8 +28,9 @@
     <script>
       (function () {
         try {
-          var t = localStorage.getItem("mosaku-theme");
-          if (t && t !== "system") {
+          // 保存が無ければ夜の書斎。theme.tsのDEFAULT_THEMEとそろえる
+          var t = localStorage.getItem("mosaku-theme") || "yoru";
+          if (t !== "system") {
             document.documentElement.setAttribute("data-theme", t);
           }
         } catch (e) {}

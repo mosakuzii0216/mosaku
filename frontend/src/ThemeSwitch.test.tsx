@@ -4,9 +4,10 @@ import userEvent from "@testing-library/user-event";
 import { ThemeSwitch } from "./ThemeSwitch";
 
 describe("ThemeSwitch", () => {
-  it("4つのテーマをボタンで並べる", () => {
+  it("5つのテーマをボタンで並べる", () => {
     render(<ThemeSwitch theme="system" onChange={() => {}} />);
 
+    expect(screen.getByRole("button", { name: "夜" })).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "OSに従う" }),
     ).toBeInTheDocument();
@@ -15,7 +16,7 @@ describe("ThemeSwitch", () => {
     expect(screen.getByRole("button", { name: "森" })).toBeInTheDocument();
   });
 
-  it("洗濯中のテーマにis-activeが付く", () => {
+  it("選択中のテーマにis-activeが付く", () => {
     render(<ThemeSwitch theme="mori" onChange={() => {}} />);
 
     expect(screen.getByRole("button", { name: "森" })).toHaveClass("is-active");
