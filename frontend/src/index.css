@@ -16,6 +16,11 @@
     rgba(123, 179, 204, 0.35)
   );
 
+  /* タイトルの灯り。夜の書斎だけ光らせる */
+  --title-glow: none;
+  /* ヘッダーの下地。夜の書斎だけ透かして、背景のグラデーションを帯で切らない */
+  --head-bg: var(--bg);
+
   --sans:
     "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", system-ui,
     sans-serif;
@@ -64,6 +69,37 @@
   --accent: #86efac;
   --accent-bg: rgba(134, 239, 172, 0.1);
   --accent-border: rgba(134, 239, 172, 0.35);
+}
+
+/* 夜の書斎。灯りを落とした部屋に、暖かい字と金の差し色 */
+:root[data-theme="yoru"] {
+  color-scheme: dark;
+
+  --text: #cfc7b6;
+  --text0h: #f6eedb;
+  --bg: #141720;
+  --border: rgba(207, 199, 182, 0.14);
+  --code-bg: #1d212c;
+  --accent: #e6c879;
+  --accent-bg: rgba(230, 200, 121, 0.1);
+  --accent-border: rgba(230, 200, 121, 0.4);
+  --title-glow: 0 0 18px rgba(246, 230, 190, 0.18);
+  --head-bg: transparent;
+}
+
+/* 部屋の空気。真ん中の少し上がほのかに明るく、橋ほど暗い。
+* 画面に貼り付けた一枚を、文字より奥に敷く */
+:root[data-theme="yoru"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse at 50% 28%,
+    #262b38 0%,
+    #141720 55%,
+    #0c0d12 100%
+  );
 }
 
 #root {
