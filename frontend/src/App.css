@@ -13,7 +13,10 @@
   top: env(safe-area-inset-top);
   z-index: 10;
   padding-block: var(--s3);
-  background: var(--bg);
+  background: var(--head-bg);
+  /* 下を通る文字はぼかす。下地が助けるテーマでもヘッダーが読める */
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -34,9 +37,14 @@
   box-sizing: border-box;
   margin-bottom: var(--s3);
   padding: var(--s2) 0;
-  font-size: 20px;
+  /* スマホ22px ~ PC28px。間は画面の幅に合わせて伸びる */
+  font-size: clamp(22px, 6vw, 28px);
   font-family: var(--heading);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--text-h);
+  text-shadow: var(--title-glow);
+  caret-color: var(--accent);
   background: none;
   border: none;
   border-bottom: 1px solid var(--border);
@@ -53,6 +61,7 @@
   border-radius: 6px;
   padding: var(--s3);
   min-height: 160px;
+  caret-color: var(--accent);
 }
 
 /* エディタの中は本文サイズを基準にする。index.cssの見出しは大きすぎる */
