@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoForm } from "./MemoForm";
 
 const base = {
+  date: "2026年10月12日(月)",
   title: "",
   status: "",
   isEditing: false,
@@ -53,5 +54,11 @@ describe("MemoForm", () => {
     render(<MemoForm {...base} saving />);
 
     expect(screen.getByRole("button", { name: "保存" })).toBeDisabled();
+  });
+
+  it("渡された日付をそのまま出す", () => {
+    render(<MemoForm {...base} />);
+
+    expect(screen.getByText("2026年10月12日(月)")).toBeInTheDocument();
   });
 });

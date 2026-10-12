@@ -40,6 +40,16 @@ export default function App({ loginFailed = false }: Props) {
   const trash = useTrash(m.trashed);
   const me = useMe();
 
+  // 開いているメモを書いた日。新しく書くなら今日。例：2026年10月12日(月)
+  const editing = m.memos.find((memo) => memo.id === m.editingId);
+  const writtenAt = editing ? new Date(editing.createdAt) : new Date();
+  const date = writtenAt.toLocaleDateString("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "short",
+  });
+
   // 検索結果から開いたら検索を閉じて、エディタに戻す
   const openMemo = (memo: Memo) => {
     m.open(memo);
@@ -87,6 +97,7 @@ export default function App({ loginFailed = false }: Props) {
       {/* 検索中は結果だけ見せる。hiddenで隠すだけなので書き換えは消えない */}
       <div hidden={isSearching}>
         <MemoForm
+          date={date}
           title={m.title}
           status={m.status}
           isEditing={m.editingId !== null}

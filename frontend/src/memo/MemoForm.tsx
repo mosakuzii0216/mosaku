@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 type Props = {
+  date: string;
   title: string;
   status: string;
   isEditing: boolean;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export function MemoForm({
+  date,
   title,
   status,
   isEditing,
@@ -23,6 +25,7 @@ export function MemoForm({
 }: Props) {
   return (
     <>
+      <p className="memo-date">{date}</p>
       <input
         className="title-input"
         value={title}
