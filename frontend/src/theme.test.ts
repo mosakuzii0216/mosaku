@@ -13,7 +13,7 @@ describe("readTheme", () => {
     expect(readTheme()).toBe("yoru");
   });
 
-  it("OSに使うを選んだ人はsystemのまま", () => {
+  it("OSに従うを選んだ人はsystemのまま", () => {
     localStorage.setItem("mosaku-theme", "system");
     expect(readTheme()).toBe("system");
   });

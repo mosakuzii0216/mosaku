@@ -14,7 +14,7 @@
   z-index: 10;
   padding-block: var(--s3);
   background: var(--head-bg);
-  /* 下を通る文字はぼかす。下地が助けるテーマでもヘッダーが読める */
+  /* 下を通る文字はぼかす。下地が透けるテーマでもヘッダーが読める */
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   display: flex;
