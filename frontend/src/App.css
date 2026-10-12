@@ -351,6 +351,21 @@
   border-color: var(--accent-border);
 }
 
+/* 指で押す端末では、押せるものを44pxの高さまで広げる */
+@media (pointer: coarse) {
+  .menu-trigger,
+  .theme-switch button,
+  .search-input {
+    min-height: 44px;
+  }
+
+  /* 16px未満だと、iphoneは入力のたびに画面を拡大してしまう */
+  .search-input {
+    box-sizing: border-box;
+    font-size 16px;
+  }
+}
+
 .menu-panel {
   position: absolute;
   top: calc(100% + var(--s2));
@@ -360,6 +375,8 @@
   width: max-content;
   min-width: 12em;
   max-width: calc(100vw - 2 * var(--s4));
+  /* 余白と枠もmax-widthの内側に数える。外に数えると、スマホで左にはみ出す */
+  box-sizing: border-box;
   padding: var(--s3);
   background: var(--bg);
   border: 1px solid var(--border);
