@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { Placeholder } from "@tiptap/extensions";
 import { MemoSection } from "./memo/MemoSection";
 import { TrashSection } from "./memo/TrashSection";
 import { MemoForm } from "./memo/MemoForm";
@@ -27,7 +28,11 @@ export default function App({ loginFailed = false }: Props) {
   const { query, setQuery, results, isSearching } = useSearch();
 
   const editor = useEditor({
-    extensions: [StarterKit],
+    // 本文が空のときだけ「ここに書く」を薄く出す。枠が無くても書く場所がわかる
+    extensions: [
+      StarterKit,
+      Placeholder.configure({ placeholder: "ここに書く" }),
+    ],
     content: "<p></p>",
   });
 

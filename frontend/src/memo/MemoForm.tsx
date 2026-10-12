@@ -42,7 +42,7 @@ export function MemoForm({
           </button>
         )}
       </div>
-      <p className="status">{status}</p>
+      <p className="memo-status">{status}</p>
     </>
   );
 }

@@ -31,8 +31,15 @@
   min-width: 6em;
 }
 
+/* 日付は小さく、タイトルの上に置く */
+.memo-date {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
 .title-input {
-  /* 枠を外して、下線だけにする。タイトルを入力欄に見えなくていい */
+  /* 枠も下線も外す。紙に書いた見出しに見せる */
   width: 100%;
   box-sizing: border-box;
   margin-bottom: var(--s3);
@@ -47,21 +54,32 @@
   caret-color: var(--accent);
   background: none;
   border: none;
-  border-bottom: 1px solid var(--border);
   border-radius: 0;
 }
 
 .title-input:focus {
   outline: none;
-  border-bottom-color: var(--accent-border);
 }
 
 .editor {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: var(--s3);
-  min-height: 160px;
+  /* 枠を外して紙にする。行間を広げて読み返しやすく */
+  line-height: 1.9;
   caret-color: var(--accent);
+}
+
+/* 余白を押しても書き始められるよう、書く場所の高さをとっておく */
+.editor .ProseMirror {
+  min-height: 160px;
+}
+
+/* 本文が空のときの「ここに書く」。押せない飾り */
+.editor .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--text);
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* エディタの中は本文サイズを基準にする。index.cssの見出しは大きすぎる */
@@ -130,11 +148,6 @@
   color: var(--accent);
 }
 
-/* フォーカス枠。今はどこを編集中かわかりにくい */
-.editor:focus-within {
-  border-color: var(--accent-border);
-}
-
 .editor .ProseMirror:focus {
   outline: none;
 }
@@ -170,6 +183,16 @@
 .status {
   margin-top: 8px;
   min-height: 1.4em;
+}
+
+/* 保存の知らせは右下に小さく。下の一覧のボタンを邪魔しないようクリックは素通り */
+.memo-status {
+  position: fixed;
+  right: calc(var(--s4) + env(safe-area-inset-right));
+  bottom: calc(var(--s3) + env(safe-area-inset-bottom));
+  font-size: 13px;
+  color: var(--text);
+  pointer-events: none;
 }
 
 .memo-open {
