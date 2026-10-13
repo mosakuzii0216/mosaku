@@ -387,7 +387,7 @@
   /* 中身の幅に合わせる。画面より広くはならない(max-widthで止まる) */
   width: max-content;
   min-width: 12em;
-  max-width: calc(100vw - 2 * var(--s4));
+  max-width: min(320px, calc(100vw - 2 * var(--s4)));
   /* 余白と枠もmax-widthの内側に数える。外に数えると、スマホで左にはみ出す */
   box-sizing: border-box;
   padding: var(--s3);
@@ -397,8 +397,26 @@
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
 }
 
-/* メニューの中では縦に並べる */
-.menu-panel .theme-switch,
+/* 設定メニューの中の小見出し */
+.menu-label {
+  margin-bottom: var(--s2);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+
+/* 二つ目の小見出しは、線で区切って間をあける */
+.menu-label:not(:first-child) {
+  margin-top: var(--s4);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--border);
+}
+
+/* メニューの中では、テーマは折り返して並べ、パスキーは縦に並べる */
+.menu-panel .theme-switch {
+  flex-wrap: wrap;
+}
+
 .menu-panel .passkey {
   flex-direction: column;
   align-items: stretch;

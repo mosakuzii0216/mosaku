@@ -25,28 +25,28 @@ describe("AppHeader", () => {
     expect(onQueryChange).toHaveBeenCalledWith("森");
   });
 
-  it("テーマのメニューを開くとテーマのボタンが出る", async () => {
+  it("設定を開くとテーマのボタンが出る", async () => {
     render(<AppHeader {...base} />);
 
-    await userEvent.click(screen.getByRole("button", { name: "テーマ" }));
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
 
     expect(screen.getByRole("button", { name: "森" })).toBeInTheDocument();
   });
 
-  it("アカウントのメニューを開くとパスキーのボタンが出る", async () => {
+  it("設定を開くとパスキーのボタンが出る", async () => {
     render(<AppHeader {...base} />);
 
-    await userEvent.click(screen.getByRole("button", { name: "アカウント" }));
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
 
     expect(
       screen.getByRole("button", { name: "パスキーでログイン" }),
     ).toBeInTheDocument();
   });
 
-  it("アカウントのメニューを開くとGoogleで続けるが出る", async () => {
+  it("設定を開くとGoogleで続けるが出る", async () => {
     render(<AppHeader {...base} />);
 
-    await userEvent.click(screen.getByRole("button", { name: "アカウント" }));
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
 
     expect(
       screen.getByRole("link", { name: "Googleで続ける" }),
@@ -56,7 +56,7 @@ describe("AppHeader", () => {
   it("未登録なら、ログアウトは出さない", async () => {
     render(<AppHeader {...base} />);
 
-    await userEvent.click(screen.getByRole("button", { name: "アカウント" }));
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
 
     expect(
       screen.queryByRole("button", { name: "ログアウト" }),
@@ -67,7 +67,7 @@ describe("AppHeader", () => {
     const onLogout = vi.fn();
     render(<AppHeader {...base} hasGoogle onLogout={onLogout} />);
 
-    await userEvent.click(screen.getByRole("button", { name: "アカウント" }));
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
     await userEvent.click(screen.getByRole("button", { name: "ログアウト" }));
 
     expect(onLogout).toHaveBeenCalled();

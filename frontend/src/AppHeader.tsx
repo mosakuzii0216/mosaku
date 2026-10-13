@@ -36,10 +36,10 @@ export function AppHeader({
         onChange={(e) => onQueryChange(e.target.value)}
         placeholder="検索"
       />
-      <Menu label="テーマ">
+      <Menu label="設定">
+        <p className="menu-label">テーマ</p>
         <ThemeSwitch theme={theme} onChange={onThemeChange} />
-      </Menu>
-      <Menu label="アカウント">
+        <p className="menu-label">アカウント</p>
         <GoogleLogin linked={hasGoogle} />
         <PasskeyRegister
           hasPasskey={hasPasskey}
