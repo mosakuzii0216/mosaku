@@ -144,6 +144,29 @@ p {
   margin: 0;
 }
 
+/* ボタンの手応え。色はなめらかに代わり、押すと少し沈む */
+button {
+  transition:
+    color 0.15s,
+    background-color 0.15s,
+    border-color 0.15s opacity 0.15s;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* キーボードで選んだときだけ輪を出す */
+:focus-visible {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 2px;
+}
+
 code {
   font-family: var(--mono);
   display: inline-flex;

@@ -170,7 +170,6 @@
 }
 
 .save-button {
-  margin-top: 12px;
   padding: var(--s2) var(--s4);
   font: inherit;
   color: var(--accent);
@@ -178,6 +177,20 @@
   border: 1px solid var(--accent-border);
   border-radius: 6px;
   cursor: pointer;
+}
+
+/* マウスを乗せたら緑をアクセントの色に。指で触る端末では出さない(触ったあと色が残るから) */
+@media (hover: hover) {
+  .ghost-button:hover,
+  .menu-trigger:hover,
+  .theme-switch button:hover {
+    color: var(--text-h);
+    border-color: var(--accent-border);
+  }
+
+  .save-button:hover {
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+  }
 }
 
 .status {
