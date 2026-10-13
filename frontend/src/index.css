@@ -161,12 +161,13 @@ p {
   margin: 0;
 }
 
-/* ボタンの手応え。色はなめらかに代わり、押すと少し沈む */
+/* ボタンの手応え。色はなめらかに変わり、押すと少し沈む */
 button {
   transition:
     color 0.15s,
     background-color 0.15s,
-    border-color 0.15s opacity 0.15s;
+    border-color 0.15s,
+    opacity 0.15s;
 }
 
 button:active {

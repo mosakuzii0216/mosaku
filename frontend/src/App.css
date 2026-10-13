@@ -179,7 +179,7 @@
   cursor: pointer;
 }
 
-/* マウスを乗せたら緑をアクセントの色に。指で触る端末では出さない(触ったあと色が残るから) */
+/* マウスを乗せたら縁をアクセントの色に。指で触る端末では出さない(触ったあと色が残るから) */
 @media (hover: hover) {
   .ghost-button:hover,
   .menu-trigger:hover,
