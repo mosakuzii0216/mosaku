@@ -102,6 +102,23 @@
   );
 }
 
+/* 星。本文の外に余白がある広い画面だけ、左右の余白に少し置く */
+@media (min-width: 1000px) {
+  :root[data-theme="yoru"] body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 9% 16%, #fffd 0, #fff4 1.5px, transparent 3px),
+      radial-gradient(circle at 17% 58%, #fffa 0, #fff3 1px, transparent 2.5px),
+      radial-gradient(circle at 6% 83%, #fff9 0, #fff3 1px, transparent 2.5px),
+      radial-gradient(circle at 88% 11%, #fffa 0, #fff3 1px, transparent 2.5px),
+      radial-gradient(circle at 94% 44%, #fffd 0, #fff4 1.5px, transparent 3px),
+      radial-gradient(circle at 84% 76%, #fff9 0, #fff3 1px, transparent 2.5px);
+  }
+}
+
 #root {
   width: 100%;
   min-height: 100svh;
