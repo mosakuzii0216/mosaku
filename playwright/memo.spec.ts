@@ -25,8 +25,8 @@ test("一覧からメモを選ぶと、引き出しが閉じてエディタに�
 }) => {
   const title = `一覧 ${Date.now()}`;
   await page.goto("/");
-  (await createMemo(page, title, "引き出しから開くメモ")) +
-    (await page.getByRole("button", { name: "新規" }).click());
+  await createMemo(page, title, "引き出しから開くメモ");
+  await page.getByRole("button", { name: "新規" }).click();
 
   await openList(page);
   await page.getByRole("button", { name: title, exact: true }).click();

@@ -86,7 +86,7 @@ export default function App({ loginFailed = false }: Props) {
   return (
     <div className="page">
       {/* 引き出しが開いているあいだ、奥は押せないようにする */}
-      <div insert={isListOpen}>
+      <div inert={isListOpen}>
         <AppHeader
           query={query}
           theme={theme}

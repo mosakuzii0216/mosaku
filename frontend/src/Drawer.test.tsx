@@ -46,7 +46,7 @@ describe("Drawer", () => {
     const onClose = vi.fn();
     const { container } = renderDrawer(true, onClose);
 
-    await userEvent.click(container.querySelector(".drawer-backdrop"));
+    await userEvent.click(container.querySelector(".drawer-backdrop")!);
 
     expect(onClose).toHaveBeenCalled();
   });
