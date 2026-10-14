@@ -13,6 +13,7 @@ const base = {
   onLogin: () => {},
   onRegistered: () => {},
   onLogout: () => {},
+  onOpenList: () => {},
 };
 
 describe("AppHeader", () => {
@@ -23,6 +24,15 @@ describe("AppHeader", () => {
     await userEvent.type(screen.getByRole("searchbox"), "森");
 
     expect(onQueryChange).toHaveBeenCalledWith("森");
+  });
+
+  it("一覧を押すとonOpenListが呼ばれる", async () => {
+    const onOpenList = vi.fn();
+    render(<AppHeader {...base} onOpenList={onOpenList} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "一覧" }));
+
+    expect(onOpenList).toHaveBeenCalled();
   });
 
   it("設定を開くとテーマのボタンが出る", async () => {

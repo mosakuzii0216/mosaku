@@ -14,6 +14,7 @@ type Props = {
   onLogin: () => void;
   onRegistered: () => void;
   onLogout: () => void;
+  onOpenList: () => void;
 };
 
 export function AppHeader({
@@ -26,9 +27,14 @@ export function AppHeader({
   onLogin,
   onRegistered,
   onLogout,
+  onOpenList,
 }: Props) {
   return (
     <header className="app-head">
+      {/* 見た目は設定のボタンとそろえる */}
+      <button className="menu-trigger" onClick={onOpenList}>
+        一覧
+      </button>
       <input
         className="search-input"
         type="search"

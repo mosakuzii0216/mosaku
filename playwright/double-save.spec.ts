@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { openList } from "./helpers";
 
 test("保存ボタンを連打しても、メモは1件しかできない", async ({ page }) => {
   const title = `連打 ${Date.now()}`;
@@ -11,6 +12,7 @@ test("保存ボタンを連打しても、メモは1件しかできない", asyn
   await expect(page.getByText("保存しました")).toBeVisible();
 
   await page.reload();
+  await openList(page);
   await expect(
     page.getByRole("button", { name: title, exact: true }),
   ).toHaveCount(1);

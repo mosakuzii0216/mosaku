@@ -1,11 +1,12 @@
 import { test, expect } from "@playwright/test";
-import { createMemo } from "./helpers";
+import { createMemo, openList } from "./helpers";
 
 test("消したメモはゴミ箱から戻せて、完全に削除もできる", async ({ page }) => {
   const title = `消す ${Date.now()}`;
   const inList = page.getByRole("button", { name: title, exact: true });
   await page.goto("/");
   await createMemo(page, title, "消してまた戻すメモ");
+  await openList(page);
 
   // 消す → 一覧から消えて、ゴミ箱に入る
   await page.getByRole("button", { name: `${title}を削除` }).click();

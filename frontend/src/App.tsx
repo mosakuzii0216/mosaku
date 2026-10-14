@@ -15,6 +15,8 @@ import { logout } from "./auth/meApi";
 import { Notice } from "./Notice";
 import type { Memo } from "./memo/types";
 import "./App.css";
+import { Drawer } from "./Drawer";
+import { MemoList } from "./memo/MemoList";
 
 type Props = { loginFailed?: boolean };
 
@@ -26,6 +28,7 @@ export default function App({ loginFailed = false }: Props) {
   );
   const [theme, setTheme] = useTheme();
   const { query, setQuery, results, isSearching } = useSearch();
+  const [isListOpen, setIsListOpen] = useState(false);
 
   const editor = useEditor({
     // 本文が空のときだけ「ここに書く」を薄く出す。枠が無くても書く場所がわかる
@@ -50,10 +53,11 @@ export default function App({ loginFailed = false }: Props) {
     weekday: "short",
   });
 
-  // 検索結果から開いたら検索を閉じて、エディタに戻す
+  // 一覧や検索結果から開いたら、検索も引き出しも閉じて、エディタに戻す
   const openMemo = (memo: Memo) => {
     m.open(memo);
     setQuery("");
+    setIsListOpen(false);
   };
 
   // パスキーでログインしたら、メモも登録状態も読み直す
@@ -81,52 +85,73 @@ export default function App({ loginFailed = false }: Props) {
 
   return (
     <div className="page">
-      <AppHeader
-        query={query}
-        theme={theme}
-        hasPasskey={me.hasPasskey}
-        hasGoogle={me.hasGoogle}
-        onQueryChange={setQuery}
-        onThemeChange={setTheme}
-        onLogin={handleLogin}
-        onRegistered={me.reload}
-        onLogout={handleLogout}
-      />
-      {notice && <Notice message={notice} onClose={() => setNotice("")} />}
+      {/* 引き出しが開いているあいだ、奥は押せないようにする */}
+      <div insert={isListOpen}>
+        <AppHeader
+          query={query}
+          theme={theme}
+          hasPasskey={me.hasPasskey}
+          hasGoogle={me.hasGoogle}
+          onQueryChange={setQuery}
+          onThemeChange={setTheme}
+          onLogin={handleLogin}
+          onOpenList={() => setIsListOpen(true)}
+          onRegistered={me.reload}
+          onLogout={handleLogout}
+        />
+        {notice && <Notice message={notice} onClose={() => setNotice("")} />}
 
-      {/* 検索中は結果だけ見せる。hiddenで隠すだけなので書き換えは消えない */}
-      <div hidden={isSearching}>
-        <MemoForm
-          date={date}
-          title={m.title}
-          status={m.status}
-          isEditing={m.editingId !== null}
-          saving={m.saving}
-          onTitleChange={m.setTitle}
-          onSave={m.save}
-          onNew={m.startNew}
-        >
-          <EditorContent editor={editor} />
-        </MemoForm>
+        {/* 検索中は結果だけ見せる。hiddenで隠すだけなので書き換えは消えない */}
+        <div hidden={isSearching}>
+          <MemoForm
+            date={date}
+            title={m.title}
+            status={m.status}
+            isEditing={m.editingId !== null}
+            saving={m.saving}
+            onTitleChange={m.setTitle}
+            onSave={m.save}
+            onNew={m.startNew}
+          >
+            <EditorContent editor={editor} />
+          </MemoForm>
+        </div>
+
+        {/* 検索結果は紙の場所に出す。普段の一覧は引き出しの中 */}
+        {isSearching && (
+          <MemoSection
+            memos={m.memos}
+            results={results}
+            query={query}
+            isSearching={isSearching}
+            editingId={m.editingId}
+            onOpen={openMemo}
+            onRemove={m.remove}
+          />
+        )}
       </div>
 
-      <MemoSection
-        memos={m.memos}
-        results={results}
-        query={query}
-        isSearching={isSearching}
-        editingId={m.editingId}
-        onOpen={openMemo}
-        onRemove={m.remove}
-      />
-
-      <TrashSection
-        memos={m.trashed}
-        isOpen={trash.isOpen}
-        onToggle={trash.toggle}
-        onRestore={m.restore}
-        onPurge={m.purge}
-      />
+      <Drawer
+        isOpen={isListOpen}
+        label="メモ一覧"
+        onClose={() => setIsListOpen(false)}
+      >
+        <MemoList
+          memos={m.memos}
+          editingId={m.editingId}
+          onOpen={openMemo}
+          onRemove={m.remove}
+        />
+        <div className="drawer-foot">
+          <TrashSection
+            memos={m.trashed}
+            isOpen={trash.isOpen}
+            onToggle={trash.toggle}
+            onRestore={m.restore}
+            onPurge={m.purge}
+          />
+        </div>
+      </Drawer>
     </div>
   );
 }

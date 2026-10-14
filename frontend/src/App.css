@@ -405,7 +405,7 @@
   color: var(--accent);
 }
 
-/* 二つ目の小見出しは、線で区切って間をあける */
+/* 2つ目の小見出しは、線で区切って間をあける */
 .menu-label:not(:first-child) {
   margin-top: var(--s4);
   padding-top: var(--s4);
