@@ -1,12 +1,11 @@
-export const THEMES = ["yoru", "system", "light", "dark", "mori"] as const;
+// 夜・森・ライトの3つ。ダークは夜と被り、OSに従うはほぼ使われないので外した
+export const THEMES = ["yoru", "mori", "light"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_LABELS: Record<Theme, string> = {
   yoru: "夜",
-  system: "OSに従う",
-  light: "ライト",
-  dark: "ダーク",
   mori: "森",
+  light: "ライト",
 };
 
 const STORAGE_KEY = "mosaku-theme";

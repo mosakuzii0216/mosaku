@@ -5,7 +5,7 @@ import { AppHeader } from "./AppHeader";
 
 const base = {
   query: "",
-  theme: "system" as const,
+  theme: "yoru" as const,
   hasPasskey: false,
   hasGoogle: false,
   onQueryChange: () => {},

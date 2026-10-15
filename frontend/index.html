@@ -20,11 +20,11 @@
     <script>
       (function () {
         try {
-          // 保存が無ければ夜の書斎。theme.tsのDEFAULT_THEMEとそろえる
-          var t = localStorage.getItem("mosaku-theme") || "yoru";
-          if (t !== "system") {
-            document.documentElement.setAttribute("data-theme", t);
-          }
+          // 保存が無い・知らない値(前に選べたダークなど)なら夜の書斎。
+          // theme.tsのTHEMESとDEFAULT_THEMEにそろえる
+          var t = localStorage.getItem("mosaku-theme");
+          if (t !== "mori" && t !== "light") t = "yoru";
+          document.documentElement.setAttribute("data-theme", t);
         } catch (e) {}
       })();
     </script>

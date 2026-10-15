@@ -13,8 +13,11 @@ describe("readTheme", () => {
     expect(readTheme()).toBe("yoru");
   });
 
-  it("OSに従うを選んだ人はsystemのまま", () => {
+  it("前に選べたダークやOSに従うが残っていたら、夜に戻す", () => {
+    localStorage.setItem("mosaku-theme", "dark");
+    expect(readTheme()).toBe("yoru");
+
     localStorage.setItem("mosaku-theme", "system");
-    expect(readTheme()).toBe("system");
+    expect(readTheme()).toBe("yoru");
   });
 });

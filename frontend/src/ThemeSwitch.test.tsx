@@ -4,16 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { ThemeSwitch } from "./ThemeSwitch";
 
 describe("ThemeSwitch", () => {
-  it("5つのテーマをボタンで並べる", () => {
-    render(<ThemeSwitch theme="system" onChange={() => {}} />);
+  it("夜・森・ライトの3つで並べる", () => {
+    render(<ThemeSwitch theme="yoru" onChange={() => {}} />);
 
-    expect(screen.getByRole("button", { name: "夜" })).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "OSに従う" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "ライト" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "ダーク" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "森" })).toBeInTheDocument();
+    const labels = screen.getAllByRole("button").map((b) => b.textContent);
+    expect(labels).toEqual(["夜", "森", "ライト"]);
   });
 
   it("選択中のテーマにis-activeが付く", () => {
@@ -27,7 +22,7 @@ describe("ThemeSwitch", () => {
 
   it("押すとonChangeにそのテーマが渡る", async () => {
     const onChange = vi.fn();
-    render(<ThemeSwitch theme="system" onChange={onChange} />);
+    render(<ThemeSwitch theme="yoru" onChange={onChange} />);
 
     await userEvent.click(screen.getByRole("button", { name: "森" }));
 

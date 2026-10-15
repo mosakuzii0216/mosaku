@@ -54,10 +54,6 @@
   color-scheme: light;
 }
 
-:root[data-theme="dark"] {
-  color-scheme: dark;
-}
-
 :root[data-theme="mori"] {
   color-scheme: dark;
 
