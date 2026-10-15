@@ -19,9 +19,5 @@ export function readTheme(): Theme {
 
 export function applyTheme(theme: Theme) {
   localStorage.setItem(STORAGE_KEY, theme);
-  if (theme === "system") {
-    document.documentElement.removeAttribute("data-theme");
-  } else {
-    document.documentElement.setAttribute("data-theme", theme);
-  }
+  document.documentElement.setAttribute("data-theme", theme);
 }

@@ -63,6 +63,31 @@ describe("AppHeader", () => {
     ).toBeInTheDocument();
   });
 
+  it("未登録なら、今の状態と、登録とログインの入り口を出す", async () => {
+    render(<AppHeader {...base} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
+
+    expect(
+      screen.getByText("未登録：今はこの端末からしか開けません"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("すでに登録している方")).toBeInTheDocument();
+  });
+
+  it("登録済みなら、使ったものを出して、Googleとログインの入り口は出さない", async () => {
+    render(<AppHeader {...base} hasGoogle hasPasskey />);
+
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
+
+    expect(screen.getByText("登録済み：Google・パスキー")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Googleで続ける" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "パスキーでログイン" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("未登録なら、ログアウトは出さない", async () => {
     render(<AppHeader {...base} />);
 

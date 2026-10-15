@@ -425,10 +425,32 @@
   align-items: stretch;
 }
 
+/* アカウントの今の状態と、その説明。設定のアカウントの一番上に置く */
+.account-head {
+  display: grid;
+  gap: var(--s1);
+  margin-bottom: var(--s3);
+}
+
+.account-state {
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.account-note {
+  font-size: 13px;
+  color: var(--text);
+}
+
 .passkey-note {
   margin: 0;
   font-size: 13px;
   color: var(--text);
+}
+
+/* 「すでに登録している方」は、上の登録ボタンから少し離す */
+.passkey .passkey-note {
+  margin-top: var(--s2);
 }
 
 /* Googleで続ける：リンクだが見た目はボタンにそろえる */

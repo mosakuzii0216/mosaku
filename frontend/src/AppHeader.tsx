@@ -29,6 +29,12 @@ export function AppHeader({
   onLogout,
   onOpenList,
 }: Props) {
+  const registered = hasPasskey || hasGoogle;
+  // 登録に使ったもの。例：Google・パスキー
+  const ways = [hasGoogle && "Google", hasPasskey && "パスキー"]
+    .filter(Boolean)
+    .join("・");
+
   return (
     <header className="app-head">
       {/* 見た目は設定のボタンとそろえる */}
@@ -46,14 +52,28 @@ export function AppHeader({
         <p className="menu-label">テーマ</p>
         <ThemeSwitch theme={theme} onChange={onThemeChange} />
         <p className="menu-label">アカウント</p>
-        <GoogleLogin linked={hasGoogle} />
+        <div className="account-head">
+          <p className="account-state">
+            {registered
+              ? `登録済み：${ways}`
+              : "未登録：今はこの端末からしか開けません"}
+          </p>
+          {!registered && (
+            <p className="account-note">
+              登録すると、他の端末でも同じメモを開けます
+            </p>
+          )}
+        </div>
+        {/* Googleは、まだ登録していない端末の入り口。登録済みで押すと別のアカウントに切り替わる */}
+        {!registered && <GoogleLogin />}
         <PasskeyRegister
           hasPasskey={hasPasskey}
+          canLogin={!registered}
           onLogin={onLogin}
           onRegistered={onRegistered}
         />
         {/* 匿名のまま押すとメモに二度と戻れないので、登録済みのときだけ出す */}
-        {(hasPasskey || hasGoogle) && (
+        {registered && (
           <button className="ghost-button logout-button" onClick={onLogout}>
             ログアウト
           </button>

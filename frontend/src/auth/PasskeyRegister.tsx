@@ -4,11 +4,17 @@ import { passkeyErrorMessage } from "./passkeyError";
 
 type Props = {
   hasPasskey: boolean;
+  canLogin: boolean;
   onLogin: () => void;
   onRegistered: () => void;
 };
 
-export function PasskeyRegister({ hasPasskey, onLogin, onRegistered }: Props) {
+export function PasskeyRegister({
+  hasPasskey,
+  canLogin,
+  onLogin,
+  onRegistered,
+}: Props) {
   const [status, setStatus] = useState("");
 
   const register = async () => {
@@ -35,21 +41,20 @@ export function PasskeyRegister({ hasPasskey, onLogin, onRegistered }: Props) {
 
   return (
     <div className="passkey">
-      <p className="passkey-note">
-        {hasPasskey
-          ? "パスキー登録済み"
-          : "パスキー未登録。登録すると、他の端末からも同じメモを開けます"}
-      </p>
       <button className="ghost-button" onClick={register}>
         {hasPasskey ? "パスキーを追加" : "パスキーを登録"}
       </button>
-      {/* 登録済みの端末はもうログインしているので出さない */}
-      {!hasPasskey && (
-        <button className="ghost-button" onClick={login}>
-          パスキーでログイン
-        </button>
+      {/* 前に別の端末で登録した人の入り口。登録済みの端末はもう入っているので出さない */}
+      {canLogin && (
+        <>
+          <p className="passkey-note">すでに登録している方</p>
+          <button className="ghost-button" onClick={login}>
+            パスキーでログイン
+          </button>
+        </>
       )}
-      <span className="status">{status}</span>
+      {/* 知らせが無いときは行ごと出さない。空いた隙間を作らないため */}
+      {status && <span className="status">{status}</span>}
     </div>
   );
 }

@@ -12,6 +12,7 @@ vi.mock("./passkeyApi", () => ({
 
 const base = {
   hasPasskey: false,
+  canLogin: true,
   onLogin: () => {},
   onRegistered: () => {},
 };
@@ -20,7 +21,7 @@ describe("PasskeyRegister", () => {
   it("未登録なら登録とログインのボタンを出す", () => {
     render(<PasskeyRegister {...base} />);
 
-    expect(screen.getByText(/未登録/)).toBeInTheDocument();
+    expect(screen.getByText("すでに登録している方")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "パスキーを登録" }),
     ).toBeInTheDocument();
@@ -30,9 +31,8 @@ describe("PasskeyRegister", () => {
   });
 
   it("登録済みなら追加のボタンだけを出す", () => {
-    render(<PasskeyRegister {...base} hasPasskey />);
+    render(<PasskeyRegister {...base} hasPasskey canLogin={false} />);
 
-    expect(screen.getByText("パスキー登録済み")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "パスキーを追加" }),
     ).toBeInTheDocument();
