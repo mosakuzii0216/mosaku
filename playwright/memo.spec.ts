@@ -34,3 +34,11 @@ test("一覧からメモを選ぶと、引き出しが閉じてエディタに�
   await expect(page.getByRole("dialog")).toBeHidden();
   await expect(page.getByPlaceholder("タイトル")).toHaveValue(title);
 });
+
+test("はじめて一覧を開くと、並ぶ場所と登録の案内が出る", async ({ page }) => {
+  await page.goto("/");
+  await openList(page);
+
+  await expect(page.getByText("書いたメモは、ここに並びます")).toBeVisible();
+  await expect(page.getByText(/「設定」から登録すると/)).toBeVisible();
+});

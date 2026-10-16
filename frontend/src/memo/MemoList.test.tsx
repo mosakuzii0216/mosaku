@@ -79,4 +79,19 @@ describe("MemoList", () => {
 
     expect(onRemove).toHaveBeenCalledWith(memo);
   });
+
+  it("メモが1つも無ければ、ここに並ぶと案内する", () => {
+    render(
+      <MemoList
+        memos={[]}
+        editingId={null}
+        onOpen={() => {}}
+        onRemove={() => {}}
+      />,
+    );
+
+    expect(
+      screen.getByText("書いたメモは、ここに並びます"),
+    ).toBeInTheDocument();
+  });
 });

@@ -8,6 +8,10 @@ type Props = {
 };
 
 export function MemoList({ memos, editingId, onOpen, onRemove }: Props) {
+  // 初めて開いた人に、ここが何の場所かを伝える
+  if (memos.length === 0) {
+    return <p className="empty">書いたメモは、ここに並びます</p>;
+  }
   return (
     <ul className="memo-list">
       {memos.map((memo) => (

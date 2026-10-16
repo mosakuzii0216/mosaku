@@ -542,6 +542,15 @@
   padding-top: var(--s5);
 }
 
+/* 未登録の案内。ゴミ箱の上に、金の線を添えて小さく出す */
+.drawer-hint {
+  margin: 0 0 var(--s4);
+  padding-left: var(--s3);
+  font-size: 13px;
+  color: var(--text);
+  border-left: 2px solid var(--accent-border);
+}
+
 /* 開くときは左からすっと出す。動きを減らす設定の人には出さない */
 @media (prefers-reduced-motion: no-preference) {
   .drawer {
