@@ -14,40 +14,27 @@ const makeMemo = (id: string, title: string): Memo => ({
 });
 
 const base = {
-  memos: [makeMemo("1", "普段のメモ")],
   results: [makeMemo("2", "検索で出るメモ")],
-  query: "",
-  isSearching: false,
+  query: "検索",
   editingId: null,
   onOpen: () => {},
   onRemove: () => {},
 };
 
 describe("MemoSection", () => {
-  it("検索していないときは保存済みの一覧を出す", () => {
+  it("見出しと検索結果を出す", () => {
     render(<MemoSection {...base} />);
 
     expect(
-      screen.getByRole("heading", { name: "メモ一覧" }),
+      screen.getByRole("heading", { name: "「検索」の検索結果" }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "普段のメモ" }),
-    ).toBeInTheDocument();
-  });
-
-  it("検索中は検索結果を出す", () => {
-    render(<MemoSection {...base} query="検索" isSearching />);
-
     expect(
       screen.getByRole("button", { name: "検索で出るメモ" }),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: "普段のメモ" }),
-    ).not.toBeInTheDocument();
   });
 
   it("検索して0件なら見つからなかったと出す", () => {
-    render(<MemoSection {...base} query="無い" isSearching results={[]} />);
+    render(<MemoSection {...base} query="無い" results={[]} />);
 
     expect(screen.getByText("見つかりませんでした")).toBeInTheDocument();
   });

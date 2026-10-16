@@ -120,10 +120,8 @@ export default function App({ loginFailed = false }: Props) {
         {/* 検索結果は紙の場所に出す。普段の一覧は引き出しの中 */}
         {isSearching && (
           <MemoSection
-            memos={m.memos}
             results={results}
             query={query}
-            isSearching={isSearching}
             editingId={m.editingId}
             onOpen={openMemo}
             onRemove={m.remove}

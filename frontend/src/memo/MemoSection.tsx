@@ -2,38 +2,32 @@ import { MemoList } from "./MemoList";
 import type { Memo } from "./types";
 
 type Props = {
-  memos: Memo[];
   results: Memo[];
   query: string;
-  isSearching: boolean;
   editingId: string | null;
   onOpen: (memo: Memo) => void;
   onRemove: (memo: Memo) => void;
 };
 
+// 検索結果。検索中だけ紙の場所に出す(普段の一覧は引き出しの中)
 export function MemoSection({
-  memos,
   results,
   query,
-  isSearching,
   editingId,
   onOpen,
   onRemove,
 }: Props) {
-  const shown = isSearching ? results : memos;
-  const notFound = isSearching && results.length === 0;
-
   return (
     <>
       <div className="memo-head">
-        <h2>{isSearching ? `「${query.trim()}」の検索結果` : "メモ一覧"}</h2>
+        <h2>「{query.trim()}」の検索結果</h2>
       </div>
 
-      {notFound ? (
+      {results.length === 0 ? (
         <p className="empty">見つかりませんでした</p>
       ) : (
         <MemoList
-          memos={shown}
+          memos={results}
           editingId={editingId}
           onOpen={onOpen}
           onRemove={onRemove}
