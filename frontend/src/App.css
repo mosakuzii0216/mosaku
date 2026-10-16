@@ -213,6 +213,9 @@
 .memo-open {
   /* 枠を外して、区切り線だけ */
   flex: 1;
+  /* タイトルの下に、日付と書き出しを重ねる */
+  display: grid;
+  gap: var(--s1);
   font: inherit;
   text-align: left;
   color: var(--text-h);
@@ -226,6 +229,19 @@
 
 .memo-open:hover {
   color: var(--accent);
+}
+
+/* 日付と書き出しは小さく1行で。入りきらない分は...にする */
+.memo-meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.memo-meta time {
+  margin-right: var(--s2);
 }
 
 .memo-delete {

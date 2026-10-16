@@ -30,6 +30,23 @@ describe("MemoList", () => {
     ).toBeInTheDocument();
   });
 
+  it("行に、最後に書いた日と本文の書き出しを出す", () => {
+    const memo = {
+      ...makeMemo("1", "今日のメモ"),
+      contentText: "散歩に行った",
+    };
+    render(
+      <MemoList
+        memos={[memo]}
+        editingId={null}
+        onOpen={() => {}}
+        onRemove={() => {}}
+      />,
+    );
+    expect(screen.getByText("2026/9/12")).toBeInTheDocument();
+    expect(screen.getByText("散歩に行った")).toBeInTheDocument();
+  });
+
   it("編集中のメモにis-editingが付く", () => {
     render(
       <MemoList

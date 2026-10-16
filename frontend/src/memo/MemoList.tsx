@@ -12,8 +12,19 @@ export function MemoList({ memos, editingId, onOpen, onRemove }: Props) {
     <ul className="memo-list">
       {memos.map((memo) => (
         <li key={memo.id} className={memo.id === editingId ? "is-editing" : ""}>
-          <button className="memo-open" onClick={() => onOpen(memo)}>
-            {memo.title || "(無題)"}
+          <button
+            className="memo-open"
+            aria-label={memo.title || "(無題)"}
+            onClick={() => onOpen(memo)}
+          >
+            <span className="memo-title">{memo.title || "(無題)"}</span>
+            {/* 最後に書いた日と、本文の書き出し。一覧は最後に書いた順なので、日付もその順に並ぶ */}
+            <span className="memo-meta">
+              <time dateTime={memo.updatedAt}>
+                {new Date(memo.updatedAt).toLocaleDateString("ja-JP")}
+              </time>
+              {memo.contentText}
+            </span>
           </button>
           <button
             className="memo-delete"
