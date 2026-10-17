@@ -88,6 +88,17 @@ describe("AppHeader", () => {
     ).not.toBeInTheDocument();
   });
 
+  // 前にパスキーだけで登録した人も、Googleをあとからつなげる
+  it("パスキーだけで登録済みなら、Googleで続けるが出る", async () => {
+    render(<AppHeader {...base} hasPasskey />);
+
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
+
+    expect(
+      screen.getByRole("link", { name: "Googleで続ける" }),
+    ).toBeInTheDocument();
+  });
+
   it("未登録なら、ログアウトは出さない", async () => {
     render(<AppHeader {...base} />);
 

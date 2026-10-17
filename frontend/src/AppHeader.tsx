@@ -64,8 +64,8 @@ export function AppHeader({
             </p>
           )}
         </div>
-        {/* Googleは、まだ登録していない端末の入り口。登録済みで押すと別のアカウントに切り替わる */}
-        {!registered && <GoogleLogin />}
+        {/* Googleがまだなら出す。パスキーだけで登録した人も、ここからGoogleでつなげる */}
+        {!hasGoogle && <GoogleLogin />}
         <PasskeyRegister
           hasPasskey={hasPasskey}
           canLogin={!registered}
