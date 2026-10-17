@@ -109,7 +109,7 @@ export default function App({ loginFailed = false }: Props) {
             status={m.status}
             isEditing={m.editingId !== null}
             saving={m.saving}
-            onTitleChange={m.setTitle}
+            onTitleChange={m.changeTitle}
             onSave={m.save}
             onNew={m.startNew}
           >
