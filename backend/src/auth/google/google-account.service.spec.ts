@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { GoogleAccountService } from './google-account.service';
 import { UserService } from '../../user/user.service';
 import { PrismaService } from '../../prisma/prisma.service';
+import { Expose } from 'class-transformer';
 
 describe('GoogleAccountService', () => {
   let service: GoogleAccountService;
@@ -66,7 +67,7 @@ describe('GoogleAccountService', () => {
     ).toBeNull();
   });
 
-  it('登録済みのユーザーが知らないGoogleでログインしたら、別のユーザーを作る', async () => {
+  it('Googleでつないだユーザが別のGoogleでログインしたら、別のユーザを作る', async () => {
     const someone = await prisma.user.create({ data: {} });
     await service.login(someone.id, { sub: 'sub-1' });
 
@@ -74,5 +75,22 @@ describe('GoogleAccountService', () => {
 
     expect(userId).not.toBe(someone.id);
     expect(await prisma.user.count()).toBe(2);
+  });
+
+  it('パスキーだけで登録したユーザーには、初めてGoogleをそのまま繋ぐ', async () => {
+    const owner = await prisma.user.create({ data: {} });
+    await prisma.passkey.create({
+      data: {
+        id: 'pk-1',
+        userId: owner.id,
+        publicKey: Buffer.from([1]),
+        transports: [],
+      },
+    });
+
+    const userId = await service.login(owner.id, { sub: 'sub-1' });
+
+    expect(userId).toBe(owner.id);
+    expect(await prisma.user.count()).toBe(1);
   });
 });
