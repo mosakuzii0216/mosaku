@@ -5,9 +5,7 @@ type Props = {
   title: string;
   status: string;
   isEditing: boolean;
-  saving: boolean;
   onTitleChange: (title: string) => void;
-  onSave: () => void;
   onNew: () => void;
   children: ReactNode;
 };
@@ -17,9 +15,7 @@ export function MemoForm({
   title,
   status,
   isEditing,
-  saving,
   onTitleChange,
-  onSave,
   onNew,
   children,
 }: Props) {
@@ -36,9 +32,6 @@ export function MemoForm({
       <div className="editor">{children}</div>
 
       <div className="editor-actions">
-        <button className="save-button" onClick={onSave} disabled={saving}>
-          {isEditing ? "更新" : "保存"}
-        </button>
         {isEditing && (
           <button className="ghost-button" onClick={onNew}>
             新規

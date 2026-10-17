@@ -8,27 +8,30 @@ const base = {
   title: "",
   status: "",
   isEditing: false,
-  saving: false,
   onTitleChange: () => {},
-  onSave: () => {},
   onNew: () => {},
   children: <div>エディタ</div>,
 };
 
 describe("MemoForm", () => {
-  it("編集中でなければボタンは「保存」で、「新規」は出ない", () => {
+  // 自動で保存されるので、保存ボタンは出ない
+  it("編集中でなければ「保存」も「新規」も出ない", () => {
     render(<MemoForm {...base} />);
 
-    expect(screen.getByRole("button", { name: "保存" })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "保存" }),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: "新規" }),
     ).not.toBeInTheDocument();
   });
 
-  it("編集中ならボタンは「更新」で、「新規」が出る", () => {
+  it("編集中なら「新規」だけが出る", () => {
     render(<MemoForm {...base} isEditing />);
 
-    expect(screen.getByRole("button", { name: "更新" })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "更新" }),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "新規" })).toBeInTheDocument();
   });
 
@@ -39,21 +42,6 @@ describe("MemoForm", () => {
     await userEvent.type(screen.getByRole("textbox"), "森");
 
     expect(onTitleChange).toHaveBeenCalledWith("森");
-  });
-
-  it("保存を押すとonSaveが呼ばれる", async () => {
-    const onSave = vi.fn();
-    render(<MemoForm {...base} onSave={onSave} />);
-
-    await userEvent.click(screen.getByRole("button", { name: "保存" }));
-
-    expect(onSave).toHaveBeenCalled();
-  });
-
-  it("保存中は保存ボタンを押せない", () => {
-    render(<MemoForm {...base} saving />);
-
-    expect(screen.getByRole("button", { name: "保存" })).toBeDisabled();
   });
 
   it("渡された日付をそのまま出す", () => {
