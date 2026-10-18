@@ -179,11 +179,6 @@
   }
 }
 
-.status {
-  margin-top: 8px;
-  min-height: 1.4em;
-}
-
 /* 保存の知らせは右下に小さく。下の一覧のボタンを邪魔しないようクリックは素通り */
 .memo-status {
   position: fixed;
@@ -285,12 +280,6 @@
   color: var(--accent);
   background: var(--accent-bg);
   border-color: var(--accent-border);
-}
-
-.passkey {
-  display: flex;
-  align-items: center;
-  gap: var(--s3);
 }
 
 .trash-toggle {
@@ -417,14 +406,9 @@
   border-top: 1px solid var(--border);
 }
 
-/* メニューの中では、テーマは折り返して並べ、パスキーは縦に並べる */
+/* メニューの中では、テーマは折り返して並べる */
 .menu-panel .theme-switch {
   flex-wrap: wrap;
-}
-
-.menu-panel .passkey {
-  flex-direction: column;
-  align-items: stretch;
 }
 
 /* アカウントの今の状態と、その説明。設定のアカウントの一番上に置く */
@@ -442,17 +426,6 @@
 .account-note {
   font-size: 13px;
   color: var(--text);
-}
-
-.passkey-note {
-  margin: 0;
-  font-size: 13px;
-  color: var(--text);
-}
-
-/* 「すでに登録している方」は、上の登録ボタンから少し離す */
-.passkey .passkey-note {
-  margin-top: var(--s2);
 }
 
 /* Googleで続ける：リンクだが見た目はボタンにそろえる */
