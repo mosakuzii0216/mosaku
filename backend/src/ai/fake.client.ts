@@ -1,6 +1,6 @@
 import type { AiClient, ChatMessage } from './ai-client';
 
-// お金をかけずに流れや画面が確かめるための、お試しのAI。本物のAIは呼ばない
+// お金をかけずに流れや画面を確かめるための、お試しのAI。本物のAIは呼ばない
 export class FakeClient implements AiClient {
   chat(_system: string, messages: ChatMessage[]): Promise<string> {
     const last = messages[messages.length - 1]?.content ?? '';
