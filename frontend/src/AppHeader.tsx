@@ -1,5 +1,4 @@
 import { ThemeSwitch } from "./ThemeSwitch";
-import { PasskeyRegister } from "./auth/PasskeyRegister";
 import { GoogleLogin } from "./auth/GoogleLogin";
 import { Menu } from "./Menu";
 import type { Theme } from "./theme";
@@ -11,8 +10,6 @@ type Props = {
   hasGoogle: boolean;
   onQueryChange: (q: string) => void;
   onThemeChange: (theme: Theme) => void;
-  onLogin: () => void;
-  onRegistered: () => void;
   onLogout: () => void;
   onOpenList: () => void;
 };
@@ -24,8 +21,6 @@ export function AppHeader({
   hasGoogle,
   onQueryChange,
   onThemeChange,
-  onLogin,
-  onRegistered,
   onLogout,
   onOpenList,
 }: Props) {
@@ -66,12 +61,6 @@ export function AppHeader({
         </div>
         {/* Googleがまだなら出す。パスキーだけで登録した人も、ここからGoogleでつなげる */}
         {!hasGoogle && <GoogleLogin />}
-        <PasskeyRegister
-          hasPasskey={hasPasskey}
-          canLogin={!registered}
-          onLogin={onLogin}
-          onRegistered={onRegistered}
-        />
         {/* 匿名のまま押すとメモに二度と戻れないので、登録済みのときだけ出す */}
         {registered && (
           <button className="ghost-button logout-button" onClick={onLogout}>

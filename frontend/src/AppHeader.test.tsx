@@ -10,8 +10,6 @@ const base = {
   hasGoogle: false,
   onQueryChange: () => {},
   onThemeChange: () => {},
-  onLogin: () => {},
-  onRegistered: () => {},
   onLogout: () => {},
   onOpenList: () => {},
 };
@@ -43,14 +41,18 @@ describe("AppHeader", () => {
     expect(screen.getByRole("button", { name: "森" })).toBeInTheDocument();
   });
 
-  it("設定を開くとパスキーのボタンが出る", async () => {
+  // 登録とログインはGoogleだけにしたので、パスキーのボタンは出さない
+  it("設定を開いても、パスキーのボタンは出ない", async () => {
     render(<AppHeader {...base} />);
 
     await userEvent.click(screen.getByRole("button", { name: "設定" }));
 
     expect(
-      screen.getByRole("button", { name: "パスキーでログイン" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("button", { name: "パスキーを登録" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "パスキーでログイン" }),
+    ).not.toBeInTheDocument();
   });
 
   it("設定を開くとGoogleで続けるが出る", async () => {
@@ -63,7 +65,7 @@ describe("AppHeader", () => {
     ).toBeInTheDocument();
   });
 
-  it("未登録なら、今の状態と、登録とログインの入り口を出す", async () => {
+  it("未登録なら、今の状態を出す", async () => {
     render(<AppHeader {...base} />);
 
     await userEvent.click(screen.getByRole("button", { name: "設定" }));
@@ -71,7 +73,6 @@ describe("AppHeader", () => {
     expect(
       screen.getByText("未登録：今はこの端末からしか開けません"),
     ).toBeInTheDocument();
-    expect(screen.getByText("すでに登録している方")).toBeInTheDocument();
   });
 
   it("登録済みなら、使ったものを出して、Googleとログインの入り口は出さない", async () => {

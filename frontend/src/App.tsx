@@ -60,12 +60,6 @@ export default function App({ loginFailed = false }: Props) {
     setIsListOpen(false);
   };
 
-  // パスキーでログインしたら、メモも登録状態も読み直す
-  const handleLogin = () => {
-    void m.reload();
-    void me.reload();
-  };
-
   // ログアウトしたら、名札が無い状態から読み直す(新しい匿名ユーザになる)
   const handleLogout = async () => {
     await logout();
@@ -94,9 +88,7 @@ export default function App({ loginFailed = false }: Props) {
           hasGoogle={me.hasGoogle}
           onQueryChange={setQuery}
           onThemeChange={setTheme}
-          onLogin={handleLogin}
           onOpenList={() => setIsListOpen(true)}
-          onRegistered={me.reload}
           onLogout={handleLogout}
         />
         {notice && <Notice message={notice} onClose={() => setNotice("")} />}
