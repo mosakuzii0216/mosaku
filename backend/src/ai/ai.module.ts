@@ -8,6 +8,7 @@ import { FakeClient } from './fake.client';
 import { ClaudeClient } from './claude.client';
 import { GeminiClient } from './gemini.client';
 import { UserModule } from '../user/user.module';
+import { AiUsageService } from './ai-usage.service';
 
 // どのAIを使うかは、環境変数AI_PROVIDERで選ぶ。書いていなければお試しのAI
 function createAiClient(): AiClient {
@@ -26,6 +27,10 @@ function createAiClient(): AiClient {
 @Module({
   imports: [UserModule],
   controllers: [AiController],
-  providers: [AiService, { provide: AI_CLIENT, useFactory: createAiClient }],
+  providers: [
+    AiService,
+    AiUsageService,
+    { provide: AI_CLIENT, useFactory: createAiClient },
+  ],
 })
 export class AiModule {}

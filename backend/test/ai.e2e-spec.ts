@@ -27,6 +27,7 @@ describe('AI(e2e)', () => {
     app = moduleFixture.createNestApplication();
     prisma = app.get(PrismaService);
     await app.init();
+    process.env.AI_DAILY_LIMIT = '1';
   });
 
   beforeEach(async () => {
@@ -34,6 +35,7 @@ describe('AI(e2e)', () => {
   });
 
   afterAll(async () => {
+    delete process.env.AI_DAILY_LIMIT;
     await app.close();
   });
 
@@ -52,6 +54,12 @@ describe('AI(e2e)', () => {
     const agent = await googleAgent();
     const res = await agent.post('/ai/chat').send(body).expect(200);
     expect(res.body).toEqual({ reply: 'どう言いたかった？' });
+  });
+
+  it('1日に話せる回数を使い切ったら、429で断る', async () => {
+    const agent = await googleAgent();
+    await agent.post('/ai/chat').send(body).expect(200);
+    await agent.post('/ai/chat').send(body).expect(429);
   });
 
   it('Googleでログインしていなければ、403で断る', async () => {
