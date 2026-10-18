@@ -1,15 +1,30 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  HttpCode,
+  Post,
+} from '@nestjs/common';
 import { AiService } from './ai.service';
 import { ChatDto } from './ai.dto';
+import { CurrentUser } from '../auth/current-user.decorator';
+import { UserService } from '../user/user.service';
 
 @Controller('ai')
 export class AiController {
-  constructor(private readonly aiService: AiService) {}
+  constructor(
+    private readonly aiService: AiService,
+    private readonly userService: UserService,
+  ) {}
 
   // 何かを作るわけではないので、201ではなく200で返す
   @Post('chat')
   @HttpCode(200)
-  async chat(@Body() body: ChatDto) {
+  async chat(@CurrentUser() user: { id: string }, @Body() body: ChatDto) {
+    // AIはGoogleでログインした人だけ。使った回数を人に結びつけるため
+    if (!(await this.userService.hasGoogle(user.id))) {
+      throw new ForbiddenException('AIはGoogleでログインすると使えます');
+    }
     return { reply: await this.aiService.chat(body.diary, body.messages) };
   }
 }

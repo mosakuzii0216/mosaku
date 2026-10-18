@@ -19,6 +19,7 @@ import { AnonymousUserMiddleware } from './auth/anonymous-user.middleware';
 import { GoogleController } from './auth/google/google.controller';
 import { GoogleModule } from './auth/google/google.module';
 import { AiModule } from './ai/ai.module';
+import { AiController } from './ai/ai.controller';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ export class AppModule implements NestModule {
         PasskeyController,
         UserController,
         GoogleController,
+        AiController,
       );
   }
 }

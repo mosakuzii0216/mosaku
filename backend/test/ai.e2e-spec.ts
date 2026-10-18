@@ -54,6 +54,10 @@ describe('AI(e2e)', () => {
     expect(res.body).toEqual({ reply: 'どう言いたかった？' });
   });
 
+  it('Googleでログインしていなければ、403で断る', async () => {
+    await request(app.getHttpServer()).post('/ai/chat').send(body).expect(403);
+  });
+
   it('日記が長すぎたり、会話の形が違ったりしたら、400で断る', async () => {
     const agent = await googleAgent();
     await agent
