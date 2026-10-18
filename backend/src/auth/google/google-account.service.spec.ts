@@ -2,7 +2,6 @@ import { Test } from '@nestjs/testing';
 import { GoogleAccountService } from './google-account.service';
 import { UserService } from '../../user/user.service';
 import { PrismaService } from '../../prisma/prisma.service';
-import { Expose } from 'class-transformer';
 
 describe('GoogleAccountService', () => {
   let service: GoogleAccountService;

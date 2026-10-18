@@ -29,7 +29,7 @@ export class GoogleAccountService {
     }
 
     // 初めてのGoogle: まだGoogleを繋いでいなければ(匿名・パスキーだけ)、そのまま紐づける
-    // もうGogoleをつないだユーザ(共有の端末など)なら別人かもしれないので、新しく作る
+    // もうGoogleをつないだユーザ(共有の端末など)なら別人かもしれないので、新しく作る
     const userId = (await this.userService.hasGoogle(currentUserId))
       ? (await this.prisma.user.create({ data: {} })).id
       : currentUserId;
