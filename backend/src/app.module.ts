@@ -18,9 +18,17 @@ import { UserController } from './user/user.controller';
 import { AnonymousUserMiddleware } from './auth/anonymous-user.middleware';
 import { GoogleController } from './auth/google/google.controller';
 import { GoogleModule } from './auth/google/google.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
-  imports: [PrismaModule, MemoModule, UserModule, PasskeyModule, GoogleModule],
+  imports: [
+    PrismaModule,
+    MemoModule,
+    UserModule,
+    PasskeyModule,
+    GoogleModule,
+    AiModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
