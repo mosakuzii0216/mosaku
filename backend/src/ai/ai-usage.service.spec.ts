@@ -24,7 +24,7 @@ describe('AiUsageService', () => {
 
   afterAll(async () => {
     delete process.env.AI_DAILY_LIMIT;
-    delete process.env.TOTAL_DAILY_LIMIT;
+    delete process.env.AI_TOTAL_DAILY_LIMIT;
     await prisma.$disconnect();
   });
 

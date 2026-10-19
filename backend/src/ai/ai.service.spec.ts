@@ -37,5 +37,12 @@ describe('AiService', () => {
     chat.mockRejectedValueOnce(new Error('connect ECONNREFUSED'));
 
     await expect(service.chat('日記', [])).rejects.toThrow(BadGatewayException);
+    expect(log).toHaveBeenCalled();
+  });
+
+  it('AIの返事が空なら、502で返す', async () => {
+    chat.mockRejectedValueOnce('');
+
+    await expect(service.chat('日記', [])).rejects.toThrow(BadGatewayException);
   });
 });
