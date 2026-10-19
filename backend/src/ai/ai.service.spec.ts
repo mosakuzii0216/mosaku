@@ -1,7 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { AiService } from './ai.service';
 import { AI_CLIENT, type ChatMessage } from './ai-client';
-import { BadGatewayException, Logger } from '@nestjs/common';
+import {
+  BadGatewayException,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 
 // 決まった返事をする偽物を差し込んで、AIに何が渡ったかを見る
 const chat = jest.fn().mockResolvedValue('その一言、本当はどう言いたかった？');
@@ -44,5 +48,13 @@ describe('AiService', () => {
     chat.mockRejectedValueOnce('');
 
     await expect(service.chat('日記', [])).rejects.toThrow(BadGatewayException);
+  });
+
+  it('準備中(503)は、502に変えずにそのまま返す', async () => {
+    chat.mockRejectedValueOnce(new ServiceUnavailableException());
+
+    await expect(service.chat('日記', [])).rejects.toThrow(
+      ServiceUnavailableException,
+    );
   });
 });

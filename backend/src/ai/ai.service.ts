@@ -1,5 +1,6 @@
 import {
   BadGatewayException,
+  HttpException,
   Inject,
   Injectable,
   Logger,
@@ -27,6 +28,8 @@ export class AiService {
     try {
       reply = await this.ai.chat(`${SYSTEM}\n\n# 日記\n${diary}`, messages);
     } catch (e) {
+      // 準備中(503)のように、返し方が決まっているものはそのまま返す
+      if (e instanceof HttpException) throw e;
       // つながらない・混んでいる・キーが違う、など。理由はログにだけ残す
       this.logger.error(e);
       throw new BadGatewayException(NO_REPLY);
