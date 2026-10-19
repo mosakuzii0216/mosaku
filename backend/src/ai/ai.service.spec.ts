@@ -45,7 +45,7 @@ describe('AiService', () => {
   });
 
   it('AIの返事が空なら、502で返す', async () => {
-    chat.mockRejectedValueOnce('');
+    chat.mockResolvedValueOnce('');
 
     await expect(service.chat('日記', [])).rejects.toThrow(BadGatewayException);
   });

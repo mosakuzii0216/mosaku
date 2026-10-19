@@ -1,7 +1,7 @@
 import type OpenAI from 'openai';
 import { OpenAiClient } from './openai.client';
 
-it('指示と会話をOpenAIを渡して、返事の文章を返す', async () => {
+it('指示と会話をOpenAIに渡して、返事の文章を返す', async () => {
   const create = jest
     .fn()
     .mockResolvedValue({ output_text: 'どう言いたかった？' });
