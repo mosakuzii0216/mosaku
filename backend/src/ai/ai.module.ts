@@ -9,10 +9,13 @@ import { ClaudeClient } from './claude.client';
 import { GeminiClient } from './gemini.client';
 import { UserModule } from '../user/user.module';
 import { AiUsageService } from './ai-usage.service';
+import { UnavailableClient } from './unavailable.client';
 
-// どのAIを使うかは、環境変数AI_PROVIDERで選ぶ。書いていなければお試しのAI
-function createAiClient(): AiClient {
+// どのAIを使うかは、環境変数AI_PROVIDERで選ぶ。書いていなければ準備中(503)
+export function createAiClient(): AiClient {
   switch (process.env.AI_PROVIDER) {
+    case 'fake':
+      return new FakeClient();
     case 'claude':
       return new ClaudeClient(new Anthropic());
     case 'gemini':
@@ -20,7 +23,7 @@ function createAiClient(): AiClient {
         new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }),
       );
     default:
-      return new FakeClient();
+      return new UnavailableClient();
   }
 }
 
