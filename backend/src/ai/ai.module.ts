@@ -10,6 +10,8 @@ import { GeminiClient } from './gemini.client';
 import { UserModule } from '../user/user.module';
 import { AiUsageService } from './ai-usage.service';
 import { UnavailableClient } from './unavailable.client';
+import { OpenAiClient } from './openai.client';
+import OpenAI from 'openai';
 
 // どのAIを使うかは、環境変数AI_PROVIDERで選ぶ。書いていなければ準備中(503)
 export function createAiClient(): AiClient {
@@ -22,6 +24,8 @@ export function createAiClient(): AiClient {
       return new GeminiClient(
         new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }),
       );
+    case 'openai':
+      return new OpenAiClient(new OpenAI());
     default:
       return new UnavailableClient();
   }
