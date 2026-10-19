@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
 import { PasskeyService } from './passkey.service';
 import { PrismaService } from '../../prisma/prisma.service';
 

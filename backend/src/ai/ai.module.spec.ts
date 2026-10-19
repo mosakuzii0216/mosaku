@@ -1,7 +1,6 @@
 import { ServiceUnavailableException } from '@nestjs/common';
 import { createAiClient } from './ai.module';
 import { FakeClient } from './fake.client';
-import { create } from 'domain';
 
 // backend/.envに書いた値に左右されないよう、AI_PROVIDERはテストの中で決める
 it('AI_PROVIDERがfakeなら、お試しのAIを使う', () => {
