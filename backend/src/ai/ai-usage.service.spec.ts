@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { HttpException } from '@nestjs/common';
+import { HttpException, ServiceUnavailableException } from '@nestjs/common';
 import { AiUsageService } from './ai-usage.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -15,6 +15,7 @@ describe('AiUsageService', () => {
     service = module.get(AiUsageService);
     prisma = module.get(PrismaService);
     process.env.AI_DAILY_LIMIT = '2';
+    process.env.AI_TOTAL_DAILY_LIMIT = '3';
   });
 
   beforeEach(async () => {
@@ -23,6 +24,7 @@ describe('AiUsageService', () => {
 
   afterAll(async () => {
     delete process.env.AI_DAILY_LIMIT;
+    delete process.env.TOTAL_DAILY_LIMIT;
     await prisma.$disconnect();
   });
 
@@ -47,5 +49,18 @@ describe('AiUsageService', () => {
     });
 
     await expect(service.consume(user.id)).resolves.toBeUndefined();
+  });
+
+  it('みんな合わせた回数が上限に届いたら、まだ話せる人も断る', async () => {
+    const a = await prisma.user.create({ data: {} });
+    const b = await prisma.user.create({ data: {} });
+    await service.consume(a.id);
+    await service.consume(a.id);
+    await service.consume(b.id);
+
+    // bはまだ1回だけど、みんな合わせた回数が上限に届いている
+    await expect(service.consume(b.id)).rejects.toThrow(
+      ServiceUnavailableException,
+    );
   });
 });
