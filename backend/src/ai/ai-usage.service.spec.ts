@@ -2,7 +2,6 @@ import { Test } from '@nestjs/testing';
 import { HttpException } from '@nestjs/common';
 import { AiUsageService } from './ai-usage.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { ExpressAdapter } from '@nestjs/platform-express';
 
 describe('AiUsageService', () => {
   let service: AiUsageService;
@@ -27,7 +26,7 @@ describe('AiUsageService', () => {
     await prisma.$disconnect();
   });
 
-  it('上限までは1回ずつ数えて通り、超えたら断る', async () => {
+  it('上限までは1回ずつ数えて通し、超えたら断る', async () => {
     const user = await prisma.user.create({ data: {} });
 
     await service.consume(user.id);

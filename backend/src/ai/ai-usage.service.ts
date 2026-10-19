@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
-// 1人が1日(直近24時間)に話せる回数。環境AI_DAILY_LIMITで変えられる
+// 1人が1日(直近24時間)に話せる回数。環境変数AI_DAILY_LIMITで変えられる
 const DAILY_LIMIT = 20;
 
 @Injectable()

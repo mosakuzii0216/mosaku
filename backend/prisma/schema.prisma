@@ -75,6 +75,7 @@ model Account {
   @@map("accounts")
 }
 
+// AIと話した記録。1日に話せる回数を数えるために、1回ごとに1行残す
 model AiUsage {
   id        String   @id @default(cuid())
   userId    String   @map("user_id")
