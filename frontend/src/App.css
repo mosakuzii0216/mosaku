@@ -550,3 +550,49 @@
 .notice p {
   margin: 0;
 }
+
+/* AIと話す席。狭い画面では全体に重ねる */
+.ai-pane {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--s5) + env(safe-area-inset-top)) var(--s4)
+    calc(var(--s5) + env(safe-area-inset-bottom));
+  background: var(--bg);
+}
+
+/* 広い画面では日記の右に並べて、日記は残りの幅の真ん中に寄せる */
+@media (min-width: 1100px) {
+  .ai-pane {
+    left: auto;
+    width: 360px;
+    border-left: 1px solid var(--border);
+  }
+
+  #root:has(.ai-pane) {
+    padding-right: 360px;
+  }
+}
+
+/* まだ話していないときの案内。席の真ん中に置く */
+.ai-empty {
+  margin: auto 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* 開く時は右からすっと出す。動きを減らす設定の人には出さない */
+@media (prefers-reduced-motion: no-preference) {
+  .ai-pane {
+    animation: ai-in 0.2s ease-out;
+  }
+}
+
+@keyframes ai-in {
+  from {
+    transform: translateX(100%);
+  }
+}
