@@ -17,6 +17,7 @@ import type { Memo } from "./memo/types";
 import "./App.css";
 import { Drawer } from "./Drawer";
 import { MemoList } from "./memo/MemoList";
+import { AiPane } from "./ai/AiPane";
 
 type Props = { loginFailed?: boolean };
 
@@ -29,6 +30,7 @@ export default function App({ loginFailed = false }: Props) {
   const [theme, setTheme] = useTheme();
   const { query, setQuery, results, isSearching } = useSearch();
   const [isListOpen, setIsListOpen] = useState(false);
+  const [isAiOpen, setIsAiOpen] = useState(false);
 
   const editor = useEditor({
     // 本文が空のときだけ「ここに書く」を薄く出す。枠が無くても書く場所がわかる
@@ -90,6 +92,8 @@ export default function App({ loginFailed = false }: Props) {
           onThemeChange={setTheme}
           onOpenList={() => setIsListOpen(true)}
           onLogout={handleLogout}
+          isAiOpen={isAiOpen}
+          onToggleAi={() => setIsAiOpen((open) => !open)}
         />
         {notice && <Notice message={notice} onClose={() => setNotice("")} />}
 
@@ -146,6 +150,8 @@ export default function App({ loginFailed = false }: Props) {
           />
         </div>
       </Drawer>
+
+      {isAiOpen && <AiPane onClose={() => setIsAiOpen(false)} />}
     </div>
   );
 }

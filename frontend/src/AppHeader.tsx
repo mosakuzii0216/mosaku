@@ -12,6 +12,8 @@ type Props = {
   onThemeChange: (theme: Theme) => void;
   onLogout: () => void;
   onOpenList: () => void;
+  isAiOpen: boolean;
+  onToggleAi: () => void;
 };
 
 export function AppHeader({
@@ -23,6 +25,8 @@ export function AppHeader({
   onThemeChange,
   onLogout,
   onOpenList,
+  isAiOpen,
+  onToggleAi,
 }: Props) {
   const registered = hasPasskey || hasGoogle;
   // 登録に使ったもの。例：Google・パスキー
@@ -43,6 +47,14 @@ export function AppHeader({
         onChange={(e) => onQueryChange(e.target.value)}
         placeholder="検索"
       />
+      {/* 開いているあいだは、設定と同じく色を返る */}
+      <button
+        className="menu-trigger"
+        aria-expanded={isAiOpen}
+        onClick={onToggleAi}
+      >
+        AI
+      </button>
       <Menu label="設定">
         <p className="menu-label">テーマ</p>
         <ThemeSwitch theme={theme} onChange={onThemeChange} />

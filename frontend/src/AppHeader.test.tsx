@@ -12,6 +12,8 @@ const base = {
   onThemeChange: () => {},
   onLogout: () => {},
   onOpenList: () => {},
+  isAiOpen: false,
+  onToggleAi: () => {},
 };
 
 describe("AppHeader", () => {
@@ -31,6 +33,15 @@ describe("AppHeader", () => {
     await userEvent.click(screen.getByRole("button", { name: "一覧" }));
 
     expect(onOpenList).toHaveBeenCalled();
+  });
+
+  it("AIを押すとonToggleAiが呼ばれる", async () => {
+    const onToggleAi = vi.fn();
+    render(<AppHeader {...base} onToggleAi={onToggleAi} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "AI" }));
+
+    expect(onToggleAi).toHaveBeenCalled();
   });
 
   it("設定を開くとテーマのボタンが出る", async () => {
