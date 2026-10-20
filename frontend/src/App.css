@@ -555,7 +555,8 @@
 .ai-pane {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  /* 保存の知らせ(50)より手前。狭い画面では、知らせも席の下に隠す */
+  z-index: 60;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -574,6 +575,11 @@
 
   #root:has(.ai-pane) {
     padding-right: 360px;
+  }
+
+  /* 保存の知らせは、日記の側の右下に出す */
+  #root:has(.ai-pane) .memo-status {
+    right: calc(360px + var(--s4));
   }
 }
 
@@ -595,4 +601,31 @@
   from {
     transform: translateX(100%);
   }
+}
+
+/* 話しかける欄。上に書く場所、下に左に選ぶ箱、右に送る */
+.ai-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+
+.ai-input {
+  flex-basis: 100%;
+  box-sizing: border-box;
+  height: 6em;
+  padding: var(--s2) var(--s3);
+  font: inherit;
+  color: var(--text-h);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  resize: none;
+}
+
+/* 書いていないあいだは薄くして、押せないことを見せる */
+.ai-send:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
