@@ -47,7 +47,7 @@ export function AppHeader({
         onChange={(e) => onQueryChange(e.target.value)}
         placeholder="検索"
       />
-      {/* 開いているあいだは、設定と同じく色を返る */}
+      {/* 開いているあいだは、設定と同じく色を変える */}
       <button
         className="menu-trigger"
         aria-expanded={isAiOpen}
