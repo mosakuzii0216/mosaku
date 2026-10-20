@@ -18,6 +18,7 @@ import "./App.css";
 import { Drawer } from "./Drawer";
 import { MemoList } from "./memo/MemoList";
 import { AiPane } from "./ai/AiPane";
+import { AI_PROVIDERS } from "./ai/providers";
 
 type Props = { loginFailed?: boolean };
 
@@ -151,7 +152,14 @@ export default function App({ loginFailed = false }: Props) {
         </div>
       </Drawer>
 
-      {isAiOpen && <AiPane onClose={() => setIsAiOpen(false)} />}
+      {/* TODO: 選べるAIはサーバから受け取り、送った言葉はAIに届ける */}
+      {isAiOpen && (
+        <AiPane
+          providers={AI_PROVIDERS}
+          onSend={() => {}}
+          onClose={() => setIsAiOpen(false)}
+        />
+      )}
     </div>
   );
 }
