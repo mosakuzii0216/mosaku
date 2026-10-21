@@ -3,11 +3,12 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { AI_CLIENT } from '../src/ai/ai-client';
+import { AI_CLIENTS } from '../src/ai/ai-client';
 
 // 本物のAIは呼ばず、決まった返事をする偽物にする
 const chat = jest.fn().mockResolvedValue('どう言いたかった？');
 const body = {
+  provider: 'fake',
   diary: '仕事でミスをして落ち込んだ。',
   messages: [{ role: 'user', content: '今日の日記、どう思う？' }],
 };
@@ -20,8 +21,8 @@ describe('AI(e2e)', () => {
     const moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
     })
-      .overrideProvider(AI_CLIENT)
-      .useValue({ chat })
+      .overrideProvider(AI_CLIENTS)
+      .useValue(new Map([['fake', { chat }]]))
       .compile();
 
     app = moduleFixture.createNestApplication();

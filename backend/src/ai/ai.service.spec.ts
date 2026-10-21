@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { AiService } from './ai.service';
-import { AI_CLIENT, type ChatMessage } from './ai-client';
+import { AI_CLIENTS, type ChatMessage } from './ai-client';
 import {
   BadGatewayException,
   Logger,
@@ -15,7 +15,10 @@ describe('AiService', () => {
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
-      providers: [AiService, { provide: AI_CLIENT, useValue: { chat } }],
+      providers: [
+        AiService,
+        { provide: AI_CLIENTS, useValue: new Map([['fake', { chat }]]) },
+      ],
     }).compile();
 
     service = module.get(AiService);
@@ -25,7 +28,11 @@ describe('AiService', () => {
     const messages: ChatMessage[] = [
       { role: 'user', content: '今日の日記、どう思う？' },
     ];
-    const reply = await service.chat('仕事でミスをして落ち込んだ。', messages);
+    const reply = await service.chat(
+      'fake',
+      '仕事でミスをして落ち込んだ。',
+      messages,
+    );
 
     expect(reply).toBe('その一言、本当はどう言いたかった？');
     const [system, sent] = chat.mock.calls[0];
@@ -40,20 +47,30 @@ describe('AiService', () => {
       .mockImplementation(() => {});
     chat.mockRejectedValueOnce(new Error('connect ECONNREFUSED'));
 
-    await expect(service.chat('日記', [])).rejects.toThrow(BadGatewayException);
+    await expect(service.chat('fake', '日記', [])).rejects.toThrow(
+      BadGatewayException,
+    );
     expect(log).toHaveBeenCalled();
   });
 
   it('AIの返事が空なら、502で返す', async () => {
     chat.mockResolvedValueOnce('');
 
-    await expect(service.chat('日記', [])).rejects.toThrow(BadGatewayException);
+    await expect(service.chat('fake', '日記', [])).rejects.toThrow(
+      BadGatewayException,
+    );
+  });
+
+  it('選べないAIなら、準備中(503)と断る', async () => {
+    await expect(service.chat('gemini', '日記', [])).rejects.toThrow(
+      ServiceUnavailableException,
+    );
   });
 
   it('準備中(503)は、502に変えずにそのまま返す', async () => {
     chat.mockRejectedValueOnce(new ServiceUnavailableException());
 
-    await expect(service.chat('日記', [])).rejects.toThrow(
+    await expect(service.chat('fake', '日記', [])).rejects.toThrow(
       ServiceUnavailableException,
     );
   });

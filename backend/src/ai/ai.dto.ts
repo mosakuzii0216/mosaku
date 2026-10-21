@@ -21,6 +21,9 @@ export class ChatMessageDto {
 
 // 日記について話すときに受け取る形。会話はサーバーで覚えないので、毎回全部送ってもらう
 export class ChatDto {
+  @IsString() // 話すAIの名前。AI_PROVIDERSに書いたもの
+  provider!: string;
+
   @IsString()
   @MaxLength(8000) // 長い日記ほどお金がかかるので、上限を決めておく
   diary!: string;

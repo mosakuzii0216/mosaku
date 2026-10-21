@@ -5,7 +5,8 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { AI_CLIENT, type AiClient, type ChatMessage } from './ai-client';
+import { AI_CLIENTS, type AiClient, type ChatMessage } from './ai-client';
+import { UnavailableClient } from './unavailable.client';
 
 // 聞き手としての振る舞い。日記から離れずに、答えより問いで内省を手伝う
 const SYSTEM = [
@@ -21,12 +22,20 @@ const NO_REPLY = 'AIが答えられなかった。少し待って、もう一度
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
-  constructor(@Inject(AI_CLIENT) private readonly ai: AiClient) {}
+  constructor(
+    @Inject(AI_CLIENTS) private readonly clients: Map<string, AiClient>,
+  ) {}
 
-  async chat(diary: string, messages: ChatMessage[]): Promise<string> {
+  async chat(
+    provider: string,
+    diary: string,
+    messages: ChatMessage[],
+  ): Promise<string> {
+    // 選べないAIなら、準備中(503)と断る
+    const ai = this.clients.get(provider) ?? new UnavailableClient();
     let reply: string;
     try {
-      reply = await this.ai.chat(`${SYSTEM}\n\n# 日記\n${diary}`, messages);
+      reply = await ai.chat(`${SYSTEM}\n\n# 日記\n${diary}`, messages);
     } catch (e) {
       // 準備中(503)のように、返し方が決まっているものはそのまま返す
       if (e instanceof HttpException) throw e;

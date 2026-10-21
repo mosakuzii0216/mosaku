@@ -6,5 +6,5 @@ export interface AiClient {
   chat(system: string, messages: ChatMessage[]): Promise<string>;
 }
 
-// どのAIを使うかは、この名前で渡す。テストでは偽物に差し替える
-export const AI_CLIENT = 'AI_CLIENT';
+// 選べるAI(名前→差し替え口)は、この名前で渡す。テストでは偽物に差し替える
+export const AI_CLIENTS = 'AI_CLIENTS';

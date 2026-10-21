@@ -28,6 +28,7 @@ export class AiController {
       throw new ForbiddenException('AIはGoogleでログインすると使えます');
     }
     await this.aiUsage.consume(user.id);
-    return { reply: await this.aiService.chat(body.diary, body.messages) };
+    const { provider, diary, messages } = body;
+    return { reply: await this.aiService.chat(provider, diary, messages) };
   }
 }
