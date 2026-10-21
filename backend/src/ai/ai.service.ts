@@ -26,6 +26,11 @@ export class AiService {
     @Inject(AI_CLIENTS) private readonly clients: Map<string, AiClient>,
   ) {}
 
+  // 選べるAIの名前。AI_PROVIDERSに書いた順に並ぶ
+  providers(): string[] {
+    return [...this.clients.keys()];
+  }
+
   async chat(
     provider: string,
     diary: string,

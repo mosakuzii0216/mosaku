@@ -78,4 +78,11 @@ describe('AI(e2e)', () => {
       .send({ ...body, messages: [{ role: 'bot', content: 'やあ' }] })
       .expect(400);
   });
+
+  it('選べるAIの名前は、ログインしていなくても見られる', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/ai/providers')
+      .expect(200);
+    expect(res.body).toEqual({ providers: ['fake'] });
+  });
 });

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
   HttpCode,
   Post,
 } from '@nestjs/common';
@@ -18,6 +19,12 @@ export class AiController {
     private readonly userService: UserService,
     private readonly aiUsage: AiUsageService,
   ) {}
+
+  // 選ぶ箱に並べるAI。話す時にGoogleのログインを確かめるので、一覧は誰でも見られる
+  @Get('providers')
+  providers() {
+    return { providers: this.aiService.providers() };
+  }
 
   // 何かを作るわけではないので、201ではなく200で返す
   @Post('chat')
