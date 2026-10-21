@@ -18,7 +18,7 @@ import "./App.css";
 import { Drawer } from "./Drawer";
 import { MemoList } from "./memo/MemoList";
 import { AiPane } from "./ai/AiPane";
-import { AI_PROVIDERS } from "./ai/providers";
+import { useAi } from "./ai/useAi";
 
 type Props = { loginFailed?: boolean };
 
@@ -45,6 +45,7 @@ export default function App({ loginFailed = false }: Props) {
   const m = useMemos(editor);
   const trash = useTrash(m.trashed);
   const me = useMe();
+  const ai = useAi();
 
   // 開いているメモを書いた日。新しく書くなら今日。例：2026年10月12日(月)
   const editing = m.memos.find((memo) => memo.id === m.editingId);
@@ -152,10 +153,11 @@ export default function App({ loginFailed = false }: Props) {
         </div>
       </Drawer>
 
-      {/* TODO: 選べるAIはサーバから受け取り、送った言葉はAIに届ける */}
-      {isAiOpen && (
+      {/* 選べるAIが届いてから出す。届く前に出すと、はじめに選んでおくAIが決まらない */}
+      {/* TODO: 送った言葉はAIに届ける */}
+      {isAiOpen && ai.providers && (
         <AiPane
-          providers={AI_PROVIDERS}
+          providers={ai.providers}
           onSend={() => {}}
           onClose={() => setIsAiOpen(false)}
         />

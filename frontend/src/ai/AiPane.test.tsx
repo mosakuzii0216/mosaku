@@ -35,4 +35,20 @@ describe("AiPane", () => {
     expect(onSend).toHaveBeenCalledWith("gemini", "うまく言えない");
     expect(screen.getByRole("textbox")).toHaveValue("");
   });
+
+  it("渡されたAIだけを、渡された順に並べる", () => {
+    render(<AiPane {...base} providers={["fake", "claude"]} />);
+
+    const names = screen.getAllByRole("option").map((o) => o.textContent);
+    expect(names).toEqual(["お試し", "Claude"]);
+  });
+
+  it("選べるAIが無ければ、準備中と伝えて、話しかける欄は出さない", () => {
+    render(<AiPane {...base} providers={[]} />);
+
+    expect(
+      screen.getByText("AIは準備中。もう少し待っててね"),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  });
 });

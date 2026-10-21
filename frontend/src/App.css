@@ -611,6 +611,11 @@
   gap: var(--s2);
 }
 
+/* 準備中は欄ごと隠す。display: flexと書いたので、hiddenだけでは隠れない */
+.ai-form[hidden] {
+  display: none;
+}
+
 .ai-input {
   flex-basis: 100%;
   box-sizing: border-box;

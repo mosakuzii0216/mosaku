@@ -11,6 +11,8 @@ type Props = {
 export function AiPane({ providers, onSend, onClose }: Props) {
   const [provider, setProvider] = useState(providers[0]);
   const [draft, setDraft] = useState("");
+  // 選べるAIが無い間は、話しかける欄を出さずに準備中と伝える
+  const isReady = providers.length > 0;
 
   // 送ってもページは読み直さない。送ったら欄を空に戻す。
   const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
@@ -32,9 +34,13 @@ export function AiPane({ providers, onSend, onClose }: Props) {
           閉じる
         </button>
       </div>
-      <p className="ai-empty">書いた日記について、AIと話せます</p>
+      <p className="ai-empty">
+        {isReady
+          ? "書いた日記について、AIと話せます"
+          : "AIは準備中。もう少し待っててね"}
+      </p>
 
-      <form className="ai-form" onSubmit={handleSubmit}>
+      <form className="ai-form" onSubmit={handleSubmit} hidden={!isReady}>
         <textarea
           className="ai-input"
           aria-label="AIに話しかける"
