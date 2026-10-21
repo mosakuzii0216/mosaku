@@ -2,8 +2,8 @@ import { createAiClients } from './ai.module';
 import { FakeClient } from './fake.client';
 
 // backend/.envに書いた値に左右されないよう、AI_PROVIDERSはテストの中で決める
-// 本物のAIは作らない。キーが無いと、CLaudeはテストが終わった後に鍵を探しに行って落ちる
-it('AI_PROVIDERSに書いたaiを、選べるようにする', () => {
+// 本物のAIは作らない。キーが無いと、Claudeはテストが終わった後に鍵を探しに行って落ちる
+it('AI_PROVIDERSに書いたAIを、選べるようにする', () => {
   process.env.AI_PROVIDERS = 'fake';
 
   expect(createAiClients().get('fake')).toBeInstanceOf(FakeClient);
