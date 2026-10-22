@@ -154,11 +154,14 @@ export default function App({ loginFailed = false }: Props) {
       </Drawer>
 
       {/* 選べるAIが届いてから出す。届く前に出すと、はじめに選んでおくAIが決まらない */}
-      {/* TODO: 送った言葉はAIに届ける */}
       {isAiOpen && ai.providers && (
         <AiPane
           providers={ai.providers}
-          onSend={() => {}}
+          messages={ai.messages}
+          // 話すときは、開いている日記の文字だけをAIに渡す
+          onSend={(provider, text) =>
+            void ai.send(provider, editor?.getText() ?? "", text)
+          }
           onClose={() => setIsAiOpen(false)}
         />
       )}

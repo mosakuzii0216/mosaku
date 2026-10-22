@@ -1,14 +1,16 @@
 import { useState, type SubmitEvent } from "react";
 import { AI_LABELS, type AiProvider } from "./providers";
+import type { ChatMessage } from "./aiApi";
 
 type Props = {
   providers: readonly AiProvider[];
+  messages: ChatMessage[];
   onSend: (provider: AiProvider, text: string) => void;
   onClose: () => void;
 };
 
 // 日記の横で、AIと話す席。PCでは日記の右に並べて、狭い画面では全体に重ねる
-export function AiPane({ providers, onSend, onClose }: Props) {
+export function AiPane({ providers, messages, onSend, onClose }: Props) {
   const [provider, setProvider] = useState(providers[0]);
   const [draft, setDraft] = useState("");
   // 選べるAIが無い間は、話しかける欄を出さずに準備中と伝える
@@ -34,11 +36,21 @@ export function AiPane({ providers, onSend, onClose }: Props) {
           閉じる
         </button>
       </div>
-      <p className="ai-empty">
+      <p className="ai-empty" hidden={messages.length > 0}>
         {isReady
           ? "書いた日記について、AIと話せます"
           : "AIは準備中。もう少し待っててね"}
       </p>
+      {/* 話したことと返事。並びは増えるだけで入れ替わらないので、keyは番号でいい */}
+      {messages.length > 0 && (
+        <ol className="ai-log" aria-label="AIとの会話">
+          {messages.map((m, i) => (
+            <li key={i} className={`ai-${m.role}`}>
+              {m.content}
+            </li>
+          ))}
+        </ol>
+      )}
 
       <form className="ai-form" onSubmit={handleSubmit} hidden={!isReady}>
         <textarea

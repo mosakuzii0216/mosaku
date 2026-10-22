@@ -6,6 +6,7 @@ import { AI_PROVIDERS } from "./providers";
 
 const base = {
   providers: AI_PROVIDERS,
+  messages: [],
   onSend: () => {},
   onClose: () => {},
 };
@@ -50,5 +51,20 @@ describe("AiPane", () => {
       screen.getByText("AIは準備中。もう少し待っててね"),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  });
+
+  it("話したことと返事を、順に並べる", () => {
+    render(
+      <AiPane
+        {...base}
+        messages={[
+          { role: "user", content: "聞いて" },
+          { role: "assistant", content: "どうしたの？" },
+        ]}
+      />,
+    );
+
+    const items = screen.getAllByRole("listitem").map((li) => li.textContent);
+    expect(items).toEqual(["聞いて", "どうしたの？"]);
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { useAi } from "./useAi";
 
 describe("useAi", () => {
@@ -27,5 +27,33 @@ describe("useAi", () => {
     const { result } = renderHook(() => useAi());
 
     await waitFor(() => expect(result.current.providers).toEqual([]));
+  });
+
+  it("書いたことと返事を、会話に足していく", async () => {
+    const providers = JSON.stringify({ providers: ["fake"] });
+    const reply = JSON.stringify({ reply: "どうしたの？" });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(providers))
+      .mockResolvedValueOnce(new Response(reply));
+    vi.stubGlobal("fetch", fetchMock);
+    const { result } = renderHook(() => useAi());
+
+    await act(() => result.current.send("fake", "日記", "聞いて"));
+
+    const said = { role: "user", content: "聞いて" };
+    expect(result.current.messages).toEqual([
+      said,
+      { role: "assistant", content: "どうしたの？" },
+    ]);
+    // 日記と、ここまでの会話を、ログインのCookieをつけて送る
+    const [url, init] = fetchMock.mock.calls[1];
+    expect(url).toMatch(/\/ai\/chat$/);
+    expect(init.credentials).toBe("include");
+    expect(JSON.parse(init.body)).toEqual({
+      provider: "fake",
+      diary: "日記",
+      messages: [said],
+    });
   });
 });
