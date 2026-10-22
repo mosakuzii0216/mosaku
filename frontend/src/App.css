@@ -605,7 +605,7 @@
 
 /* 自分の言葉は右に寄せて、枠で囲む。AIの返事は左にそのまま置く */
 .ai-user {
-  align-selt: flex-end;
+  align-self: flex-end;
   max-width: 85%;
   padding: var(--s2) var(--s3);
   border: 1px solid var(--border);
