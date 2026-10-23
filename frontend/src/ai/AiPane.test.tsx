@@ -39,6 +39,18 @@ describe("AiPane", () => {
     expect(screen.getByRole("textbox")).toHaveValue("");
   });
 
+  it("⌘Enterでも送れる。Enterだけなら改行する", async () => {
+    const onSend = vi.fn();
+    render(<AiPane {...base} onSend={onSend} />);
+    const textbox = screen.getByRole("textbox");
+
+    // 何も書いていないうちは、⌘Enterでも送らない
+    await userEvent.type(textbox, "{Meta>}{Enter}{/Meta}");
+    await userEvent.type(textbox, "聞いて{Enter}それでね{Meta>}{Enter}{/Meta}");
+
+    expect(onSend).toHaveBeenCalledExactlyOnceWith("fake", "聞いて\nそれでね");
+  });
+
   it("渡されたAIだけを、渡された順に並べる", () => {
     render(<AiPane {...base} providers={["fake", "claude"]} />);
 

@@ -24,6 +24,8 @@ export function AiPane({
   const [draft, setDraft] = useState("");
   // 選べるAIが無い間は、話しかける欄を出さずに準備中と伝える
   const isReady = providers.length > 0;
+  // 書いてあって、返事を待っていないときだけ送れる
+  const canSend = draft.trim() !== "" && !isWaiting;
   // 新しい言葉が出たら、会話をいちばん下まで動かす
   const logRef = useRef<HTMLOListElement>(null);
 
@@ -83,6 +85,13 @@ export function AiPane({
           maxLength={MAX_CONTENT}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
+          // ⌘Enter(WindowsはCtrl+Enter)で送る。Enterだけなら改行
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+              e.preventDefault();
+              if (canSend) e.currentTarget.form?.requestSubmit();
+            }
+          }}
         />
         {/* 話す相手。送るたびに選び直せる */}
         <select
@@ -98,10 +107,7 @@ export function AiPane({
           ))}
         </select>
         {/* 返事を待つ間は、次を書いておけるけど、送れない */}
-        <button
-          className="ghost-button ai-send"
-          disabled={!draft.trim() || isWaiting}
-        >
+        <button className="ghost-button ai-send" disabled={!canSend}>
           送る
         </button>
       </form>
