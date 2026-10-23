@@ -7,6 +7,9 @@ export function useAi() {
   // 届くまではundefined。受け取れなかったら空にして、準備中と出す。
   const [providers, setProviders] = useState<AiProvider[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  // 返事を待つ間はtrue。断られたら、その理由の言葉が入る
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchProviders()
@@ -18,10 +21,19 @@ export function useAi() {
   const send = async (provider: AiProvider, diary: string, text: string) => {
     const next: ChatMessage[] = [...messages, { role: "user", content: text }];
     setMessages(next);
-    // TODO: 返事を待つ間と、断られたときの見せ方
-    const reply = await chatWithAi(provider, diary, next);
-    setMessages([...next, { role: "assistant", content: reply }]);
+    setIsWaiting(true);
+    setError("");
+    try {
+      const reply = await chatWithAi(provider, diary, next);
+      setMessages([...next, { role: "assistant", content: reply }]);
+    } catch (e) {
+      // 書いたことは会話に残す。続けて話しかければ、一緒に送り直せる
+      setError((e as Error).message);
+    } finally {
+      // 返事が来ても、断られても、待つのはここまで
+      setIsWaiting(false);
+    }
   };
 
-  return { providers, messages, send };
+  return { providers, messages, isWaiting, error, send };
 }

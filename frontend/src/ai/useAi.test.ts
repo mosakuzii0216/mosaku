@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { act, render, renderHook, waitFor } from "@testing-library/react";
 import { useAi } from "./useAi";
 
 describe("useAi", () => {
@@ -55,5 +55,23 @@ describe("useAi", () => {
       diary: "日記",
       messages: [said],
     });
+  });
+
+  it("断られたら、サーバの言葉を出して、待つのをやめる", async () => {
+    const providers = JSON.stringify({ providers: ["fake"] });
+    const refused = JSON.stringify({
+      message: "今日はここまで。また明日話そうね",
+    });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(providers))
+      .mockResolvedValueOnce(new Response(refused, { status: 429 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const { result } = renderHook(() => useAi());
+
+    await act(() => result.current.send("fake", "日記", "聞いて"));
+
+    expect(result.current.error).toBe("今日はここまで。また明日話そうね");
+    expect(result.current.isWaiting).toBe(false);
   });
 });
