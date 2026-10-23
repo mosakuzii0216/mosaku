@@ -158,6 +158,8 @@ export default function App({ loginFailed = false }: Props) {
         <AiPane
           providers={ai.providers}
           messages={ai.messages}
+          isWaiting={ai.isWaiting}
+          error={ai.error}
           // 話すときは、開いている日記の文字だけをAIに渡す
           onSend={(provider, text) =>
             void ai.send(provider, editor?.getText() ?? "", text)

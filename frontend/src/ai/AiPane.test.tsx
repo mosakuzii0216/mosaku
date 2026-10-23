@@ -7,6 +7,8 @@ import { AI_PROVIDERS } from "./providers";
 const base = {
   providers: AI_PROVIDERS,
   messages: [],
+  isWaiting: false,
+  error: "",
   onSend: () => {},
   onClose: () => {},
 };
@@ -66,5 +68,28 @@ describe("AiPane", () => {
 
     const items = screen.getAllByRole("listitem").map((li) => li.textContent);
     expect(items).toEqual(["聞いて", "どうしたの？"]);
+  });
+
+  it("返事を待つ間は、考え中と出して、次は送れない", async () => {
+    render(
+      <AiPane
+        {...base}
+        messages={[{ role: "user", content: "聞いて" }]}
+        isWaiting
+      />,
+    );
+
+    await userEvent.type(screen.getByRole("textbox"), "それでね");
+
+    expect(screen.getByText("考え中...")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "送る" })).toBeDisabled();
+  });
+
+  it("断られたら、その理由を見せる", () => {
+    render(<AiPane {...base} error="今日はここまで。また明日話そうね" />);
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "今日はここまで。また明日話そうね",
+    );
   });
 });

@@ -612,6 +612,20 @@
   border-radius: 6px;
 }
 
+/* 返事を待つ間の印。AIの返事と同じ左に、薄く出す */
+.ai-waiting {
+  opacity: 0.6;
+}
+
+/* 断られたときの理由。話しかける欄の上に、金の線を添えて小さく出す */
+.ai-error {
+  margin: 0 0 var(--s3);
+  padding-left: var(--s3);
+  font-size: 14px;
+  color: var(--text-h);
+  border-left: 2px solid var(--accent-border);
+}
+
 /* 開く時は右からすっと出す。動きを減らす設定の人には出さない */
 @media (prefers-reduced-motion: no-preference) {
   .ai-pane {
