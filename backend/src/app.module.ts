@@ -2,6 +2,7 @@ import {
   MiddlewareConsumer,
   Module,
   NestModule,
+  RequestMethod,
   ValidationPipe,
 } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
@@ -41,6 +42,8 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(cookieParser(process.env.COOKIE_SECRET), AnonymousUserMiddleware)
+      // 選べるAIの一覧は誰でも見られるので、名札(匿名ユーザ)を作らない
+      .exclude({ path: 'ai/providers', method: RequestMethod.GET })
       .forRoutes(
         MemoController,
         PasskeyController,

@@ -85,4 +85,10 @@ describe('AI(e2e)', () => {
       .expect(200);
     expect(res.body).toEqual({ providers: ['fake'] });
   });
+
+  it('選べるAIを見ても、ユーザは増えない', async () => {
+    await request(app.getHttpServer()).get('/ai/providers').expect(200);
+    // 見るだけで匿名ユーザを作ると、ページを開くたびに空のユーザが増える
+    expect(await prisma.user.count()).toBe(0);
+  });
 });
