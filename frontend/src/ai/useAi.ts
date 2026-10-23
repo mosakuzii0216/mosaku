@@ -25,7 +25,12 @@ export function useAi() {
     setError("");
     try {
       const reply = await chatWithAi(provider, diary, next);
-      setMessages([...next, { role: "assistant", content: reply }]);
+      // 待つ間に会話が最初からになっていたら(別の日記へ移ったら)、届いた返事は足さない
+      setMessages((current) =>
+        current === next
+          ? [...next, { role: "assistant", content: reply }]
+          : current,
+      );
     } catch (e) {
       // 書いたことは会話に残す。続けて話しかければ、一緒に送り直せる
       setError((e as Error).message);
@@ -35,5 +40,11 @@ export function useAi() {
     }
   };
 
-  return { providers, messages, isWaiting, error, send };
+  // 別の日記に移ったら、会話を最初からにする。前の日記の話を持ち込まない。
+  const reset = () => {
+    setMessages([]);
+    setError("");
+  };
+
+  return { providers, messages, isWaiting, error, send, reset };
 }

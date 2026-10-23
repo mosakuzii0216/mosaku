@@ -74,4 +74,28 @@ describe("useAi", () => {
     expect(result.current.error).toBe("今日はここまで。また明日話そうね");
     expect(result.current.isWaiting).toBe(false);
   });
+
+  it("別の日記に移ったら、会話を最初からにする。待っていた返事が後から届いても足さない", async () => {
+    const providers = JSON.stringify({ providers: ["fake"] });
+    // 返事を届けるのは、テストが決めたとき
+    let deliver: (res: Response) => void = () => {};
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(providers))
+      .mockReturnValueOnce(new Promise((resolve) => (deliver = resolve)));
+    vi.stubGlobal("fetch", fetchMock);
+    const { result } = renderHook(() => useAi());
+
+    let sending = Promise.resolve();
+    act(() => {
+      sending = result.current.send("fake", "日記", "聞いて");
+    });
+    act(() => result.current.reset());
+    await act(async () => {
+      deliver(new Response(JSON.stringify({ reply: "どうしたの？" })));
+      await sending;
+    });
+
+    expect(result.current.messages).toEqual([]);
+  });
 });

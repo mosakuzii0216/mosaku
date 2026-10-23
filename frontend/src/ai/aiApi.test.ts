@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { chatWithAi, type ChatMessage } from "./aiAPi";
+import { chatWithAi, type ChatMessage } from "./aiApi";
 
 describe("chatWithAi", () => {
   afterEach(() => {

@@ -59,9 +59,17 @@ export default function App({ loginFailed = false }: Props) {
 
   // 一覧や検索結果から開いたら、検索も引き出しも閉じて、エディタに戻す
   const openMemo = (memo: Memo) => {
+    // 別の日記を開いたら、AIとの会話は最初から
+    if (memo.id !== m.editingId) ai.reset();
     m.open(memo);
     setQuery("");
     setIsListOpen(false);
+  };
+
+  // 新しく書く時も、AIとの会話は最初から
+  const startNew = () => {
+    ai.reset();
+    void m.startNew();
   };
 
   // ログアウトしたら、名札が無い状態から読み直す(新しい匿名ユーザになる)
@@ -107,7 +115,7 @@ export default function App({ loginFailed = false }: Props) {
             status={m.status}
             isEditing={m.editingId !== null}
             onTitleChange={m.changeTitle}
-            onNew={m.startNew}
+            onNew={startNew}
           >
             <EditorContent editor={editor} />
           </MemoForm>
