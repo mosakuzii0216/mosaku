@@ -670,3 +670,30 @@
   opacity: 0.4;
   cursor: default;
 }
+
+/* 送るマウスに乗せたら、左にショートカットを小さく出す。指で触る画面では出さない */
+.ai-send {
+  position: relative;
+}
+
+.ai-shortcut {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + var(--s2));
+  translate: 0 -50%;
+  padding: 2px var(--s2);
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--text-h);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+@media (hover: hover) {
+  .ai-send:hover .ai-shortcut {
+    opacity: 1;
+  }
+}
