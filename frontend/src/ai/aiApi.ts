@@ -5,6 +5,11 @@ const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 // 断られた理由がわからないとき(つながらない、など)に見せる言葉
 const FAILED = "うまく届かなかった。少し待って、もう一度話しかけてね";
 
+// サーバが受け取れる長さ(backendのai.dto.tsと同じ数)
+const MAX_DIARY = 8000;
+const MAX_MESSAGES = 20;
+export const MAX_CONTENT = 2000;
+
 //会話の1通。user=日記を書いた人、assistant=AI
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -22,11 +27,22 @@ export async function chatWithAi(
   diary: string,
   messages: ChatMessage[],
 ): Promise<string> {
+  // 長い会話は新しい方だけ送る。返事から始まると話の頭がわからないので、書いた人の言葉からにする
+  const recent = messages.slice(-MAX_MESSAGES);
+  if (recent[0].role === "assistant") recent.shift();
   const res = await fetch(`${API_BASE}/ai/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ provider, diary, messages }),
+    body: JSON.stringify({
+      provider,
+      // 長い日記と長い1通は、頭からサーバが受け取れるところまで
+      diary: diary.slice(0, MAX_DIARY),
+      messages: recent.map((m) => ({
+        ...m,
+        content: m.content.slice(0, MAX_CONTENT),
+      })),
+    }),
   }).catch(() => Response.error()); // つながらなかったら、失敗の返事として下で扱う
   if (!res.ok) {
     // 断られたら、サーバの言葉(「今日はここまで」など)をそのまま画面に出す

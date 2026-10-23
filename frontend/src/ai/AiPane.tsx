@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { AI_LABELS, type AiProvider } from "./providers";
-import type { ChatMessage } from "./aiApi";
+import { MAX_CONTENT, type ChatMessage } from "./aiApi";
 
 type Props = {
   providers: readonly AiProvider[];
@@ -80,6 +80,7 @@ export function AiPane({
           className="ai-input"
           aria-label="AIに話しかける"
           placeholder="AIに話しかける"
+          maxLength={MAX_CONTENT}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
         />
