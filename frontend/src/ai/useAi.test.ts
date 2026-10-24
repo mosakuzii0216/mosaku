@@ -60,7 +60,7 @@ describe("useAi", () => {
   it("断られたら、サーバの言葉を出して、待つのをやめる", async () => {
     const providers = JSON.stringify({ providers: ["fake"] });
     const refused = JSON.stringify({
-      message: "今日はここまで。また明日話そうね",
+      message: "今日はここまでです。また明日お話ししましょう",
     });
     const fetchMock = vi
       .fn()
@@ -71,7 +71,9 @@ describe("useAi", () => {
 
     await act(() => result.current.send("fake", "日記", "聞いて"));
 
-    expect(result.current.error).toBe("今日はここまで。また明日話そうね");
+    expect(result.current.error).toBe(
+      "今日はここまでです。また明日お話ししましょう",
+    );
     expect(result.current.isWaiting).toBe(false);
   });
 

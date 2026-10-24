@@ -62,7 +62,7 @@ describe("AiPane", () => {
     render(<AiPane {...base} providers={[]} />);
 
     expect(
-      screen.getByText("AIは準備中。もう少し待っててね"),
+      screen.getByText("AIは準備中です。もう少しお待ちください"),
     ).toBeInTheDocument();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });
@@ -98,10 +98,12 @@ describe("AiPane", () => {
   });
 
   it("断られたら、その理由を見せる", () => {
-    render(<AiPane {...base} error="今日はここまで。また明日話そうね" />);
+    render(
+      <AiPane {...base} error="今日はここまでです。また明日お話ししましょう" />,
+    );
 
     expect(screen.getByRole("alert")).toHaveTextContent(
-      "今日はここまで。また明日話そうね",
+      "今日はここまでです。また明日お話ししましょう",
     );
   });
 });

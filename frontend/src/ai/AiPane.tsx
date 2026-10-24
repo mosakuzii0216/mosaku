@@ -60,7 +60,7 @@ export function AiPane({
       <p className="ai-empty" hidden={messages.length > 0}>
         {isReady
           ? "書いた日記について、AIと話せます"
-          : "AIは準備中。もう少し待っててね"}
+          : "AIは準備中です。もう少しお待ちください"}
       </p>
       {/* 話したことと返事。並びは増えるだけで入れ替わらないので、keyは番号でいい */}
       {messages.length > 0 && (

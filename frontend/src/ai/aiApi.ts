@@ -3,7 +3,7 @@ import type { AiProvider } from "./providers";
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 
 // 断られた理由がわからないとき(つながらない、など)に見せる言葉
-const FAILED = "うまく届かなかった。少し待って、もう一度話しかけてね";
+const FAILED = "うまく届きませんでした。少し待って、もう一度話しかけてください";
 
 // サーバが受け取れる長さ(backendのai.dto.tsと同じ数)
 const MAX_DIARY = 8000;
