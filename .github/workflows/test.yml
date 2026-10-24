@@ -68,6 +68,8 @@ jobs:
     env:
       DATABASE_URL: postgresql://mosaku:mosaku@localhost:5432/mosaku?schema=public
       COOKIE_SECRET: ci-test-secret
+      # AIの席をブラウザで試すので、お金のかからないお試しのAIを選べるようにする
+      AI_PROVIDERS: fake
 
     steps:
       - uses: actions/checkout@v7
