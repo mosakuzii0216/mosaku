@@ -23,7 +23,7 @@ export class AiUsageService {
     });
     if (used >= Number(process.env.AI_DAILY_LIMIT ?? DAILY_LIMIT)) {
       throw new HttpException(
-        '今日はここまで。また明日話そうね',
+        '今日はここまでです。また明日お話ししましょう',
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }
@@ -34,7 +34,7 @@ export class AiUsageService {
       total >= Number(process.env.AI_TOTAL_DAILY_LIMIT ?? TOTAL_DAILY_LIMIT)
     ) {
       throw new ServiceUnavailableException(
-        '今日はみんなとたくさん話したから、AIは一休み。また明日話そうね。',
+        '今日はみんなとたくさん話したので、AIは一休みしています。また明日お話ししましょう。',
       );
     }
     await this.prisma.aiUsage.create({ data: { userId } });

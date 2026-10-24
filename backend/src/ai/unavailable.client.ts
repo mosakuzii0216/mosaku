@@ -5,7 +5,7 @@ import type { AiClient } from './ai-client';
 export class UnavailableClient implements AiClient {
   chat(): Promise<string> {
     return Promise.reject(
-      new ServiceUnavailableException('AIは準備中。もう少し待っててね'),
+      new ServiceUnavailableException('AIは準備中です。もう少しお待ちください'),
     );
   }
 }

@@ -37,6 +37,8 @@ describe('AiService', () => {
     expect(reply).toBe('その一言、本当はどう言いたかった？');
     const [system, sent] = chat.mock.calls[0];
     expect(system).toContain('仕事でミスをして');
+    // 話し方は、敬語(です・ます)で頼む
+    expect(system).toContain('敬語');
     expect(sent).toEqual(messages);
   });
 

@@ -5,7 +5,7 @@ export class FakeClient implements AiClient {
   chat(_system: string, messages: ChatMessage[]): Promise<string> {
     const last = messages[messages.length - 1]?.content ?? '';
     return Promise.resolve(
-      `(お試しの返事)「${last}」について、もう少し聞かせて？`,
+      `(お試しの返事)「${last}」について、もう少し聞かせてもらえますか？`,
     );
   }
 }
