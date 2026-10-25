@@ -20,6 +20,22 @@ test("書いて手を止めれば、保存を押さなくても一覧に残る",
   ).toBeVisible();
 });
 
+test("書いてすぐ読み直しても、書いたことは残る", async ({ page }) => {
+  const title = `すぐ ${Date.now()}`;
+
+  await page.goto("/");
+  await page.getByPlaceholder("タイトル").fill(title);
+  await page.locator(".ProseMirror").click();
+  await page.keyboard.type("1.5秒待たずに閉じた本文");
+  // 自動で保存されるのを待たずに読み直す。閉じるときと同じく、画面がいったん隠れる
+  await page.reload();
+  await openList(page);
+
+  await expect(
+    page.getByRole("button", { name: title, exact: true }),
+  ).toBeVisible();
+});
+
 test("一覧からメモを選ぶと、引き出しが閉じてエディタに入る", async ({
   page,
 }) => {
