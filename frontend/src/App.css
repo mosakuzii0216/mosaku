@@ -705,7 +705,7 @@
 
 @media (hover: hover) {
   .ai-send:hover .ai-shortcut,
-  .ai-toggle:hover ai-shortcut {
+  .ai-toggle:hover .ai-shortcut {
     opacity: 1;
   }
 }

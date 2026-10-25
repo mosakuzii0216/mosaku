@@ -44,9 +44,12 @@ describe("AppHeader", () => {
     expect(onToggleAi).toHaveBeenCalled();
   });
 
-  it("⌘J(WindowsはCtrl+J)でも、AIの」席を開け閉めする", async () => {
+  it("⌘J(WindowsはCtrl+J)でも、AIの席を開け閉めする", async () => {
     const onToggleAi = vi.fn();
-    render(<AppHeader {...base} onToggleAi={onToggleAi} />);
+    // npm run devと同じく、見張をつけて、外して、付け直す
+    render(<AppHeader {...base} onToggleAi={onToggleAi} />, {
+      reactStrictMode: true,
+    });
 
     // Jだけなら、日記に書いている字なので何もしない
     await userEvent.keyboard("j");
