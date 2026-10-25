@@ -44,6 +44,18 @@ describe("AppHeader", () => {
     expect(onToggleAi).toHaveBeenCalled();
   });
 
+  it("⌘J(WindowsはCtrl+J)でも、AIの」席を開け閉めする", async () => {
+    const onToggleAi = vi.fn();
+    render(<AppHeader {...base} onToggleAi={onToggleAi} />);
+
+    // Jだけなら、日記に書いている字なので何もしない
+    await userEvent.keyboard("j");
+    await userEvent.keyboard("{Meta>}j{/Meta}");
+    await userEvent.keyboard("{Control>}j{/Control}");
+
+    expect(onToggleAi).toHaveBeenCalledTimes(2);
+  });
+
   it("設定を開くとテーマのボタンが出る", async () => {
     render(<AppHeader {...base} />);
 

@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState, type SubmitEvent } from "react";
 import { AI_LABELS, type AiProvider } from "./providers";
 import { MAX_CONTENT, type ChatMessage } from "./aiApi";
-
-// 送るのショートカット。Macなら⌘、他はCtrlと見せる
-const SHORTCUT = /Mac/.test(navigator.userAgent) ? "⌘ Enter" : "Ctrl Enter";
+import { MOD } from "../shortcut";
 
 type Props = {
   providers: readonly AiProvider[];
@@ -114,7 +112,7 @@ export function AiPane({
           送る
           {/* マウスを乗せたら、キーでも送れることを見せる。読み上げでは名前に混ぜない */}
           <kbd className="ai-shortcut" aria-hidden="true">
-            {SHORTCUT}
+            {MOD} Enter
           </kbd>
         </button>
       </form>

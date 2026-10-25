@@ -1,6 +1,8 @@
+import { useEffect, useEffectEvent } from "react";
 import { ThemeSwitch } from "./ThemeSwitch";
 import { GoogleLogin } from "./auth/GoogleLogin";
 import { Menu } from "./Menu";
+import { MOD } from "./shortcut";
 import type { Theme } from "./theme";
 
 type Props = {
@@ -34,6 +36,20 @@ export function AppHeader({
     .filter(Boolean)
     .join("・");
 
+  // ⌘J(WindownsはCtrl+J)で、どこからでもAIの席を開け閉めする
+  // キーが押されたときは、一番新しいonToggleAiを呼ぶ
+  const toggleAi = useEffectEvent(onToggleAi);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        toggleAi();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+  }, []);
+
   return (
     <header className="app-head">
       {/* 見た目は設定のボタンとそろえる */}
@@ -49,11 +65,15 @@ export function AppHeader({
       />
       {/* 開いているあいだは、設定と同じく色を変える */}
       <button
-        className="menu-trigger"
+        className="menu-trigger ai-toggle"
         aria-expanded={isAiOpen}
         onClick={onToggleAi}
       >
         AI
+        {/* マウスを乗せたら、キーでも開けることを見せる */}
+        <kbd className="ai-shortcut" aria-hidden="true">
+          {MOD} J
+        </kbd>
       </button>
       <Menu label="設定">
         <p className="menu-label">テーマ</p>
