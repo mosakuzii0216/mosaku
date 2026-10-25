@@ -14,7 +14,15 @@ export function useAutoSave(
     // 保存中は待つ。終わったら、その間に書いた分を保存し直す
     if (changes === 0 || saving) return;
     const timer = setTimeout(() => saveLatest(), 1500);
-    // 1.5秒たつ前にまた書き換えたら、前のタイマーは捨てて数え直す
-    return () => clearTimeout(timer);
+    // タブを閉じる・アプリを切り替えるなどで画面が隠れたら、待たずに保存する
+    const saveNow = () => {
+      if (document.visibilityState === "hidden") saveLatest();
+    };
+    document.addEventListener("visibilitychange", saveNow);
+    // 1.5秒たつ前にまた書き換えたら、前のタイマーと見張りは捨てて数え直す
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", saveNow);
+    };
   }, [changes, saving]);
 }
