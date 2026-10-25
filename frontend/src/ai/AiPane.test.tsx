@@ -106,4 +106,10 @@ describe("AiPane", () => {
       "今日はここまでです。また明日お話ししましょう",
     );
   });
+
+  it("マウスのある画面では、開いたらすぐ話しかけられる", () => {
+    render(<AiPane {...base} />);
+
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
 });

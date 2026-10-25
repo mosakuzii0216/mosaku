@@ -692,8 +692,20 @@
   transition: opacity 0.15s;
 }
 
+.ai-toggle {
+  position: relative;
+}
+
+.ai-toggle .ai-shortcut {
+  top: calc(100% + var(--s2));
+  right: 50%;
+  translate: 50% 0;
+  background: var(--bg);
+}
+
 @media (hover: hover) {
-  .ai-send:hover .ai-shortcut {
+  .ai-send:hover .ai-shortcut,
+  .ai-toggle:hover ai-shortcut {
     opacity: 1;
   }
 }

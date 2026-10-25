@@ -84,6 +84,8 @@ export function AiPane({
           aria-label="AIに話しかける"
           placeholder="AIに話しかける"
           maxLength={MAX_CONTENT}
+          // マウスのある画面では、開いたらすぐ書ける。スマホでは急にキーボードを出さない
+          autoFocus={matchMedia("(hover: hover)").matches}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           // ⌘Enter(WindowsはCtrl+Enter)で送る。Enterだけなら改行
