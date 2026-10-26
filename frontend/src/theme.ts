@@ -8,6 +8,13 @@ export const THEME_LABELS: Record<Theme, string> = {
   yoru: "夜の書斎",
 };
 
+// ブラウザの上の帯の色。index.cssの--bgと、index.htmlの先読みにそろえる
+const THEME_COLORS: Record<Theme, string> = {
+  yoru: "#141720",
+  mori: "#0e1a17",
+  light: "#faf6ee",
+};
+
 const STORAGE_KEY = "mosaku-theme";
 // 初めて開いた人は夜の書斎から。index.htmlの先読みも同じ値にそろえる
 const DEFAULT_THEME: Theme = "yoru";
@@ -20,4 +27,7 @@ export function readTheme(): Theme {
 export function applyTheme(theme: Theme) {
   localStorage.setItem(STORAGE_KEY, theme);
   document.documentElement.setAttribute("data-theme", theme);
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", THEME_COLORS[theme]);
 }

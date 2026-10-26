@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { readTheme } from "./theme";
+import { applyTheme, readTheme } from "./theme";
 
 describe("readTheme", () => {
   beforeEach(() => localStorage.clear());
@@ -19,5 +19,21 @@ describe("readTheme", () => {
 
     localStorage.setItem("mosaku-theme", "system");
     expect(readTheme()).toBe("yoru");
+  });
+});
+
+describe("applyTheme", () => {
+  it("ブラウザの上の帯の色を、テーマの地の色にする", () => {
+    document.head.innerHTML = '<meta name="theme-color" content="#141720">';
+    const color = () =>
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.getAttribute("content");
+
+    applyTheme("light");
+    expect(color()).toBe("#faf6ee");
+
+    applyTheme("mori");
+    expect(color()).toBe("#0e1a17");
   });
 });
