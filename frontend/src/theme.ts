@@ -1,4 +1,4 @@
-// 夜・森・ライトの3つ。ダークは夜と被り、OSに従うはほぼ使われないので外した
+// 夜の書斎・森・昼の縁側の3つ。ダークは夜と被り、OSに従うはほぼ使われないので外した
 export const THEMES = ["yoru", "mori", "light"] as const;
 export type Theme = (typeof THEMES)[number];
 
