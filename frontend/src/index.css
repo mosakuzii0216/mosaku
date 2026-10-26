@@ -54,17 +54,20 @@
   color-scheme: light;
 }
 
+/* 霧の森。夜明け前の森に、杏色の光が差す */
 :root[data-theme="mori"] {
   color-scheme: dark;
 
-  --text: #cfe8d8;
-  --text-h: #f0fdf4;
-  --bg: #051d16;
-  --border: rgba(134, 239, 172, 0.18);
-  --code-bg: #0a3726;
-  --accent: #86efac;
-  --accent-bg: rgba(134, 239, 172, 0.1);
-  --accent-border: rgba(134, 239, 172, 0.35);
+  --text: #b9cbc2;
+  --text-h: #edf3ee;
+  --bg: #0e1a17;
+  --border: rgba(185, 203, 194, 0.16);
+  --code-bg: #15241f;
+  --accent: #e9b98f;
+  --accent-bg: rgba(233, 185, 143, 0.1);
+  --accent-border: rgba(233, 185, 143, 0.4);
+  --title-glow: 0 0 22px rgba(220, 240, 230, 0.16);
+  --head-bg: transparent;
 }
 
 /* 夜の書斎。灯りを落とした部屋に、暖かい字と金の差し色 */
