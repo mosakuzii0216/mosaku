@@ -50,8 +50,19 @@
   }
 }
 
+/* 昼の縁側。秋の昼下がり、障子越しの光が部屋に入る */
 :root[data-theme="light"] {
   color-scheme: light;
+
+  --text: #544c42;
+  --text-h: #231e18;
+  --bg: #faf6ee;
+  --border: rgba(90, 65, 40, 0.15);
+  --code-bg: #f1ebdf;
+  --accent: #8a5a2e;
+  --accent-bg: rgba(138, 90, 46, 0.08);
+  --accent-border: rgba(138, 90, 46, 0.38);
+  --head-bg: transparent;
 }
 
 /* 霧の森。夜明け前の森に、杏色の光が差す */
