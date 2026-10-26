@@ -3,9 +3,9 @@ export const THEMES = ["yoru", "mori", "light"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_LABELS: Record<Theme, string> = {
-  yoru: "夜",
   mori: "森",
-  light: "ライト",
+  light: "昼の縁側",
+  yoru: "夜の書斎",
 };
 
 const STORAGE_KEY = "mosaku-theme";
