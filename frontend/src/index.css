@@ -65,6 +65,19 @@
   --head-bg: transparent;
 }
 
+/* 縁側の陽だまり。光が入り、部屋の奥ほど少し暗い */
+:root[data-theme="light"] body::before {
+  --sun: rgba(255, 210, 140, 0.42);
+
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 10% 0%, var(--sun), transparent 62%),
+    linear-gradient(#fbf7ef, #f2ebde);
+}
+
 /* 霧の森。夜明け前の森に、杏色の光が差す */
 :root[data-theme="mori"] {
   color-scheme: dark;
