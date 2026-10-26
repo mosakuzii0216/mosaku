@@ -70,6 +70,22 @@
   --head-bg: transparent;
 }
 
+/* 森の空気。左上から薄い光の筋が差し、離れるほど森の暗さに沈む */
+:root[data-theme="mori"] body::before {
+  --ray: rgba(255, 232, 205, 0.06);
+
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 25% 0%, transparent 10%, var(--bg) 70%),
+    linear-gradient(112deg, transparent 18%, var(--ray) 22%, transparent 27%),
+    linear-gradient(112deg, transparent 31%, var(--ray) 33%, transparent 36%),
+    linear-gradient(112deg, transparent 42%, var(--ray) 47%, transparent 53%),
+    linear-gradient(#1f3c35, var(--bg) 65%);
+}
+
 /* 夜の書斎。灯りを落とした部屋に、暖かい字と金の差し色 */
 :root[data-theme="yoru"] {
   color-scheme: dark;
