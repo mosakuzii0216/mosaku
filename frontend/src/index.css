@@ -51,7 +51,7 @@
 }
 
 /* 昼の縁側。秋の昼下がり、障子越しの光が部屋に入る */
-:root[data-theme="light"] {
+:root[data-theme="hiru"] {
   color-scheme: light;
 
   --text: #544c42;
@@ -66,7 +66,7 @@
 }
 
 /* 縁側の陽だまり。光が入り、部屋の奥ほど少し暗い */
-:root[data-theme="light"] body::before {
+:root[data-theme="hiru"] body::before {
   --sun: rgba(255, 210, 140, 0.42);
 
   content: "";
@@ -79,7 +79,7 @@
 }
 
 /* 陽だまりに落ちる障子の影。斜めに伸びて、ぼやける */
-:root[data-theme="light"] body::after {
+:root[data-theme="hiru"] body::after {
   --frame: rgba(120, 85, 45, 0.09);
 
   content: "";

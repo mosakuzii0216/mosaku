@@ -1,10 +1,10 @@
 // 夜の書斎・森・昼の縁側の3つ。ダークは夜と被り、OSに従うはほぼ使われないので外した
-export const THEMES = ["yoru", "mori", "light"] as const;
+export const THEMES = ["yoru", "mori", "hiru"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_LABELS: Record<Theme, string> = {
   mori: "森",
-  light: "昼の縁側",
+  hiru: "昼の縁側",
   yoru: "夜の書斎",
 };
 
@@ -12,7 +12,7 @@ export const THEME_LABELS: Record<Theme, string> = {
 const THEME_COLORS: Record<Theme, string> = {
   yoru: "#141720",
   mori: "#0e1a17",
-  light: "#faf6ee",
+  hiru: "#faf6ee",
 };
 
 const STORAGE_KEY = "mosaku-theme";
@@ -21,6 +21,8 @@ const DEFAULT_THEME: Theme = "yoru";
 
 export function readTheme(): Theme {
   const saved = localStorage.getItem(STORAGE_KEY);
+  // 昼は前、lightという名前だった。その端末は、昼の縁側として読む
+  if (saved == "light") return "hiru";
   return THEMES.includes(saved as Theme) ? (saved as Theme) : DEFAULT_THEME;
 }
 

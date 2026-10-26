@@ -23,14 +23,18 @@
           // 保存が無い・知らない値(前に選べたダークなど)なら夜の書斎。
           // theme.tsのTHEMESとDEFAULT_THEMEにそろえる
           var t = localStorage.getItem("mosaku-theme");
-          if (t !== "mori" && t !== "light") t = "yoru";
+          // 昼は以前、lightという名前だった。
+          if (t === "light") t = "hiru";
+          if (t !== "mori" && t !== "hiru") t = "yoru";
           document.documentElement.setAttribute("data-theme", t);
           // 上の帯の色も、テーマの地の色に。theme.tsのTHEME_COLORSにそろえる
-          var colors = { yoru: "#141720", mori: "#0e1a17", light: "#faf6ee" };
+          var colors = { yoru: "#141720", mori: "#0e1a17", hiru: "#faf6ee" };
           document
             .querySelector('meta[name="theme-color"]')
-            .setAttribute("content", color[t]);
-        } catch (e) {}
+            .setAttribute("content", colors[t]);
+        } catch (e) {
+          console.error(e);
+        }
       })();
     </script>
   </head>

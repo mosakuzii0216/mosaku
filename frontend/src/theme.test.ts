@@ -20,6 +20,11 @@ describe("readTheme", () => {
     localStorage.setItem("mosaku-theme", "system");
     expect(readTheme()).toBe("yoru");
   });
+
+  it("前の名前のlightが残っていたら、昼の縁側として読む", () => {
+    localStorage.setItem("mosaku-theme", "light");
+    expect(readTheme()).toBe("hiru");
+  });
 });
 
 describe("applyTheme", () => {
@@ -30,7 +35,7 @@ describe("applyTheme", () => {
         .querySelector('meta[name="theme-color"]')
         ?.getAttribute("content");
 
-    applyTheme("light");
+    applyTheme("hiru");
     expect(color()).toBe("#faf6ee");
 
     applyTheme("mori");
