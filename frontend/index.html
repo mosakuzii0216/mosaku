@@ -25,6 +25,11 @@
           var t = localStorage.getItem("mosaku-theme");
           if (t !== "mori" && t !== "light") t = "yoru";
           document.documentElement.setAttribute("data-theme", t);
+          // 上の帯の色も、テーマの地の色に。theme.tsのTHEME_COLORSにそろえる
+          var colors = { yoru: "#141720", mori: "#0e1a17", light: "#faf6ee" };
+          document
+            .querySelector('meta[name="theme-color"]')
+            .setAttribute("content", color[t]);
         } catch (e) {}
       })();
     </script>
