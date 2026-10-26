@@ -89,7 +89,7 @@
   /* 障子の桟。4pxの線を、縦は120pxおき、横は90pxおきに繰り返す */
   background:
     repeating-linear-gradient(90deg, var(--frame) 0 4px, transparent 4px 120px),
-    repeating-linear-gradient(0deg, var(--frame) 0 4px, transparent 4px 90px),
+    repeating-linear-gradient(0deg, var(--frame) 0 4px, transparent 4px 90px);
   /* 陽だまりのところだけ見せて、外へ行くほど消す */
   mask-image: radial-gradient(ellipse at 30% 10%, #000 20%, transparent 70%);
   transform: skewX(-20deg);
