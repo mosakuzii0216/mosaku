@@ -78,6 +78,24 @@
     linear-gradient(#fbf7ef, #f2ebde);
 }
 
+/* 陽だまりに落ちる障子の影。斜めに伸びて、ぼやける */
+:root[data-theme="light"] body::after {
+  --frame: rgba(120, 85, 45, 0.09);
+
+  content: "";
+  position: fixed;
+  inset: -10% 30% 30% -20%;
+  z-index: -1;
+  /* 障子の桟。4pxの線を、縦は120pxおき、横は90pxおきに繰り返す */
+  background:
+    repeating-linear-gradient(90deg, var(--frame) 0 4px, transparent 4px 120px),
+    repeating-linear-gradient(0deg, var(--frame) 0 4px, transparent 4px 90px),
+  /* 陽だまりのところだけ見せて、外へ行くほど消す */
+  mask-image: radial-gradient(ellipse at 30% 10%, #000 20%, transparent 70%);
+  transform: skewX(-20deg);
+  filter: blur(2px);
+}
+
 /* 霧の森。夜明け前の森に、杏色の光が差す */
 :root[data-theme="mori"] {
   color-scheme: dark;
