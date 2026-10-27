@@ -22,7 +22,7 @@ const DEFAULT_THEME: Theme = "yoru";
 export function readTheme(): Theme {
   const saved = localStorage.getItem(STORAGE_KEY);
   // 昼は前、lightという名前だった。その端末は、昼の縁側として読む
-  if (saved == "light") return "hiru";
+  if (saved === "light") return "hiru";
   return THEMES.includes(saved as Theme) ? (saved as Theme) : DEFAULT_THEME;
 }
 
