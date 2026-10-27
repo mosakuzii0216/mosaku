@@ -1,0 +1,17 @@
+# 試しに鳴らす用。作って、URLを聞いて、Slackに来たら消す
+displayName: 試しに鳴らす
+conditions:
+  - displayName: 試しのURLが開かれた
+    conditionMatchedLog:
+      filter: |
+        resource.type="cloud_run_revision"
+        resource.labels.service_name="mosaku-backend"
+        log_id("run.googleapis.com/requests")
+        httpRequest.requestUrl:"/alert-drill"
+combiner: OR
+alertStrategy:
+  notificationRateLimit:
+    period: 300s
+  autoClose: 1800s
+notificationChannels:
+  - projects/igneous-core-480923-j0/notificationChannels/3190757015484648737
