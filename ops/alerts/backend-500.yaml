@@ -1,0 +1,23 @@
+# 本番のbackendが500を返したら、Slackに知らせる
+# 502(AIの返事なし)と503(AIの上限・準備中)はわざと返すので、入れない
+displayName: 本番のbackendが500を返した
+documentation:
+  subject: 本番のbackendが500を返した
+  mimeType: text/markdown
+  content: |
+    Logs Explorer で、mosaku-backend の httpRequest.status=500 を見る。
+conditions:
+  - displayName: Cloud Runのリクエストのログに500
+    conditionMatchedLog:
+      filter: |
+        resource.type="cloud_run_revision"
+        resource.labels.service_name="mosaku-backend"
+        log_id("run.googleapis.com/requests")
+        httpRequest.status=500
+combiner: OR
+alertStrategy:
+  notificationRateLimit:
+    period: 300s
+  autoClose: 1800s
+notificationChannels:
+  - projects/igneous-core-480923-j0/notificationChannels/3190757015484648737
