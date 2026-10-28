@@ -21,6 +21,8 @@ import { GoogleController } from './auth/google/google.controller';
 import { GoogleModule } from './auth/google/google.module';
 import { AiModule } from './ai/ai.module';
 import { AiController } from './ai/ai.controller';
+import { FeedbackController } from './feedback/feedback.controller';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { AiController } from './ai/ai.controller';
     PasskeyModule,
     GoogleModule,
     AiModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [
@@ -50,6 +53,7 @@ export class AppModule implements NestModule {
         UserController,
         GoogleController,
         AiController,
+        FeedbackController,
       );
   }
 }
