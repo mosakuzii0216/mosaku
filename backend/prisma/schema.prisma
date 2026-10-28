@@ -28,12 +28,13 @@ model Memo {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now()) @map("created_at")
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now()) @map("created_at")
   memos     Memo[]
   passkeys  Passkey[]
   accounts  Account[]
   aiUsages  AiUsage[]
+  feedbacks Feedback[]
 
   @@map("users")
 }
@@ -85,4 +86,17 @@ model AiUsage {
   // 「この人の直近24時間」を数えるので、人と時刻で引けるようにする
   @@index([userId, createdAt])
   @@map("ai_usages")
+}
+
+// 目安箱に届いた声。読むのは開発者だけ
+model Feedback {
+  id        String   @id @default(cuid())
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+  // 送った人が消えても、声は残す。匿名の人がGoogleでログインすると、元の人は消えるため
+  userId    String?  @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("feedbacks")
 }
