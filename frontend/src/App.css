@@ -671,7 +671,7 @@
 
 /* 書く欄。AIに話しかける欄と、目安箱で同じ形にする */
 .ai-input,
-feedback-input {
+.feedback-input {
   flex-basis: 100%;
   box-sizing: border-box;
   height: 6em;
