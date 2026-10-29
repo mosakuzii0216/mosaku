@@ -444,6 +444,23 @@
   margin-top: var(--s4);
 }
 
+/* 目安箱。説明、書く欄、送るボタンを縦に並べる */
+.feedback-form {
+  display: grid;
+  gap: var(--s2);
+}
+
+/* 説明と、送ったあとの知らせは小さく */
+.feedback-note,
+.feedback-notice {
+  font-size: 13px;
+}
+
+/* 届いたかどうかは、アクセントの色で知らせる */
+.feedback-notice {
+  color: var(--accent);
+}
+
 /* 引き出しの奥を暗くする幕 */
 .drawer-backdrop {
   position: fixed;
@@ -652,7 +669,9 @@
   display: none;
 }
 
-.ai-input {
+/* 書く欄。AIに話しかける欄と、目安箱で同じ形にする */
+.ai-input,
+feedback-input {
   flex-basis: 100%;
   box-sizing: border-box;
   height: 6em;

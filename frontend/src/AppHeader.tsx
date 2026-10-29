@@ -4,6 +4,8 @@ import { GoogleLogin } from "./auth/GoogleLogin";
 import { Menu } from "./Menu";
 import { MOD } from "./shortcut";
 import type { Theme } from "./theme";
+import { FeedbackForm } from "./feedback/FeedbackForm";
+import { sendFeedback } from "./feedback/feedbackApi";
 
 type Props = {
   query: string;
@@ -94,6 +96,8 @@ export function AppHeader({
         </div>
         {/* Googleがまだなら出す。パスキーだけで登録した人も、ここからGoogleでつなげる */}
         {!hasGoogle && <GoogleLogin />}
+        <p className="menu-label">目安箱</p>
+        <FeedbackForm onSend={sendFeedback} />
         {/* 匿名のまま押すとメモに二度と戻れないので、登録済みのときだけ出す */}
         {registered && (
           <button className="ghost-button logout-button" onClick={onLogout}>
