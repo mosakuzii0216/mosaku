@@ -6,7 +6,7 @@ export async function sendFeedback(message: string): Promise<void> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body; JSON.stringify({ message }),
+    body: JSON.stringify({ message }),
   });
   if (!res.ok) throw new Error(`feedback failed: ${res.status}`);
 }
