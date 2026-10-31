@@ -58,6 +58,18 @@ describe("AiPane", () => {
     expect(names).toEqual(["お試し", "Claude"]);
   });
 
+  it("AIが1つだけなら、選ぶ箱は出さずに、そのAIに送る", async () => {
+    const onSend = vi.fn();
+    render(<AiPane {...base} providers={["gemini"]} onSend={onSend} />);
+
+    await userEvent.type(screen.getByRole("textbox"), "聞いて");
+    await userEvent.click(screen.getByRole("button", { name: "送る" }));
+
+    // 使う人が迷わないよう、選べるものが1つなら箱は見せない
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(onSend).toHaveBeenCalledWith("gemini", "聞いて");
+  });
+
   it("選べるAIが無ければ、準備中と伝えて、話しかける欄は出さない", () => {
     render(<AiPane {...base} providers={[]} />);
 

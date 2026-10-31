@@ -693,6 +693,8 @@
 /* 送るマウスに乗せたら、左にショートカットを小さく出す。指で触る画面では出さない */
 .ai-send {
   position: relative;
+  /* 選ぶ箱がなくても、送るは右に置く */
+  margin-left: auto;
 }
 
 .ai-shortcut {

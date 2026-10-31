@@ -96,9 +96,10 @@ export function AiPane({
             }
           }}
         />
-        {/* 話す相手。送るたびに選び直せる */}
+        {/* 話す相手。送るたびに選び直せる。1つしか無ければ、迷わないように見せない */}
         <select
           className="ghost-button"
+          hidden={providers.length < 2}
           aria-label="話すAI"
           value={provider}
           onChange={(e) => setProvider(e.target.value as AiProvider)}
