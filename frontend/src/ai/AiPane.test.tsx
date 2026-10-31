@@ -79,6 +79,19 @@ describe("AiPane", () => {
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   });
 
+  it("Geminiと話すなら、日記と会話がGoogleに送られることを伝える", () => {
+    render(<AiPane {...base} providers={["gemini"]} />);
+
+    // 日記を書いた人が、話しかける前に読めるように
+    expect(screen.getByText(/Googleに送られます/)).toBeInTheDocument();
+  });
+
+  it("Gemini以外と話すなら、Googleのことは伝えない", () => {
+    render(<AiPane {...base} providers={["claude"]} />);
+
+    expect(screen.queryByText(/Google/)).not.toBeInTheDocument();
+  });
+
   it("話したことと返事を、順に並べる", () => {
     render(
       <AiPane

@@ -730,3 +730,9 @@
     opacity: 1;
   }
 }
+
+/* 日記と会話がGoogleに送られることの知らせ。話しかける欄の下に小さく置く */
+.ai-note {
+  margin: var(--s3) 0 0;
+  font-size: 13px;
+}

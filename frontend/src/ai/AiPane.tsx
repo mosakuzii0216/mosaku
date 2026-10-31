@@ -119,6 +119,12 @@ export function AiPane({
           </kbd>
         </button>
       </form>
+      {/* Geminiの無料枠では、送ったものをGoogleが使う。話しかける前に読めるよう、欄の下に置く */}
+      {provider === "gemini" && (
+        <p className="ai-note">
+          話しかけると、開いている日記と会話がGoogleに送られます。GoogleはAIの改善に使い、人が読むこともあります
+        </p>
+      )}
     </aside>
   );
 }
