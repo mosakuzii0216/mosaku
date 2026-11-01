@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Logger } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
@@ -60,5 +60,22 @@ describe('目安箱(e2e)', () => {
     await prisma.user.deleteMany();
     const feedback = await prisma.feedback.findFirstOrThrow();
     expect(feedback.userId).toBeNull();
+  });
+
+  it('声が届いたら、Slackに知らせるために1行のログを残す', async () => {
+    // ログは画面に出さずに、何を出したかだけを見る
+    const log = jest
+      .spyOn(Logger.prototype, 'log')
+      .mockImplementation(() => {});
+
+    await request(app.getHttpServer())
+      .post('/feedback')
+      .send({ message: '保存されたか\n分かりにくい' })
+      .expect(201);
+
+    // 改行があるとログが2つに分かれるので、空白にして1行で出す
+    expect(log).toHaveBeenCalledWith(
+      '目安箱に新しい声「保存されたか 分かりにくい」',
+    );
   });
 });
