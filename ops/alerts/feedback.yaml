@@ -1,0 +1,26 @@
+# 目安箱に新しい声が届いたら、Slackの#mosaku-feedbackに知らせる
+# backendが声を受け取ると出す1行のログ(feedback.service.ts)を拾う
+displayName: 目安箱に新しい声が届いた
+documentation:
+  subject: 目安箱に新しい声が届いた
+  mimeType: text/markdown
+  content: |
+    ${log.extracted_label.message}
+conditions:
+  - displayName: backendのログに、目安箱の新しい声
+    conditionMatchedLog:
+      filter: |
+        resource.type="cloud_run_revision"
+        resource.labels.service_name="mosaku-backend"
+        textPayload:"目安箱に新しい声「"
+      # 「」の中の声だけを取り出して、上のcontentに入れる。声が違えば、別々に知らせる
+      labelExtractors:
+        message: REGEXP_EXTRACT(textPayload, "目安箱に新しい声「(.*)」")
+combiner: OR
+alertStrategy:
+  # 同じ声は5分に1回まで。知らせるのは1日20回まで(Googleの上限)。それより多い声はDBにだけ残る
+  notificationRateLimit:
+    period: 300s
+  autoClose: 1800s
+notificationChannels:
+  - projects/igneous-core-480923-j0/notificationChannels/16568636063157637314
