@@ -190,6 +190,8 @@
   --accent-border: rgba(241, 144, 114, 0.42);
   --title-glow: 0 0 18px rgba(255, 220, 220, 0.12);
   --head-bg: transparent;
+  /* 上の帯の色。iphoneはhtmlの地の色を使うので、色の上の端にそろえる */
+  background: #1b1a30;
 }
 
 /* 空と地平。上に夜の藍が残り、下へいくほど紅が差す。

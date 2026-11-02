@@ -9,12 +9,12 @@ export const THEME_LABELS: Record<Theme, string> = {
   asa: "暁の丘",
 };
 
-// ブラウザの上の帯の色。index.cssの--bgと、index.htmlの先読みにそろえる
+// ブラウザの上の帯の色。index.cssでhtmlに塗る地の色と、index.htmlの先読みにそろえる
 const THEME_COLORS: Record<Theme, string> = {
   yoru: "#141720",
   mori: "#0e1a17",
   hiru: "#faf6ee",
-  asa: "#241f35",
+  asa: "#1b1a30",
 };
 
 const STORAGE_KEY = "mosaku-theme";
