@@ -47,6 +47,6 @@ describe("applyTheme", () => {
     expect(color()).toBe("#0e1a17");
 
     applyTheme("asa");
-    expect(readTheme()).toBe("#241f35");
+    expect(color()).toBe("#241f35");
   });
 });
