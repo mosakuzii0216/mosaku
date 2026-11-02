@@ -130,6 +130,43 @@
     linear-gradient(#1f3c35, var(--bg) 65%);
 }
 
+/* 霧。森の下の方を白い霧がゆっくり横へ流れていく */
+:root[data-theme="mori"] body::after {
+  --mist: rgba(200, 222, 212, 0.12);
+
+  content: "";
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  /* 画面2枚分(スマホでも1800px)の帯に、同じ霧を2回並べる。
+  * 1枚分動かすと、継ぎ目なく初めに戻る */
+  width: max(200%, 1800px);
+  height: 60%;
+  z-index: -1;
+  /* 霧のかたまり。左端の1つは継ぎ目を跨ぐので、0%と100%の両方に置く */
+  background:
+    radial-gradient(ellipse 26% 20% at 0% 80%, var(--mist), transparent 70%),
+    radial-gradient(ellipse 26% 20% at 100% 80%, var(--mist), transparent 70%),
+    radial-gradient(ellipse 30% 16% at 38% 92%, var(--mist), transparent 70%),
+    radial-gradient(ellipse 24% 18% at 66% 76%, var(--mist), transparent 70%);
+    linear-gradient(transparent 30%, var(--mist));
+  background-size: 50% 100%;
+  animation: mori-mist 90s linear infinite;
+}
+
+@keyframes mori-mist {
+  from {
+    transform: translateX(-50%);
+  }
+}
+
+/* 動きを減らす設定の人には、霧を止める */
+@media (prefers-reduced-motion: reduce) {
+  root[data-theme="mori"] body::after {
+    animation: none;
+  }
+}
+
 /* 夜の書斎。灯りを落とした部屋に、暖かい字と金の差し色 */
 :root[data-theme="yoru"] {
   color-scheme: dark;
