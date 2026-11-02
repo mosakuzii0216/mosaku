@@ -44,7 +44,7 @@ describe("applyTheme", () => {
     expect(color()).toBe("#faf6ee");
 
     applyTheme("mori");
-    expect(color()).toBe("#0e1a17");
+    expect(color()).toBe("#1b322c");
 
     applyTheme("asa");
     expect(color()).toBe("#1b1a30");

@@ -12,7 +12,7 @@ export const THEME_LABELS: Record<Theme, string> = {
 // ブラウザの上の帯の色。index.cssでhtmlに塗る地の色と、index.htmlの先読みにそろえる
 const THEME_COLORS: Record<Theme, string> = {
   yoru: "#141720",
-  mori: "#0e1a17",
+  mori: "#1b322c",
   hiru: "#faf6ee",
   asa: "#1b1a30",
 };

@@ -110,6 +110,8 @@
   --accent-border: rgba(233, 185, 143, 0.4);
   --title-glow: 0 0 22px rgba(220, 240, 230, 0.16);
   --head-bg: transparent;
+  /* 上の帯の色。iPhoneはhtmlの地の色を使うので、空の上の端にそろえる */
+  background: #1b322c;
 }
 
 /* 森の空気。左上から薄い光の筋が差し、離れるほど森の暗さに沈む */
