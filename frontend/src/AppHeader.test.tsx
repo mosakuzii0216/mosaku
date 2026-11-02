@@ -64,7 +64,7 @@ describe("AppHeader", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "設定" }));
 
-    expect(screen.getByRole("button", { name: "森" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "霧の森" })).toBeInTheDocument();
   });
 
   // 登録とログインはGoogleだけにしたので、パスキーのボタンは出さない
