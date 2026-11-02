@@ -25,6 +25,11 @@ describe("readTheme", () => {
     localStorage.setItem("mosaku-theme", "light");
     expect(readTheme()).toBe("hiru");
   });
+
+  it("暁の丘を選んでいたら、暁の丘で開く", () => {
+    localStorage.setItem("mosaku-theme", "asa");
+    expect(readTheme()).toBe("asa");
+  });
 });
 
 describe("applyTheme", () => {
@@ -40,5 +45,8 @@ describe("applyTheme", () => {
 
     applyTheme("mori");
     expect(color()).toBe("#0e1a17");
+
+    applyTheme("asa");
+    expect(readTheme()).toBe("#241f35");
   });
 });

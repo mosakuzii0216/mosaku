@@ -1,11 +1,12 @@
-// 夜の書斎・森・昼の縁側の3つ。ダークは夜と被り、OSに従うはほぼ使われないので外した
-export const THEMES = ["yoru", "mori", "hiru"] as const;
+// 夜の書斎・森・昼の縁側・暁の丘の4つ。ダークは夜と被り、OSに従うはほぼ使われないので外した
+export const THEMES = ["yoru", "mori", "hiru", "asa"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_LABELS: Record<Theme, string> = {
   mori: "森",
   hiru: "昼の縁側",
   yoru: "夜の書斎",
+  asa: "暁の丘",
 };
 
 // ブラウザの上の帯の色。index.cssの--bgと、index.htmlの先読みにそろえる
@@ -13,6 +14,7 @@ const THEME_COLORS: Record<Theme, string> = {
   yoru: "#141720",
   mori: "#0e1a17",
   hiru: "#faf6ee",
+  asa: "#241f35",
 };
 
 const STORAGE_KEY = "mosaku-theme";

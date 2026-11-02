@@ -4,11 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { ThemeSwitch } from "./ThemeSwitch";
 
 describe("ThemeSwitch", () => {
-  it("夜の書斎・森・昼の縁側の3つで並べる", () => {
+  it("夜の書斎・森・昼の縁側・暁の丘の4つで並べる", () => {
     render(<ThemeSwitch theme="yoru" onChange={() => {}} />);
 
     const labels = screen.getAllByRole("button").map((b) => b.textContent);
-    expect(labels).toEqual(["夜の書斎", "森", "昼の縁側"]);
+    expect(labels).toEqual(["夜の書斎", "森", "昼の縁側", "暁の丘"]);
   });
 
   it("選択中のテーマにis-activeが付く", () => {

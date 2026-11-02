@@ -176,6 +176,42 @@
   }
 }
 
+/* 暁の丘。日の出前の丘に立って、明けていく空と、まだ眠っている街を見る */
+:root[data-theme="asa"] {
+  color-scheme: dark;
+
+  --text: #dad3dc;
+  --text-h: #f8f3f5;
+  --bg: #241f35;
+  --border: rgba(218, 211, 220, 0.15);
+  --code-bg: #2d2740;
+  --accent: #f19072;
+  --accent-bg: rgba(241, 144, 114, 0.1);
+  --accent-border: rgba(241, 144, 114, 0.42);
+  --title-glow: 0 0 18px rgba(255, 220, 220, 0.12);
+  --head-bg: transparent;
+}
+
+/* 空と地平。上に夜の藍が残り、下へいくほど紅が差す。
+* 地平のすぐ上に朱の帯が光、その下はまだ暗い街 */
+:root[data-theme="asa"] body::before {
+  --glow: rgba(236, 124, 90, 0.32);
+
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 10% at 40% 88%, var(--glow), transparent 72%),
+    linear-gradient(
+      #1b1a30,
+      var(--bg) 40%,
+      #44293f 75%,
+      #4f2e42 87.5%,
+      #120f18 89%
+    );
+}
+
 #root {
   width: 100%;
   min-height: 100svh;

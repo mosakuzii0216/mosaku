@@ -25,10 +25,15 @@
           var t = localStorage.getItem("mosaku-theme");
           // 昼は以前、lightという名前だった。
           if (t === "light") t = "hiru";
-          if (t !== "mori" && t !== "hiru") t = "yoru";
+          if (t !== "mori" && t !== "hiru" && t !== "asa") t = "yoru";
           document.documentElement.setAttribute("data-theme", t);
           // 上の帯の色も、テーマの地の色に。theme.tsのTHEME_COLORSにそろえる
-          var colors = { yoru: "#141720", mori: "#0e1a17", hiru: "#faf6ee" };
+          var colors = {
+            yoru: "#141720",
+            mori: "#0e1a17",
+            hiru: "#faf6ee",
+            asa: "241f35",
+          };
           document
             .querySelector('meta[name="theme-color"]')
             .setAttribute("content", colors[t]);
