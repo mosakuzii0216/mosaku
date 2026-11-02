@@ -4,21 +4,21 @@ import { applyTheme, readTheme } from "./theme";
 describe("readTheme", () => {
   beforeEach(() => localStorage.clear());
 
-  it("保存が無ければyoruを返す", () => {
-    expect(readTheme()).toBe("yoru");
+  it("保存が無ければmoriを返す", () => {
+    expect(readTheme()).toBe("mori");
   });
 
-  it("壊れた値が入っていてもyoruに落とす", () => {
+  it("壊れた値が入っていてもmoriに落とす", () => {
     localStorage.setItem("mosaku-theme", "森");
-    expect(readTheme()).toBe("yoru");
+    expect(readTheme()).toBe("mori");
   });
 
-  it("前に選べたダークやOSに従うが残っていたら、夜に戻す", () => {
+  it("前に選べたダークやOSに従うが残っていたら、霧の森に戻す", () => {
     localStorage.setItem("mosaku-theme", "dark");
-    expect(readTheme()).toBe("yoru");
+    expect(readTheme()).toBe("mori");
 
     localStorage.setItem("mosaku-theme", "system");
-    expect(readTheme()).toBe("yoru");
+    expect(readTheme()).toBe("mori");
   });
 
   it("前の名前のlightが残っていたら、昼の縁側として読む", () => {

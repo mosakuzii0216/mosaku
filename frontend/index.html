@@ -8,8 +8,8 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <!-- ブラウザの枠の色。初めて開く人は夜の書斎なので、その地の色にそろえる -->
-    <meta name="theme-color" content="#141720" />
+    <!-- ブラウザの枠の色。初めて開く人は霧の森なので、その地の色にそろえる -->
+    <meta name="theme-color" content="#1b322c" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,12 +20,12 @@
     <script>
       (function () {
         try {
-          // 保存が無い・知らない値(前に選べたダークなど)なら夜の書斎。
+          // 保存が無い・知らない値(前に選べたダークなど)なら霧の森。
           // theme.tsのTHEMESとDEFAULT_THEMEにそろえる
           var t = localStorage.getItem("mosaku-theme");
           // 昼は以前、lightという名前だった。
           if (t === "light") t = "hiru";
-          if (t !== "mori" && t !== "hiru" && t !== "asa") t = "yoru";
+          if (t !== "mori" && t !== "hiru" && t !== "asa") t = "mori";
           document.documentElement.setAttribute("data-theme", t);
           // 上の帯の色も、テーマの地の色に。theme.tsのTHEME_COLORSにそろえる
           var colors = {

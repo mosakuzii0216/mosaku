@@ -18,8 +18,8 @@ const THEME_COLORS: Record<Theme, string> = {
 };
 
 const STORAGE_KEY = "mosaku-theme";
-// 初めて開いた人は夜の書斎から。index.htmlの先読みも同じ値にそろえる
-const DEFAULT_THEME: Theme = "yoru";
+// 初めて開いた人は霧の森から。index.htmlの先読みも同じ値にそろえる
+const DEFAULT_THEME: Theme = "mori";
 
 export function readTheme(): Theme {
   const saved = localStorage.getItem(STORAGE_KEY);

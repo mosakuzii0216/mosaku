@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import html from "../index.html?raw";
-import { THEMES, applyTheme } from "./theme";
+import { THEMES, applyTheme, readTheme } from "./theme";
 
 // index.htmlの先読み(Reactより先に走る、1つ目のscript)を取り出す
 const preload = html.match(/<script>([\s\S]*?)<\/script>/)?.[1] ?? "";
@@ -25,5 +25,12 @@ describe("index.htmlの先読み", () => {
 
     expect(document.documentElement.getAttribute("data-theme")).toBe(theme);
     expect(color()).toBe(expected);
+  });
+
+  it("保存が無ければ、readThemeと同じテーマで開く", () => {
+    new Function(preload)();
+
+    const theme = document.documentElement.getAttribute("data-theme");
+    expect(theme).toBe(readTheme());
   });
 });
