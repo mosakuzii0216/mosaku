@@ -171,6 +171,7 @@
 
 /* マウスを乗せたら縁をアクセントの色に。指で触る端末では出さない(触ったあと色が残るから) */
 @media (hover: hover) {
+  .ghost-button:hover,
   .menu-trigger:hover {
     color: var(--text-h);
     border-color: var(--accent-border);
@@ -296,8 +297,8 @@
 
   color: #edf3ee;
   background:
-    radial-gradient(ellipsis 50% 30% at 20% 84%, var(--mist), transparent 70%),
-    radial-gradient(ellipsis 50% 26% at 76% 92%, var(--mist), transparent 70%),
+    radial-gradient(ellipse 50% 30% at 20% 84%, var(--mist), transparent 70%),
+    radial-gradient(ellipse 50% 26% at 76% 92%, var(--mist), transparent 70%),
     linear-gradient(transparent 50%, var(--mist)),
     linear-gradient(112deg, transparent 22%, var(--ray) 34%, transparent 48%),
     linear-gradient(#1f3c35, #0e1a17 70%);
@@ -308,7 +309,7 @@
 
   color: #f8f3f5;
   background:
-    radial-gradient(ellipsis 80% 22% at 40% 86%, var(--glow), transparent 72%),
+    radial-gradient(ellipse 80% 22% at 40% 86%, var(--glow), transparent 72%),
     linear-gradient(#1b1a30, #241f35 30%, #44293f 64%, #4f2e42 84%, #120f18 86%);
 }
 
