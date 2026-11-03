@@ -1,5 +1,5 @@
-// 夜の書斎・霧の森・昼の縁側・暁の丘の4つ。ダークは夜と被り、OSに従うはほぼ使われないので外した
-export const THEMES = ["yoru", "mori", "hiru", "asa"] as const;
+// 玄関の霧の森を先頭に、暁の丘・昼の縁側・夜の書斎と一日の順に並べる。
+export const THEMES = ["mori", "asa", "hiru", "yoru"] as const;
 export type Theme = (typeof THEMES)[number];
 
 export const THEME_LABELS: Record<Theme, string> = {

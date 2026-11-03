@@ -12,6 +12,7 @@ export function ThemeSwitch({ theme, onChange }: Props) {
         <button
           key={t}
           className={t === theme ? "is-active" : ""}
+          data-theme={t}
           onClick={() => onChange(t)}
         >
           {THEME_LABELS[t]}
