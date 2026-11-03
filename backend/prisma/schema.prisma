@@ -28,13 +28,17 @@ model Memo {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  createdAt DateTime   @default(now()) @map("created_at")
-  memos     Memo[]
-  passkeys  Passkey[]
-  accounts  Account[]
-  aiUsages  AiUsage[]
-  feedbacks Feedback[]
+  id                 String       @id @default(cuid())
+  createdAt          DateTime     @default(now()) @map("created_at")
+  // 開発者の印。本番では、自分のユーザにだけSQLで付ける
+  isDeveloper        Boolean      @default(false) @map("is_developer")
+  memos              Memo[]
+  passkeys           Passkey[]
+  accounts           Account[]
+  aiUsages           AiUsage[]
+  feedbacks          Feedback[]
+  createdInvitations Invitation[] @relation("CreatedInvitations")
+  usedInvitation     Invitation?  @relation("UsedInvitation")
 
   @@map("users")
 }
@@ -99,4 +103,24 @@ model Feedback {
 
   @@index([userId])
   @@map("feedbacks")
+}
+
+// 招待コード。1つのコードを使えるのは1人だけ
+model Invitation {
+  id          String    @id @default(cuid())
+  // ハイフン無しの8文字で持つ
+  code        String    @unique
+  createdAt   DateTime  @default(now()) @map("created_at")
+  // 作ってから1ヶ月。決まりを変えても、配ったコードの期限が変わらないように日付で持つ
+  expiresAt   DateTime  @map("expires_at")
+  usedAt      DateTime? @map("used_at")
+  revokedAt   DateTime? @map("revoked_at")
+  createdById String    @map("created_by_id")
+  createdBy   User      @relation("CreatedInvitations", fields: [createdById], references: [id], onDelete: Cascade)
+  // 1人が使えるのは1枚だけ。使った人が消えても使った日は残るので、もう一度は使えない
+  usedById    String?   @unique @map("used_by_id")
+  usedBy      User?     @relation("UsedInvitation", fields: [usedById], references: [id], onDelete: SetNull)
+
+  @@index([createdById])
+  @@map("invitations")
 }
