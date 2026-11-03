@@ -25,7 +25,7 @@
           var t = localStorage.getItem("mosaku-theme");
           // 昼は以前、lightという名前だった。
           if (t === "light") t = "hiru";
-          if (t !== "mori" && t !== "hiru" && t !== "asa") t = "mori";
+          if (t !== "yoru" && t !== "hiru" && t !== "asa") t = "mori";
           document.documentElement.setAttribute("data-theme", t);
           // 上の帯の色も、テーマの地の色に。theme.tsのTHEME_COLORSにそろえる
           var colors = {

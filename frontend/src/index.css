@@ -148,7 +148,7 @@
     radial-gradient(ellipse 26% 20% at 0% 80%, var(--mist), transparent 70%),
     radial-gradient(ellipse 26% 20% at 100% 80%, var(--mist), transparent 70%),
     radial-gradient(ellipse 30% 16% at 38% 92%, var(--mist), transparent 70%),
-    radial-gradient(ellipse 24% 18% at 66% 76%, var(--mist), transparent 70%);
+    radial-gradient(ellipse 24% 18% at 66% 76%, var(--mist), transparent 70%),
     linear-gradient(transparent 30%, var(--mist));
   background-size: 50% 100%;
   animation: mori-mist 90s linear infinite;
@@ -162,7 +162,7 @@
 
 /* 動きを減らす設定の人には、霧を止める */
 @media (prefers-reduced-motion: reduce) {
-  root[data-theme="mori"] body::after {
+  :root[data-theme="mori"] body::after {
     animation: none;
   }
 }
