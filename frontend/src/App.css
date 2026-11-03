@@ -171,10 +171,13 @@
 
 /* マウスを乗せたら縁をアクセントの色に。指で触る端末では出さない(触ったあと色が残るから) */
 @media (hover: hover) {
-  .ghost-button:hover,
-  .menu-trigger:hover,
-  .theme-switch button:hover {
+  .menu-trigger:hover {
     color: var(--text-h);
+    border-color: var(--accent-border);
+  }
+
+  /* テーマの窓は字の色を変えずに、緑だけ */
+  .theme-switch button:hover {
     border-color: var(--accent-border);
   }
 }
@@ -261,25 +264,73 @@
 }
 
 .theme-switch {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--s2);
 }
 
 .theme-switch button {
-  padding: var(--s1) var(--s3);
+  display: flex;
+  align-items: flex-end;
+  height: 64px;
+  padding: var(--s2) var(--s3);
   font: inherit;
+  font-family: var(--heading);
   font-size: 14px;
-  color: var(--text);
-  background: none;
+  letter-spacing: 0.06em;
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
+/* 選んでいる窓は、アクセントの色で縁取る */
 .theme-switch button.is-active {
-  color: var(--accent);
-  background: var(--accent-bg);
-  border-color: var(--accent-border);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* 窓の空。index.cssの各テーマを小さくしたもの。テーマを直したら、ここも揃える */
+.theme-switch [data-theme="mori"] {
+  --mist: rgba(200, 222, 212, 0.16);
+  --ray: rgba(255, 232, 205, 0.07);
+
+  color: #edf3ee;
+  background:
+    radial-gradient(ellipsis 50% 30% at 20% 84%, var(--mist), transparent 70%),
+    radial-gradient(ellipsis 50% 26% at 76% 92%, var(--mist), transparent 70%),
+    linear-gradient(transparent 50%, var(--mist)),
+    linear-gradient(112deg, transparent 22%, var(--ray) 34%, transparent 48%),
+    linear-gradient(#1f3c35, #0e1a17 70%);
+}
+
+.theme-switch [data-theme="asa"] {
+  --glow: rgba(236, 124, 90, 0.45);
+
+  color: #f8f3f5;
+  background:
+    radial-gradient(ellipsis 80% 22% at 40% 86%, var(--glow), transparent 72%),
+    linear-gradient(#1b1a30, #241f35 30%, #44293f 64%, #4f2e42 84%, #120f18 86%);
+}
+
+.theme-switch [data-theme="hiru"] {
+  --sun: rgba(255, 210, 140, 0.42);
+  --frame: rgba(120, 85, 45, 0.06);
+
+  color: #231e18;
+  background:
+    radial-gradient(ellipse at 10% 0%, var(--sun), transparent 62%),
+    repeating-linear-gradient(110deg, var(--frame) 0 2px, transparent 2px 36px),
+    repeating-linear-gradient(0deg, var(--frame) 0 2px, transparent 2px 26px),
+    linear-gradient(#fbf7ef, #f2ebde);
+}
+
+.theme-switch [data-theme="yoru"] {
+  color: #f6eedb;
+  background:
+    radial-gradient(circle at 70% 24%, #fffc 0, transparent 1.5px),
+    radial-gradient(circle at 86% 52%, #fff9 0, transparent 1px),
+    radial-gradient(circle at 94% 20%, #fff8 0, transparent 1px),
+    radial-gradient(ellipse at 50% 28%, #262b38, #141720 55%, #0c0d12);
 }
 
 .trash-toggle {
@@ -404,11 +455,6 @@
   margin-top: var(--s4);
   padding-top: var(--s4);
   border-top: 1px solid var(--border);
-}
-
-/* メニューの中では、テーマは折り返して並べる */
-.menu-panel .theme-switch {
-  flex-wrap: wrap;
 }
 
 /* アカウントの今の状態と、その説明。設定のアカウントの一番上に置く */
