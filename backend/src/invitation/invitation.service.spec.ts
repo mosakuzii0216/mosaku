@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InvitationService } from './invitation.service';
 import { UserService } from '../user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -94,5 +94,27 @@ describe('InvitationService', () => {
 
     expect(await prisma.invitation.count()).toBe(4);
     expect(await service.remaining(developer.id)).toBeNull();
+  });
+
+  it('revoke()は自分が作った、まだ使われていないコードだけ取り消す', async () => {
+    const user = await createInvitedUser();
+    const other = await createInvitedUser();
+    const mine = await service.create(user.id);
+    const used = await service.create(user.id);
+    await prisma.invitation.update({
+      where: { id: used.id },
+      data: { usedAt: new Date() },
+    });
+    const others = await service.create(other.id);
+
+    await service.revoke(user.id, mine.id);
+
+    // 取り消した分は、また作れる(3枚から、使われた1枚だけを引く)
+    expect(await service.remaining(user.id)).toBe(2);
+    for (const id of [mine.id, used.id, others.id]) {
+      await expect(service.revoke(user.id, id)).rejects.toThrow(
+        NotFoundException,
+      );
+    }
   });
 });

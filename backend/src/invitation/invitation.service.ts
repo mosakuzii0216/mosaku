@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from '../user/user.service';
 import { generateCode } from './invitation-code';
@@ -51,5 +55,16 @@ export class InvitationService {
       },
     });
     return Math.max(LIMIT - count, 0);
+  }
+
+  // 取り消せるのは、自分が作った、まだ使われていないコードだけ
+  async revoke(userId: string, id: string, now = new Date()): Promise<void> {
+    const { count } = await this.prisma.invitation.updateMany({
+      where: { id, createdById: userId, usedAt: null, revokedAt: null },
+      data: { revokedAt: now },
+    });
+    if (count === 0) {
+      throw new NotFoundException('取り消せるコードが見つかりません');
+    }
   }
 }
