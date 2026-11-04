@@ -3,6 +3,7 @@ import { ForbiddenException } from '@nestjs/common';
 import { InvitationService } from './invitation.service';
 import { UserService } from '../user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { generateCode } from './invitation-code';
 
 describe('InvitationService', () => {
   let service: InvitationService;
@@ -25,6 +26,22 @@ describe('InvitationService', () => {
     await prisma.$disconnect();
   });
 
+  // 開発者のコードを使って登録した人を作る
+  async function createInvitedUser() {
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const user = await prisma.user.create({ data: {} });
+    await prisma.invitation.create({
+      data: {
+        code: generateCode(),
+        createdById: developer.id,
+        usedById: user.id,
+        usedAt: new Date(),
+        expiresAt: new Date(),
+      },
+    });
+    return user;
+  }
+
   it('create()はプレミアムの人に、1か月で切れるコードを作る', async () => {
     const developer = await prisma.user.create({ data: { isDeveloper: true } });
 
@@ -43,5 +60,39 @@ describe('InvitationService', () => {
 
     await expect(service.create(user.id)).rejects.toThrow(ForbiddenException);
     expect(await prisma.invitation.count()).toBe(0);
+  });
+
+  it('create()は3枚まで。取り消した分と、使われずに期限が切れた分は数えない', async () => {
+    const user = await createInvitedUser();
+    const now = new Date('2026-11-04T12:00:00Z');
+    const past = new Date('2026-11-01T00:00:00Z');
+    const future = new Date('2026-12-01T00:00:00Z');
+    const mine = { createdById: user.id };
+    await prisma.invitation.createMany({
+      data: [
+        // 数えない：使われずに期限が切れた・取り消した
+        { ...mine, code: 'AAAAAAAA', expiresAt: past },
+        { ...mine, code: 'BBBBBBBB', expiresAt: future, revokedAt: past },
+        // 数える：使われた(期限が過ぎていても)
+        { ...mine, code: 'CCCCCCCC', expiresAt: past, usedAt: past },
+      ],
+    });
+    expect(await service.remaining(user.id, now)).toBe(2);
+
+    await service.create(user.id, now);
+    await service.create(user.id, now);
+
+    await expect(service.create(user.id, now)).rejects.toThrow(
+      ForbiddenException,
+    );
+  });
+
+  it('create()は開発者なら何枚でも作る', async () => {
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+
+    for (let i = 0; i < 4; i++) await service.create(developer.id);
+
+    expect(await prisma.invitation.count()).toBe(4);
+    expect(await service.remaining(developer.id)).toBeNull();
   });
 });
