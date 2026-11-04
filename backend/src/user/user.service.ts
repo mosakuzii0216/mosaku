@@ -55,4 +55,14 @@ export class UserService {
     ]);
     return passkeys + accounts > 0;
   }
+
+  // プレミアムか（招待コードを使って登録した人か、開発者か）
+  async isPremium(userId: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { usedInvitation: true },
+    });
+    if (!user) return false;
+    return user.isDeveloper || user.usedInvitation !== null;
+  }
 }

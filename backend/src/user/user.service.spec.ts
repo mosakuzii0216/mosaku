@@ -130,4 +130,22 @@ describe('UserService', () => {
 
     expect(await service.hasGoogle(user.id)).toBe(true);
   });
+
+  it('isPremium()は招待コードを使って登録した人と開発者だけtrueを返す', async () => {
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const invited = await prisma.user.create({ data: {} });
+    const other = await prisma.user.create({ data: {} });
+    await prisma.invitation.create({
+      data: {
+        code: 'ABCDEFGH',
+        createdById: developer.id,
+        usedById: invited.id,
+        usedAt: new Date(),
+        expiresAt: new Date(),
+      },
+    });
+    expect(await service.isPremium(developer.id)).toBe(true);
+    expect(await service.isPremium(invited.id)).toBe(true);
+    expect(await service.isPremium(other.id)).toBe(false);
+  });
 });
