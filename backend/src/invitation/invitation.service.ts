@@ -5,11 +5,22 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from '../user/user.service';
-import { generateCode } from './invitation-code';
+import { formatCode, generateCode } from './invitation-code';
 import type { Invitation } from '../../generated/prisma/client';
 
 // 1人が持てるコードの数。開発者は上限無し
 const LIMIT = 3;
+
+// コードの状態：まだ・使われた・期限切れ・取り消し
+export type InvitationStatus = 'unused' | 'used' | 'expired' | 'revoked';
+
+// 取り消し → 使われた → 期限切れ → まだ、の」順に見る
+function statusOf(invitation: Invitation, now: Date): InvitationStatus {
+  if (invitation.revokedAt) return 'revoked';
+  if (invitation.usedAt) return 'used';
+  if (invitation.expiresAt <= now) return 'expired';
+  return 'unused';
+}
 
 @Injectable()
 export class InvitationService {
@@ -35,7 +46,13 @@ export class InvitationService {
     expiresAt.setUTCMonth(expiresAt.getUTCMonth() + 1);
     // 8文字で約1兆通りあるので、前に作ったコードとぶつかる心配はしない
     return this.prisma.invitation.create({
-      data: { code: generateCode(), createdById: userId, expiresAt },
+      data: {
+        code: generateCode(),
+        createdById: userId,
+        // 作った日も、期限と同じnowで決める
+        createdAt: now,
+        expiresAt,
+      },
     });
   }
 
@@ -66,5 +83,20 @@ export class InvitationService {
     if (count === 0) {
       throw new NotFoundException('取り消せるコードが見つかりません');
     }
+  }
+
+  // 自分が作ったコードの一覧。新しい順に、状態を付けて返す
+  async list(userId: string, now = new Date()) {
+    const invitations = await this.prisma.invitation.findMany({
+      where: { createdById: userId },
+      orderBy: { createdAt: 'desc' },
+    });
+    // 使った人のIDなどは、画面に渡さない
+    return invitations.map((invitation) => ({
+      id: invitation.id,
+      code: formatCode(invitation.code),
+      expiresAt: invitation.expiresAt,
+      status: statusOf(invitation, now),
+    }));
   }
 }

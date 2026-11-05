@@ -3,7 +3,7 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InvitationService } from './invitation.service';
 import { UserService } from '../user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { generateCode } from './invitation-code';
+import { formatCode, generateCode } from './invitation-code';
 
 describe('InvitationService', () => {
   let service: InvitationService;
@@ -116,5 +116,31 @@ describe('InvitationService', () => {
         NotFoundException,
       );
     }
+  });
+
+  it('list()は自分のコードの新しい順に、状態を付けて返す', async () => {
+    const user = await createInvitedUser();
+    const other = await createInvitedUser();
+    // 作った順ではなく作った日で並ぶの確かめるため、新しい方を先に作る
+    const newer = await service.create(user.id, new Date('2026-11-02'));
+    const older = await service.create(user.id, new Date('2026-11-01'));
+    await service.revoke(user.id, newer.id);
+    // 人のコードは入らない
+    await service.create(other.id);
+
+    expect(await service.list(user.id, new Date('2026-11-04'))).toEqual([
+      {
+        id: newer.id,
+        code: formatCode(newer.code),
+        expiresAt: newer.expiresAt,
+        status: 'revoked',
+      },
+      {
+        id: older.id,
+        code: formatCode(older.code),
+        expiresAt: older.expiresAt,
+        status: 'unused',
+      },
+    ]);
   });
 });
