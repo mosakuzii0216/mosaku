@@ -143,4 +143,27 @@ describe('InvitationService', () => {
       },
     ]);
   });
+
+  it('check()は使えるコードならnull、使えなければ理由を返す', async () => {
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const now = new Date('2026-11-04T12:00:00Z');
+    const past = new Date('2026-11-01T00:00:00Z');
+    const future = new Date('2026-12-01T00:00:00Z');
+    const mine = { createdById: developer.id };
+    await prisma.invitation.createMany({
+      data: [
+        { ...mine, code: 'AAAAAAAA', expiresAt: future },
+        { ...mine, code: 'BBBBBBBB', expiresAt: future, usedAt: past },
+        { ...mine, code: 'CCCCCCCC', expiresAt: past },
+        { ...mine, code: 'DDDDDDDD', expiresAt: future, revokedAt: past },
+      ],
+    });
+
+    // 小文字やハイフンが混じっていても確かめられる
+    expect(await service.check('aaaa-aaaa', now)).toBeNull();
+    expect(await service.check('BBBBBBBB', now)).toBe('used');
+    expect(await service.check('CCCCCCCC', now)).toBe('expired');
+    expect(await service.check('DDDDDDDD', now)).toBe('revoked');
+    expect(await service.check('EEEEEEEE', now)).toBe('not_found');
+  });
 });

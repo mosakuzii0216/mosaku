@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserService } from '../user/user.service';
-import { formatCode, generateCode } from './invitation-code';
+import { formatCode, generateCode, normalizeCode } from './invitation-code';
 import type { Invitation } from '../../generated/prisma/client';
 
 // 1人が持てるコードの数。開発者は上限無し
@@ -13,6 +13,9 @@ const LIMIT = 3;
 
 // コードの状態：まだ・使われた・期限切れ・取り消し
 export type InvitationStatus = 'unused' | 'used' | 'expired' | 'revoked';
+
+// コードを使えない理由
+export type CheckFailure = 'not_found' | 'used' | 'expired' | 'revoked';
 
 // 取り消し → 使われた → 期限切れ → まだ、の」順に見る
 function statusOf(invitation: Invitation, now: Date): InvitationStatus {
@@ -98,5 +101,15 @@ export class InvitationService {
       expiresAt: invitation.expiresAt,
       status: statusOf(invitation, now),
     }));
+  }
+
+  // 打ったコードを確かめる。使えればnull、使えなければ理由を返す
+  async check(input: string, now = new Date()): Promise<CheckFailure | null> {
+    const invitation = await this.prisma.invitation.findUnique({
+      where: { code: normalizeCode(input) },
+    });
+    if (!invitation) return 'not_found';
+    const status = statusOf(invitation, now);
+    return status === 'unused' ? null : status;
   }
 }
