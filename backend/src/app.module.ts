@@ -23,6 +23,8 @@ import { AiModule } from './ai/ai.module';
 import { AiController } from './ai/ai.controller';
 import { FeedbackController } from './feedback/feedback.controller';
 import { FeedbackModule } from './feedback/feedback.module';
+import { InvitationController } from './invitation/invitation.controller';
+import { InvitationModule } from './invitation/invitation.module';
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     GoogleModule,
     AiModule,
     FeedbackModule,
+    InvitationModule,
   ],
   controllers: [AppController],
   providers: [
@@ -54,6 +57,7 @@ export class AppModule implements NestModule {
         GoogleController,
         AiController,
         FeedbackController,
+        InvitationController,
       );
   }
 }
