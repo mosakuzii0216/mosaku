@@ -112,4 +112,20 @@ export class InvitationService {
     const status = statusOf(invitation, now);
     return status === 'unused' ? null : status;
   }
+
+  // 登録のときにコードを使う。使えたらnull、使えなければ理由を返す
+  async use(
+    input: string,
+    userId: string,
+    now = new Date(),
+  ): Promise<CheckFailure | null> {
+    const failure = await this.check(input, now);
+    if (failure) return failure;
+    // 確かめてから使うまでの間に、他の人が使っていたら使えない
+    const { count } = await this.prisma.invitation.updateMany({
+      where: { code: normalizeCode(input), usedAt: null },
+      data: { usedAt: now, usedById: userId },
+    });
+    return count === 1 ? null : 'used';
+  }
 }

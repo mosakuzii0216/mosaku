@@ -166,4 +166,36 @@ describe('InvitationService', () => {
     expect(await service.check('DDDDDDDD', now)).toBe('revoked');
     expect(await service.check('EEEEEEEE', now)).toBe('not_found');
   });
+
+  it('use()はコードを使い、もう誰にも使わせない', async () => {
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const invitation = await service.create(developer.id);
+    const alice = await prisma.user.create({ data: {} });
+    const bob = await prisma.user.create({ data: {} });
+
+    // 小文字やハイフンが混じっていても使える
+    const code = formatCode(invitation.code).toLowerCase();
+    expect(await service.use(code, alice.id)).toBeNull();
+    expect(await service.use(code, bob.id)).toBe('used');
+    expect(await service.use('EEEEEEEE', bob.id)).toBe('not_found');
+    const used = await prisma.invitation.findUniqueOrThrow({
+      where: { id: invitation.id },
+    });
+    expect(used.usedById).toBe(alice.id);
+  });
+
+  it('use()は、同時に使われても1人にしか使わせない', async () => {
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const invitation = await service.create(developer.id);
+    const alice = await prisma.user.create({ data: {} });
+    const bob = await prisma.user.create({ data: {} });
+
+    const results = await Promise.all([
+      service.use(invitation.code, alice.id),
+      service.use(invitation.code, bob.id),
+    ]);
+    // どちらか1人だけ使えて、もう一人には「使われた」を返す
+    expect(results).toContain(null);
+    expect(results).toContain('used');
+  });
 });
