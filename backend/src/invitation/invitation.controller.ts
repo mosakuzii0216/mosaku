@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { InvitationService } from './invitation.service';
 import { formatCode } from './invitation-code';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -26,5 +26,12 @@ export class InvitationController {
       this.invitationService.remaining(user.id),
     ]);
     return { invitations, remaining };
+  }
+
+  // 取り消すだけなので、返事は空(204)
+  @Post(':id/revoke')
+  @HttpCode(204)
+  revoke(@CurrentUser() user: { id: string }, @Param('id') id: string) {
+    return this.invitationService.revoke(user.id, id);
   }
 }

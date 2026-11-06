@@ -50,4 +50,15 @@ describe('招待コード(e2e)', () => {
   it('プレミアムでなければ、作れずに403で断る', async () => {
     await request(app.getHttpServer()).post('/invitations').expect(403);
   });
+
+  it('取り消すと「取り消し」になる。人のコードは取り消せない', async () => {
+    const alice = await developerAgent();
+    const created = await alice.post('/invitations').expect(201);
+    const bob = request.agent(app.getHttpServer());
+
+    await bob.post(`/invitations/${created.body.id}/revoke`).expect(404);
+    await alice.post(`/invitations/${created.body.id}/revoke`).expect(204);
+    const res = await alice.get('/invitations').expect(200);
+    expect(res.body.invitations[0].status).toBe('revoked');
+  });
 });
