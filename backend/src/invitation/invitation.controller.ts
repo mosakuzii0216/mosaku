@@ -1,7 +1,8 @@
-import { Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { InvitationService } from './invitation.service';
 import { formatCode } from './invitation-code';
 import { CurrentUser } from '../auth/current-user.decorator';
+import { CheckInvitationDto } from './invitation.dto';
 
 @Controller('invitations')
 export class InvitationController {
@@ -33,5 +34,12 @@ export class InvitationController {
   @HttpCode(204)
   revoke(@CurrentUser() user: { id: string }, @Param('id') id: string) {
     return this.invitationService.revoke(user.id, id);
+  }
+
+  // 打ったコードを確かめる。何かを作るわけではないので、201ではなく200で返す
+  @Post('check')
+  @HttpCode(200)
+  async check(@Body() body: CheckInvitationDto) {
+    return { reason: await this.invitationService.check(body.code) };
   }
 }

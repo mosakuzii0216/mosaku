@@ -61,4 +61,22 @@ describe('招待コード(e2e)', () => {
     const res = await alice.get('/invitations').expect(200);
     expect(res.body.invitations[0].status).toBe('revoked');
   });
+
+  it('打ったコードを確かめると、使えるならnull、使えなければ理由が返る', async () => {
+    const agent = await developerAgent();
+    const created = await agent.post('/invitations').expect(201);
+
+    const ok = await agent
+      .post('/invitations/check')
+      .send({ code: created.body.code })
+      .expect(200);
+    expect(ok.body).toEqual({ reason: null });
+    const ng = await agent
+      .post('/invitations/check')
+      .send({ code: 'EEEE-EEEE' })
+      .expect(200);
+    expect(ng.body).toEqual({ reason: 'not_found' });
+    // 何も打っていなければ、400で断る
+    await agent.post('/invitations/check').send({ code: '' }).expect(400);
+  });
 });
