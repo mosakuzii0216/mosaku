@@ -4,9 +4,10 @@ import { GoogleController } from './google.controller';
 import { GOOGLE_OAUTH_CLIENT } from './google.constants';
 import { GoogleAccountService } from './google-account.service';
 import { UserModule } from '../../user/user.module';
+import { InvitationModule } from '../../invitation/invitation.module';
 
 @Module({
-  imports: [UserModule],
+  imports: [UserModule, InvitationModule],
   controllers: [GoogleController],
   providers: [
     GoogleAccountService,

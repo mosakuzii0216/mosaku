@@ -7,5 +7,6 @@ import { UserModule } from '../user/user.module';
   imports: [UserModule],
   controllers: [InvitationController],
   providers: [InvitationService],
+  exports: [InvitationService],
 })
 export class InvitationModule {}

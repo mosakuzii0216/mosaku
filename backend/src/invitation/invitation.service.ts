@@ -17,6 +17,13 @@ export type InvitationStatus = 'unused' | 'used' | 'expired' | 'revoked';
 // コードを使えない理由
 export type CheckFailure = 'not_found' | 'used' | 'expired' | 'revoked';
 
+// 招待コードを使えなかったとき。理由を持たせて、画面まで戻す
+export class InvitationError extends Error {
+  constructor(readonly reason: CheckFailure) {
+    super(`招待コードを使えませんでした: ${reason}`);
+  }
+}
+
 // 取り消し → 使われた → 期限切れ → まだ、の」順に見る
 function statusOf(invitation: Invitation, now: Date): InvitationStatus {
   if (invitation.revokedAt) return 'revoked';
