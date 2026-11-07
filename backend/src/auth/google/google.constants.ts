@@ -4,3 +4,6 @@ export const GOOGLE_OAUTH_CLIENT = 'GOOGLE_OAUTH_CLIENT';
 // 行きに預けて、帰りに照らし合わせるCookie
 export const GOOGLE_STATE_COOKIE = 'mosaku_google_state';
 export const GOOGLE_VERIFIER_COOKIE = 'mosaku_google_verifier';
+
+// 登録するときに使う招待コード。行きに預けて、帰りに使う
+export const GOOGLE_INVITE_COOKIE = 'mosaku_google_invite';

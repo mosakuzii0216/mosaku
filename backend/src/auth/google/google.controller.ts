@@ -11,6 +11,7 @@ import type { Request, Response } from 'express';
 import { randomBytes } from 'node:crypto';
 import { CodeChallengeMethod, OAuth2Client } from 'google-auth-library';
 import {
+  GOOGLE_INVITE_COOKIE,
   GOOGLE_OAUTH_CLIENT,
   GOOGLE_STATE_COOKIE,
   GOOGLE_VERIFIER_COOKIE,
@@ -19,6 +20,7 @@ import { GoogleAccountService, GoogleProfile } from './google-account.service';
 import { CurrentUser } from '../current-user.decorator';
 import { USER_COOKIE } from '../anonymous-user.middleware';
 import type { User } from '../../../generated/prisma/client';
+import { InvitationError } from '../../invitation/invitation.service';
 
 const TEN_MINUTES_MS = 10 * 60 * 1000;
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
@@ -34,7 +36,7 @@ export class GoogleController {
 
   // 合言葉と鍵を作って預け、Googleのログイン画面へ送る
   @Get('start')
-  async start(@Res() res: Response) {
+  async start(@Res() res: Response, @Query('invite') invite?: string) {
     const state = randomBytes(16).toString('base64url');
     const { codeVerifier, codeChallenge } =
       await this.client.generateCodeVerifierAsync();
@@ -50,6 +52,8 @@ export class GoogleController {
     };
     res.cookie(GOOGLE_STATE_COOKIE, state, options);
     res.cookie(GOOGLE_VERIFIER_COOKIE, codeVerifier, options);
+    // 招待コードも、Googleから戻るまでに預かる。なければ空にして、前の分を残さない
+    res.cookie(GOOGLE_INVITE_COOKIE, invite ?? '', options);
 
     const url = this.client.generateAuthUrl({
       scope: ['openid', 'email'],
@@ -72,10 +76,12 @@ export class GoogleController {
     const frontend = process.env.FRONTEND_URL ?? 'http://localhost:5173';
     const savedState: unknown = req.signedCookies?.[GOOGLE_STATE_COOKIE];
     const verifier: unknown = req.signedCookies?.[GOOGLE_VERIFIER_COOKIE];
+    const invite: unknown = req.signedCookies?.[GOOGLE_INVITE_COOKIE];
 
     // 使い捨て。うまくいってもいかなくても、二度は使わせない
     res.clearCookie(GOOGLE_STATE_COOKIE, { path: '/auth/google' });
     res.clearCookie(GOOGLE_VERIFIER_COOKIE, { path: '/auth/google' });
+    res.clearCookie(GOOGLE_INVITE_COOKIE, { path: '/auth/google' });
 
     // ⑦ 自分が始めたログインか確かめる。違えばGoogleには問い合わせずに戻す
     if (
@@ -107,8 +113,19 @@ export class GoogleController {
       return res.redirect(`${frontend}/?login=failed`);
     }
 
-    // ⑩ mosakuのユーザーにつなぐ
-    const userId = await this.googleAccountService.login(user.id, profile);
+    // ⑩ mosakuのユーザーにつなぐ。初めてのGoogleなら、預かった招待コードを使う
+    let userId: string;
+    try {
+      userId = await this.googleAccountService.login(
+        user.id,
+        profile,
+        typeof invite === 'string' ? invite : undefined,
+      );
+    } catch (e) {
+      // 招待コードを使えなければ、登録せずに理由を付けて画面へ戻す
+      if (!(e instanceof InvitationError)) throw e;
+      return res.redirect(`${frontend}/?invite=${e.reason}`);
+    }
 
     // ⑪ つないだユーザーの名札を渡して、画面へ戻す
     res.cookie(USER_COOKIE, userId, {
