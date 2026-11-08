@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { InvitationService } from '../src/invitation/invitation.service';
 
 describe('Me (e2e)', () => {
   let app: INestApplication;
@@ -30,7 +31,11 @@ describe('Me (e2e)', () => {
     const res = await request(app.getHttpServer()).get('/me').expect(200);
 
     // idなど余計なものが混ざっていないことも確かめる
-    expect(res.body).toEqual({ hasPasskey: false, hasGoogle: false });
+    expect(res.body).toEqual({
+      hasPasskey: false,
+      hasGoogle: false,
+      isPremium: false,
+    });
   });
 
   it('GET /me はパスキーを持つユーザにhasPasskey: trueを返す', async () => {
@@ -49,7 +54,11 @@ describe('Me (e2e)', () => {
 
     const res = await agent.get('/me').expect(200);
 
-    expect(res.body).toEqual({ hasPasskey: true, hasGoogle: false });
+    expect(res.body).toEqual({
+      hasPasskey: true,
+      hasGoogle: false,
+      isPremium: false,
+    });
   });
 
   it('GET /me はGoogleと連携したユーザにhasGoogle: trueを返す', async () => {
@@ -62,7 +71,29 @@ describe('Me (e2e)', () => {
 
     const res = await agent.get('/me').expect(200);
 
-    expect(res.body).toEqual({ hasPasskey: false, hasGoogle: true });
+    expect(res.body).toEqual({
+      hasPasskey: false,
+      hasGoogle: true,
+      isPremium: false,
+    });
+  });
+
+  it('GET /me は招待コードで登録したユーザにisPremium: trueを返す', async () => {
+    const agent = request.agent(app.getHttpServer());
+    await agent.get('/me').expect(200);
+    const user = await prisma.user.findFirstOrThrow();
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const invitations = app.get(InvitationService);
+    const invitation = await invitations.create(developer.id);
+    await invitations.use(invitation.code, user.id);
+
+    const res = await agent.get('/me').expect(200);
+
+    expect(res.body).toEqual({
+      hasPasskey: false,
+      hasGoogle: false,
+      isPremium: true,
+    });
   });
 
   it('POST /me/logout は名札を消し、次のアクセスは別の匿名ユーザーになる', async () => {

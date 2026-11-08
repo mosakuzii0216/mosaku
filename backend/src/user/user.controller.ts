@@ -18,11 +18,12 @@ export class UserController {
   // 画面の出し分けに要るものだけ返す。idはCookieの中身なので返さない。
   @Get()
   async me(@CurrentUser() user: { id: string }) {
-    const [hasPasskey, hasGoogle] = await Promise.all([
+    const [hasPasskey, hasGoogle, isPremium] = await Promise.all([
       this.userService.hasPasskey(user.id),
       this.userService.hasGoogle(user.id),
+      this.userService.isPremium(user.id),
     ]);
-    return { hasPasskey, hasGoogle };
+    return { hasPasskey, hasGoogle, isPremium };
   }
 
   // 名札を消すだけ。ユーザとメモはサーバに残るので、パスキーがGoogleでまた入れる
