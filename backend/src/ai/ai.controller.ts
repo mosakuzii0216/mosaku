@@ -20,7 +20,7 @@ export class AiController {
     private readonly aiUsage: AiUsageService,
   ) {}
 
-  // 選ぶ箱に並べるAI。話す時にGoogleのログインを確かめるので、一覧は誰でも見られる
+  // 選ぶ箱に並べるAI。話す時にプレミアムかを確かめるので、一覧は誰でも見られる
   @Get('providers')
   providers() {
     return { providers: this.aiService.providers() };
@@ -30,9 +30,9 @@ export class AiController {
   @Post('chat')
   @HttpCode(200)
   async chat(@CurrentUser() user: { id: string }, @Body() body: ChatDto) {
-    // AIはGoogleでログインした人だけ。使った回数を人に結びつけるため
-    if (!(await this.userService.hasGoogle(user.id))) {
-      throw new ForbiddenException('AIはGoogleでログインすると使えます');
+    // AIはプレミアムの人だけ。招待コードで登録した人と、開発者
+    if (!(await this.userService.isPremium(user.id))) {
+      throw new ForbiddenException('AIは招待コードで登録した人だけが使えます');
     }
     await this.aiUsage.consume(user.id);
     const { provider, diary, messages } = body;

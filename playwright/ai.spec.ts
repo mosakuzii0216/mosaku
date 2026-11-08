@@ -16,13 +16,13 @@ test.beforeEach(async ({ page }) => {
   await page.getByRole("button", { name: "AI", exact: true }).click();
 });
 
-test("ログインしていなければ、Googleでログインするように伝えて、書いたことは残す", async ({
+test("AIは招待コードで登録していなければ、使えないと伝えて、書いたことは残す", async ({
   page,
 }) => {
   await say(page, "聞いて");
 
   await expect(page.getByRole("alert")).toHaveText(
-    "AIはGoogleでログインすると使えます",
+    "AIは招待コードで登録した人だけが使えます",
   );
   await expect(said(page)).toHaveText(["聞いて"]);
 });

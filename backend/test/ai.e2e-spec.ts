@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { AI_CLIENTS } from '../src/ai/ai-client';
+import { InvitationService } from '../src/invitation/invitation.service';
 
 // 本物のAIは呼ばず、決まった返事をする偽物にする
 const chat = jest.fn().mockResolvedValue('どう言いたかった？');
@@ -51,16 +52,33 @@ describe('AI(e2e)', () => {
     return agent;
   }
 
-  it('Googleでログインしていれば、AIの返事が返る', async () => {
+  // Googleで登録するときに、招待コードも使ったことにする
+  async function invitedAgent() {
     const agent = await googleAgent();
+    const user = await prisma.user.findFirstOrThrow();
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const invitations = app.get(InvitationService);
+    const invitation = await invitations.create(developer.id);
+    await invitations.use(invitation.code, user.id);
+    return agent;
+  }
+
+  it('招待コードで登録していれば、AIの返事が返る', async () => {
+    const agent = await invitedAgent();
     const res = await agent.post('/ai/chat').send(body).expect(200);
     expect(res.body).toEqual({ reply: 'どう言いたかった？' });
   });
 
   it('1日に話せる回数を使い切ったら、429で断る', async () => {
-    const agent = await googleAgent();
+    const agent = await invitedAgent();
     await agent.post('/ai/chat').send(body).expect(200);
     await agent.post('/ai/chat').send(body).expect(429);
+  });
+
+  it('Googleで登録していても、招待コードを使っていなければ、403で断る', async () => {
+    const agent = await googleAgent();
+    const res = await agent.post('/ai/chat').send(body).expect(403);
+    expect(res.body.message).toBe('AIは招待コードで登録した人だけが使えます');
   });
 
   it('Googleでログインしていなければ、403で断る', async () => {
