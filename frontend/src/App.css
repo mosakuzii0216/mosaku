@@ -475,12 +475,11 @@
   color: var(--text);
 }
 
-/* Googleで続ける：リンクだが見た目はボタンにそろえる */
+/* Googleで続ける：招待コードの欄、使えなかった理由、ボタンを縦に並べる */
 .google-login {
-  display: block;
+  display: grid;
+  gap: var(--s2);
   margin-bottom: var(--s3);
-  text-align: center;
-  text-decoration: none;
 }
 
 /* 招待コードの欄。目安箱の書く欄と同じ枠にする */
