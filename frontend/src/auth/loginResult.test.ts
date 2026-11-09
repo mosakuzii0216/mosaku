@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { takeLoginFailed } from "./loginResult";
+import { takeInviteFailure, takeLoginFailed } from "./loginResult";
 
 describe("takeLoginFailed", () => {
   afterEach(() => {
@@ -22,5 +22,22 @@ describe("takeLoginFailed", () => {
 
   it("何もついていなければfalseを返す", () => {
     expect(takeLoginFailed()).toBe(false);
+  });
+});
+
+describe("takeInviteFailure", () => {
+  afterEach(() => {
+    window.history.replaceState(null, "", "/");
+  });
+
+  it("?invite=used で戻ってきたら理由を返し、URLからは消す", () => {
+    window.history.replaceState(null, "", "/?invite=used");
+
+    expect(takeInviteFailure()).toBe("used");
+    expect(window.location.search).toBe("");
+  });
+
+  it("何もついていなければnullを返す", () => {
+    expect(takeInviteFailure()).toBeNull();
   });
 });
