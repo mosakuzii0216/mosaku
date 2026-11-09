@@ -6,6 +6,7 @@ import { MOD } from "./shortcut";
 import type { Theme } from "./theme";
 import { FeedbackForm } from "./feedback/FeedbackForm";
 import { sendFeedback } from "./feedback/feedbackApi";
+import { checkInvitation } from "./invitation/invitationApi";
 
 type Props = {
   query: string;
@@ -95,7 +96,7 @@ export function AppHeader({
           )}
         </div>
         {/* Googleがまだなら出す。パスキーだけで登録した人も、ここからGoogleでつなげる */}
-        {!hasGoogle && <GoogleLogin />}
+        {!hasGoogle && <GoogleLogin onCheck={checkInvitation} />}
         <p className="menu-label">目安箱</p>
         <FeedbackForm onSend={sendFeedback} />
         {/* 匿名のまま押すとメモに二度と戻れないので、登録済みのときだけ出す */}

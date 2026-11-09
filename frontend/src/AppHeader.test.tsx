@@ -87,7 +87,7 @@ describe("AppHeader", () => {
     await userEvent.click(screen.getByRole("button", { name: "設定" }));
 
     expect(
-      screen.getByRole("link", { name: "Googleで続ける" }),
+      screen.getByRole("button", { name: "Googleで続ける" }),
     ).toBeInTheDocument();
   });
 
@@ -108,7 +108,7 @@ describe("AppHeader", () => {
 
     expect(screen.getByText("登録済み：Google・パスキー")).toBeInTheDocument();
     expect(
-      screen.queryByRole("link", { name: "Googleで続ける" }),
+      screen.queryByRole("button", { name: "Googleで続ける" }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: "パスキーでログイン" }),
@@ -122,7 +122,7 @@ describe("AppHeader", () => {
     await userEvent.click(screen.getByRole("button", { name: "設定" }));
 
     expect(
-      screen.getByRole("link", { name: "Googleで続ける" }),
+      screen.getByRole("button", { name: "Googleで続ける" }),
     ).toBeInTheDocument();
   });
 
