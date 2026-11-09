@@ -19,14 +19,18 @@ import { Drawer } from "./Drawer";
 import { MemoList } from "./memo/MemoList";
 import { AiPane } from "./ai/AiPane";
 import { useAi } from "./ai/useAi";
+import { inviteMessage } from "./invitation/inviteMessage";
 
-type Props = { loginFailed?: boolean };
+type Props = { loginFailed?: boolean; inviteFailure?: string | null };
 
-export default function App({ loginFailed = false }: Props) {
+export default function App({ loginFailed = false, inviteFailure }: Props) {
+  // Googleから戻ったときの知らせ。ログインの失敗を先に見る
   const [notice, setNotice] = useState(
     loginFailed
       ? "Googleでログインできませんでした。もう一度お試しください。"
-      : "",
+      : inviteFailure
+        ? inviteMessage(inviteFailure)
+        : "",
   );
   const [theme, setTheme] = useTheme();
   const { query, setQuery, results, isSearching } = useSearch();
