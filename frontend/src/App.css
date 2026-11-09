@@ -483,6 +483,24 @@
   text-decoration: none;
 }
 
+/* 招待コードの欄。目安箱の書く欄と同じ枠にする */
+.invite-input {
+  padding: var(--s2) var(--s3);
+  font: inherit;
+  color: var(--text-h);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* 使えなかった理由。AIに断られたときと同じ形で、小さく出す */
+.invite-error {
+  padding-left: var(--s3);
+  font-size: 14px;
+  color: var(--text-h);
+  border-left: 2px solid var(--accent-border);
+}
+
 /* ログアウトはメニューの一番下に、少し離して置く */
 .logout-button {
   display: block;
