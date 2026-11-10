@@ -558,6 +558,24 @@
   flex-direction: column;
 }
 
+/* 真ん中に出すモーダル。引き出しと同じ幕の上に出し、中身が長いときは中だけ送る */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 40;
+  transform: translate(-50%, -50%);
+  width: min(400px, calc(100vw - 2 * var(--s4)));
+  max-height: calc(100dvh - 2 * var(--s5));
+  box-sizing: border-box;
+  padding: var(--s4);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .drawer-head {
   display: flex;
   align-items: center;

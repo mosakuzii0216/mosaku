@@ -5,10 +5,18 @@ type Props = {
   label: string;
   onClose: () => void;
   children: ReactNode;
+  // "modal"にすると、左ではなく真ん中に出す
+  variant?: "drawer" | "modal";
 };
 
 // 左から出てくる引き出し。閉じているあいだは何も描かない
-export function Drawer({ isOpen, label, onClose, children }: Props) {
+export function Drawer({
+  isOpen,
+  label,
+  onClose,
+  children,
+  variant = "drawer",
+}: Props) {
   useEffect(() => {
     if (!isOpen) return;
 
@@ -29,7 +37,7 @@ export function Drawer({ isOpen, label, onClose, children }: Props) {
       {/* 奥を暗くする幕。押すと閉じる */}
       <div className="drawer-backdrop" onClick={onClose} />
       <div
-        className="drawer"
+        className={variant}
         role="dialog"
         aria-modal="true"
         aria-label={label}

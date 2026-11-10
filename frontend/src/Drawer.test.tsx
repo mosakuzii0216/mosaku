@@ -59,4 +59,20 @@ describe("Drawer", () => {
 
     expect(onClose).toHaveBeenCalled();
   });
+
+  it("ふだんは、左から出る引き出しの見た目にする", () => {
+    renderDrawer(true);
+
+    expect(screen.getByRole("dialog")).toHaveClass("drawer");
+  });
+
+  it("modalにすると、真ん中に出す見た目にする", () => {
+    render(
+      <Drawer isOpen label="招待" onClose={() => {}} variant="modal">
+        <p>中身</p>
+      </Drawer>,
+    );
+
+    expect(screen.getByRole("dialog")).toHaveClass("modal");
+  });
 });
