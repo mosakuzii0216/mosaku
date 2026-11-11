@@ -29,9 +29,14 @@ function statusText(invitation: Invitation): string {
 export function InvitationPanel({ onLoad }: Props) {
   // 一覧が届くまではundefined
   const [data, setData] = useState<Invitations>();
+  const [error, setError] = useState("");
 
   const reload = useCallback(async () => {
-    setData(await onLoad());
+    try {
+      setData(await onLoad());
+    } catch {
+      setError("一覧を読めませんでした。少し待って、開き直してください");
+    }
   }, [onLoad]);
 
   useEffect(() => {
@@ -40,6 +45,11 @@ export function InvitationPanel({ onLoad }: Props) {
 
   return (
     <div className="invite-panel">
+      {error && (
+        <p className="invite-error" role="alert">
+          {error}
+        </p>
+      )}
       <ul className="invite-list">
         {data?.invitations.map((invitation) => (
           <li key={invitation.id} className="invite-item">

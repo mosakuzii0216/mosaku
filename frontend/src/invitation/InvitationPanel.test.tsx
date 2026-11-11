@@ -35,4 +35,14 @@ describe("InvitationPanel", () => {
     expect(screen.getByText("12月9日まで")).toBeInTheDocument();
     expect(screen.getByText("使われた")).toBeInTheDocument();
   });
+
+  it("読めなかったら、開き直してもらう", async () => {
+    render(
+      <InvitationPanel
+        {...base}
+        onLoad={() => Promise.reject(new Error("offline"))}
+      />,
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent("開き直して");
+  });
 });
