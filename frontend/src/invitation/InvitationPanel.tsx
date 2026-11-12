@@ -6,6 +6,8 @@ type Props = {
   onLoad: () => Promise<Invitations>;
   // コードを1枚作る
   onCreate: () => Promise<void>;
+  // まだ使われていないコードを取り消す
+  onRevoke: (id: string) => Promise<void>;
 };
 
 // コードの状態を、画面に出す言葉に直す。まだ使われていないコードは、いつまで使えるかを出す
@@ -28,7 +30,7 @@ function statusText(invitation: Invitation): string {
 }
 
 // 招待モーダルの中身。開いたら、自分が作ったコードの一覧を読む
-export function InvitationPanel({ onLoad, onCreate }: Props) {
+export function InvitationPanel({ onLoad, onCreate, onRevoke }: Props) {
   // 一覧が届くまではundefined
   const [data, setData] = useState<Invitations>();
   const [error, setError] = useState("");
@@ -87,6 +89,15 @@ export function InvitationPanel({ onLoad, onCreate }: Props) {
           <li key={invitation.id} className="invite-item">
             <code className="invite-code">{invitation.code}</code>
             <span className="invite-status">{statusText(invitation)}</span>
+            {invitation.status === "unused" && (
+              <button
+                className="ghost-button invite-revoke"
+                aria-label={`${invitation.code}を取り消す`}
+                onClick={() => void run(() => onRevoke(invitation.id))}
+              >
+                取り消す
+              </button>
+            )}
           </li>
         ))}
       </ul>

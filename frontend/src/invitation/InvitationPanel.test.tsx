@@ -27,6 +27,7 @@ const list: Invitations = {
 const base = {
   onLoad: async () => list,
   onCreate: async () => {},
+  onRevoke: async () => {},
 };
 
 describe("InvitationPanel", () => {
@@ -92,5 +93,19 @@ describe("InvitationPanel", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "もう一度押して",
     );
+  });
+
+  it("取り消せるのは、まだ使われていないコードだけ", async () => {
+    const onRevoke = vi.fn().mockRejectedValue(undefined);
+    render(<InvitationPanel {...base} onRevoke={onRevoke} />);
+
+    await userEvent.click(
+      await screen.findByRole("button", { name: "ABCD-EFGHを取り消す" }),
+    );
+
+    expect(onRevoke).toHaveBeenCalledWith("1");
+    expect(
+      screen.queryByRole("button", { name: "JKLM-NPQRを取り消す" }),
+    ).not.toBeInTheDocument();
   });
 });
