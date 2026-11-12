@@ -1,7 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { InvitationPanel } from "./InvitationPanel";
 import type { Invitations } from "./invitationApi";
+import userEvent from "@testing-library/user-event";
 
 // 開いたときに読む一覧。まだ使われていないコードと、使われたコード
 const list: Invitations = {
@@ -25,6 +26,7 @@ const list: Invitations = {
 // 本物のAPIの代わり。テストごとに、見たいものだけ差し替える
 const base = {
   onLoad: async () => list,
+  onCreate: async () => {},
 };
 
 describe("InvitationPanel", () => {
@@ -34,6 +36,7 @@ describe("InvitationPanel", () => {
     expect(await screen.findByText("ABCD-EFGH")).toBeInTheDocument();
     expect(screen.getByText("12月9日まで")).toBeInTheDocument();
     expect(screen.getByText("使われた")).toBeInTheDocument();
+    expect(screen.getByText("あと1枚")).toBeInTheDocument();
   });
 
   it("読めなかったら、開き直してもらう", async () => {
@@ -44,5 +47,50 @@ describe("InvitationPanel", () => {
       />,
     );
     expect(await screen.findByRole("alert")).toHaveTextContent("開き直して");
+  });
+
+  it("コードを作ると、一覧を読み直す", async () => {
+    const onCreate = vi.fn().mockResolvedValue(undefined);
+    const onLoad = vi
+      .fn()
+      .mockResolvedValueOnce({ invitations: [], remaining: 3 })
+      .mockResolvedValueOnce(list);
+    render(<InvitationPanel {...base} onLoad={onLoad} onCreate={onCreate} />);
+
+    expect(
+      await screen.findByText("まだコードはありません"),
+    ).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "コードを作る" }));
+
+    expect(onCreate).toHaveBeenCalled();
+    expect(await screen.findByText("ABCD-EFGH")).toBeInTheDocument();
+  });
+
+  it("あと0枚なら、「コードを作る」は押せない", async () => {
+    render(
+      <InvitationPanel
+        {...base}
+        onLoad={async () => ({ ...list, remaining: 0 })}
+      />,
+    );
+
+    expect(await screen.findByText("あと0枚")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "コードを作る" })).toBeDisabled();
+  });
+
+  it("作れなかったら、もう一度押してもらう", async () => {
+    render(
+      <InvitationPanel
+        {...base}
+        onCreate={() => Promise.reject(new Error("offline"))}
+      />,
+    );
+
+    expect(await screen.findByText("ABCD-EFGH")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "コードを作る" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "もう一度押して",
+    );
   });
 });
