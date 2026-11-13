@@ -13,10 +13,12 @@ type Props = {
   theme: Theme;
   hasPasskey: boolean;
   hasGoogle: boolean;
+  isPremium: boolean;
   onQueryChange: (q: string) => void;
   onThemeChange: (theme: Theme) => void;
   onLogout: () => void;
   onOpenList: () => void;
+  onOpenInvite: () => void;
   isAiOpen: boolean;
   onToggleAi: () => void;
 };
@@ -26,10 +28,12 @@ export function AppHeader({
   theme,
   hasPasskey,
   hasGoogle,
+  isPremium,
   onQueryChange,
   onThemeChange,
   onLogout,
   onOpenList,
+  onOpenInvite,
   isAiOpen,
   onToggleAi,
 }: Props) {
@@ -97,6 +101,12 @@ export function AppHeader({
         </div>
         {/* Googleがまだなら出す。パスキーだけで登録した人も、ここからGoogleでつなげる */}
         {!hasGoogle && <GoogleLogin onCheck={checkInvitation} />}
+        {/* 招待で登録した人と開発者は、招待コードを作れる */}
+        {isPremium && (
+          <button className="ghost-button invite-open" onClick={onOpenInvite}>
+            招待する
+          </button>
+        )}
         <p className="menu-label">目安箱</p>
         <FeedbackForm onSend={sendFeedback} />
         {/* 匿名のまま押すとメモに二度と戻れないので、登録済みのときだけ出す */}

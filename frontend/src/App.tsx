@@ -20,6 +20,12 @@ import { MemoList } from "./memo/MemoList";
 import { AiPane } from "./ai/AiPane";
 import { useAi } from "./ai/useAi";
 import { inviteMessage } from "./invitation/inviteMessage";
+import { InvitationPanel } from "./invitation/InvitationPanel";
+import {
+  createInvitation,
+  fetchInvitations,
+  revokeInvitation,
+} from "./invitation/invitationApi";
 
 type Props = { loginFailed?: boolean; inviteFailure?: string | null };
 
@@ -36,6 +42,7 @@ export default function App({ loginFailed = false, inviteFailure }: Props) {
   const { query, setQuery, results, isSearching } = useSearch();
   const [isListOpen, setIsListOpen] = useState(false);
   const [isAiOpen, setIsAiOpen] = useState(false);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
 
   const editor = useEditor({
     // 本文が空のときだけ「ここに書く」を薄く出す。枠が無くても書く場所がわかる
@@ -95,16 +102,18 @@ export default function App({ loginFailed = false, inviteFailure }: Props) {
 
   return (
     <div className="page">
-      {/* 引き出しが開いているあいだ、奥は押せないようにする */}
-      <div inert={isListOpen}>
+      {/* 引き出しや招待が開いているあいだ、奥は押せないようにする */}
+      <div inert={isListOpen || isInviteOpen}>
         <AppHeader
           query={query}
           theme={theme}
           hasPasskey={me.hasPasskey}
           hasGoogle={me.hasGoogle}
+          isPremium={me.isPremium}
           onQueryChange={setQuery}
           onThemeChange={setTheme}
           onOpenList={() => setIsListOpen(true)}
+          onOpenInvite={() => setIsInviteOpen(true)}
           onLogout={handleLogout}
           isAiOpen={isAiOpen}
           onToggleAi={() => setIsAiOpen((open) => !open)}
@@ -163,6 +172,20 @@ export default function App({ loginFailed = false, inviteFailure }: Props) {
             onPurge={m.purge}
           />
         </div>
+      </Drawer>
+
+      {/* 招待はモーダルで開く。開くたびに、一覧を読み直す */}
+      <Drawer
+        isOpen={isInviteOpen}
+        label="招待"
+        variant="modal"
+        onClose={() => setIsInviteOpen(false)}
+      >
+        <InvitationPanel
+          onLoad={fetchInvitations}
+          onCreate={createInvitation}
+          onRevoke={revokeInvitation}
+        />
       </Drawer>
 
       {/* 選べるAIが届いてから出す。届く前に出すと、はじめに選んでおくAIが決まらない */}

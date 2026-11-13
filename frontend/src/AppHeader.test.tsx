@@ -8,10 +8,12 @@ const base = {
   theme: "yoru" as const,
   hasPasskey: false,
   hasGoogle: false,
+  isPremium: false,
   onQueryChange: () => {},
   onThemeChange: () => {},
   onLogout: () => {},
   onOpenList: () => {},
+  onOpenInvite: () => {},
   isAiOpen: false,
   onToggleAi: () => {},
 };
@@ -144,5 +146,27 @@ describe("AppHeader", () => {
     await userEvent.click(screen.getByRole("button", { name: "ログアウト" }));
 
     expect(onLogout).toHaveBeenCalled();
+  });
+
+  it("プレミアムなら「招待する」が出て、押すとonOpenInviteが呼ばれる", async () => {
+    const onOpenInvite = vi.fn();
+    render(
+      <AppHeader {...base} hasGoogle isPremium onOpenInvite={onOpenInvite} />,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
+    await userEvent.click(screen.getByRole("button", { name: "招待する" }));
+
+    expect(onOpenInvite).toHaveBeenCalled();
+  });
+
+  it("プレミアムでなければ、「招待する」は出ない", async () => {
+    render(<AppHeader {...base} hasGoogle />);
+
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
+
+    expect(
+      screen.queryByRole("button", { name: "招待する" }),
+    ).not.toBeInTheDocument();
   });
 });
