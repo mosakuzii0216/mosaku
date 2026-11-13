@@ -96,7 +96,7 @@ describe("InvitationPanel", () => {
   });
 
   it("取り消せるのは、まだ使われていないコードだけ", async () => {
-    const onRevoke = vi.fn().mockRejectedValue(undefined);
+    const onRevoke = vi.fn().mockResolvedValue(undefined);
     render(<InvitationPanel {...base} onRevoke={onRevoke} />);
 
     await userEvent.click(
