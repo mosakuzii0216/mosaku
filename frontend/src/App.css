@@ -500,6 +500,59 @@
   border-left: 2px solid var(--accent-border);
 }
 
+/* 「招待する」は、メニューの横いっぱいに広げる */
+.invite-open {
+  width: 100%;
+  margin-bottom: var(--s3);
+}
+
+/* 招待モーダルの中身。説明・作るボタン・コードの一覧を縦に並べる */
+.invite-panel {
+  display: grid;
+  gap: var(--s3);
+}
+
+.invite-note,
+.invite-remaining,
+.invite-empty,
+.invite-status {
+  font-size: 13px;
+}
+
+/* 作るボタンの横に、あと何枚作れるかを添える */
+.invite-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.invite-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* コードと期限と「取り消す」を1行に並べる。「取り消す」は右端に寄せる */
+.invite-item {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* コードを押すと全体が選ばれるので、そのままコピーできる */
+.invite-code {
+  -webkit-user-select: all;
+  user-select: all;
+}
+
+.invite-revoke {
+  margin-left: auto;
+  padding: var(--s1) var(--s3);
+  font-size: 13px;
+}
+
 /* ログアウトはメニューの一番下に、少し離して置く */
 .logout-button {
   display: block;
