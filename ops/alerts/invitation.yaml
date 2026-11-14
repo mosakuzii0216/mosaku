@@ -1,0 +1,26 @@
+# 招待で誰かが登録したら、Slackの#mosaku-feedbackに知らせる
+# backendが招待コードを使ったときに出す1行のログ(invitation.service.ts)を拾う
+displayName: 招待で1人が登録した
+documentation:
+  subject: 招待で1人が登録した
+  mimeType: text/markdown
+  content: |
+    招待で1人が登録（${log.extracted_label.summary}）
+conditions:
+  - displayName: backendのログに、招待での登録
+    conditionMatchedLog:
+      filter: |
+        resource.type="cloud_run_revision"
+        resource.labels.service_name="mosaku-backend"
+        textPayload:"招待で1人が登録（"
+      # ()の中で取り出して、上のcontentに入れる。人数が変わるので、登録ごとに別々に知らせる
+      labelExtractors:
+        summary: REGEXP_EXTRACT(textPayload, "招待で1人が登録（(.*)）")
+combiner: OR
+alertStrategy:
+  # 同じ知らせは5分に1回まで
+  notificationRateLimit:
+    period: 300s
+  autoClose: 1800s
+notificationChannels:
+  - projects/igneous-core-480923-j0/notificationChannels/16568636063157637314
