@@ -434,6 +434,13 @@
   width: max-content;
   min-width: 12em;
   max-width: min(320px, calc(100vw - 2 * var(--s4)));
+  /* 窓より背が高いときは、中だけスクロールする。ヘッダーと一緒に上に残るので、ページをスクロールしても下までは見えないから */
+  /* 引くのは、上のヘッダーと下の余白(120px)と、ノッチとホームバーの分 */
+  max-height: calc(
+    100dvh - 120px - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+  );
+  overflow-y: auto;
+  overscroll-behavior: contain;
   /* 余白と枠もmax-widthの内側に数える。外に数えると、スマホで左にはみ出す */
   box-sizing: border-box;
   padding: var(--s3);
@@ -484,6 +491,8 @@
 
 /* 招待コードの欄。目安箱の書く欄と同じ枠にする */
 .invite-input {
+  /* Safariは欄の幅を文字数から決めて、メニューより広くしてしまう。0まで縮めてよいことにして、メニューの幅に納める */
+  min-width: 0;
   padding: var(--s2) var(--s3);
   font: inherit;
   color: var(--text-h);
