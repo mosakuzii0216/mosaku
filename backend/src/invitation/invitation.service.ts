@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -34,6 +35,7 @@ function statusOf(invitation: Invitation, now: Date): InvitationStatus {
 
 @Injectable()
 export class InvitationService {
+  private readonly logger = new Logger(InvitationService.name);
   constructor(
     private readonly prisma: PrismaService,
     private readonly userService: UserService,
@@ -133,6 +135,20 @@ export class InvitationService {
       where: { code: normalizeCode(input), usedAt: null },
       data: { usedAt: now, usedById: userId },
     });
-    return count === 1 ? null : 'used';
+    if (count === 0) return 'used';
+
+    // 招待で1人が登録したことを、Slackに知らせるために1行のログに残す
+    this.logger.log(`招待で1人が登録（${await this.developerSummary()}）`);
+    return null;
+  }
+
+  // 開発者が配ったコードのうち、何人が登録したか。取り消したコードは配っていないことにする
+  private async developerSummary(): Promise<string> {
+    const where = { createdBy: { isDeveloper: true }, revokedAt: null };
+    const handleOut = await this.prisma.invitation.count({ where });
+    const registered = await this.prisma.invitation.count({
+      where: { ...where, usedAt: { not: null } },
+    });
+    return `開発者の招待は${handleOut}人中${registered}人`;
   }
 }

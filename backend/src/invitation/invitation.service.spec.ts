@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Logger, NotFoundException } from '@nestjs/common';
 import { InvitationService } from './invitation.service';
 import { UserService } from '../user/user.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -197,5 +197,25 @@ describe('InvitationService', () => {
     // どちらか1人だけ使えて、もう一人には「使われた」を返す
     expect(results).toContain(null);
     expect(results).toContain('used');
+  });
+
+  it('use()でコードが使われたら、Slackに知らせるために1行のログを残す', async () => {
+    // ログは画面を出さずに、何を出したかだけを見る
+    const log = jest
+      .spyOn(Logger.prototype, 'log')
+      .mockImplementation(() => {});
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const invitation = await service.create(developer.id);
+    await service.create(developer.id);
+    // 取り消したコードは、配っていないことにする
+    const revoked = await service.create(developer.id);
+    await service.revoke(developer.id, revoked.id);
+    const alice = await prisma.user.create({ data: {} });
+
+    await service.use(invitation.code, alice.id);
+
+    expect(log).toHaveBeenCalledWith(
+      '招待で1人が登録（開発者の招待は2人中1人）',
+    );
   });
 });
