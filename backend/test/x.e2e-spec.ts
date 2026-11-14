@@ -2,7 +2,6 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { describe } from 'node:test';
 
 describe('Xでログイン(e2e)', () => {
   let app: INestApplication;
