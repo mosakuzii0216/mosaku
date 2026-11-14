@@ -25,6 +25,8 @@ import { FeedbackController } from './feedback/feedback.controller';
 import { FeedbackModule } from './feedback/feedback.module';
 import { InvitationController } from './invitation/invitation.controller';
 import { InvitationModule } from './invitation/invitation.module';
+import { XController } from './auth/x/x.controller';
+import { XModule } from './auth/x/x.module';
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { InvitationModule } from './invitation/invitation.module';
     AiModule,
     FeedbackModule,
     InvitationModule,
+    XModule,
   ],
   controllers: [AppController],
   providers: [
@@ -58,6 +61,7 @@ export class AppModule implements NestModule {
         AiController,
         FeedbackController,
         InvitationController,
+        XController,
       );
   }
 }
