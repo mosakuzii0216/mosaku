@@ -1,25 +1,25 @@
 import { Test } from '@nestjs/testing';
-import { GoogleAccountService } from './google-account.service';
+import { AccountService } from './account.service';
 import { UserService } from '../../user/user.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { InvitationService } from '../../invitation/invitation.service';
 
-describe('GoogleAccountService', () => {
-  let service: GoogleAccountService;
+describe('AccountService', () => {
+  let service: AccountService;
   let prisma: PrismaService;
   let invitations: InvitationService;
 
   beforeAll(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        GoogleAccountService,
+        AccountService,
         UserService,
         InvitationService,
         PrismaService,
       ],
     }).compile();
 
-    service = module.get(GoogleAccountService);
+    service = module.get(AccountService);
     prisma = module.get(PrismaService);
     invitations = module.get(InvitationService);
   });

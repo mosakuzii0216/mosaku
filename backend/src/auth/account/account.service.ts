@@ -9,7 +9,7 @@ import {
 export type GoogleProfile = { sub: string; email?: string };
 
 @Injectable()
-export class GoogleAccountService {
+export class AccountService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly userService: UserService,

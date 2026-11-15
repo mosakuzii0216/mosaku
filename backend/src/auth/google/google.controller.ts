@@ -16,7 +16,7 @@ import {
   GOOGLE_STATE_COOKIE,
   GOOGLE_VERIFIER_COOKIE,
 } from './google.constants';
-import { GoogleAccountService, GoogleProfile } from './google-account.service';
+import { AccountService, GoogleProfile } from '../account/account.service';
 import { CurrentUser } from '../current-user.decorator';
 import { USER_COOKIE } from '../anonymous-user.middleware';
 import type { User } from '../../../generated/prisma/client';
@@ -31,7 +31,7 @@ export class GoogleController {
 
   constructor(
     @Inject(GOOGLE_OAUTH_CLIENT) private readonly client: OAuth2Client,
-    private readonly googleAccountService: GoogleAccountService,
+    private readonly accountService: AccountService,
   ) {}
 
   // 合言葉と鍵を作って預け、Googleのログイン画面へ送る
@@ -116,7 +116,7 @@ export class GoogleController {
     // ⑩ mosakuのユーザーにつなぐ。初めてのGoogleなら、預かった招待コードを使う
     let userId: string;
     try {
-      userId = await this.googleAccountService.login(
+      userId = await this.accountService.login(
         user.id,
         profile,
         typeof invite === 'string' ? invite : undefined,
