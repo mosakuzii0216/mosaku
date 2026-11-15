@@ -6,7 +6,11 @@ import {
   InvitationService,
 } from '../../invitation/invitation.service';
 
-export type GoogleProfile = { sub: string; email?: string };
+// どこでログインしたか。DBのaccounts.providerに、この文字のまま入る
+export type Provider = 'google' | 'x';
+
+// そのサービスでの本人。idはGoogleならsub、XならユーザID
+export type ProviderProfile = { id: string; email?: string };
 
 @Injectable()
 export class AccountService {
@@ -16,32 +20,37 @@ export class AccountService {
     private readonly invitationService: InvitationService,
   ) {}
 
-  // Googleの本人(sub)をmosakuのユーザに繋ぎ、そのユーザIDを返す
+  // GoogleやXの本人をmosakuのユーザに繋ぎ、そのユーザIDを返す
   async login(
     currentUserId: string,
-    google: GoogleProfile,
+    provider: Provider,
+    profile: ProviderProfile,
     invite?: string,
   ): Promise<string> {
     const account = await this.prisma.account.findUnique({
       where: {
         provider_providerAccountId: {
-          provider: 'google',
-          providerAccountId: google.sub,
+          provider,
+          providerAccountId: profile.id,
         },
       },
     });
 
     if (account) {
-      // 前にこのGoogleでログインしたことがある：この端末の匿名メモを引き継ぐ
+      // 前にこのアカウントでログインしたことがある：この端末の匿名メモを引き継ぐ
       await this.userService.merge(currentUserId, account.userId);
       return account.userId;
     }
 
-    // 初めてのGoogle: まだGoogleを繋いでいなければ(匿名・パスキーだけ)、そのまま紐づける
-    // もうGoogleをつないだユーザ(共有の端末など)なら別人かもしれないので、新しく作る
-    const userId = (await this.userService.hasGoogle(currentUserId))
-      ? (await this.prisma.user.create({ data: {} })).id
-      : currentUserId;
+    // 初めて見るアカウント: まだどことも繋いでいなければ(匿名・パスキーだけ)、そのまま紐づける
+    // もうGoogleかXlllllll:whereをつないだユーザ(共有の端末など)なら別人かもしれないので、新しく作る
+    const connected = await this.prisma.account.count({
+      where: { userId: currentUserId },
+    });
+    const userId =
+      connected > 0
+        ? (await this.prisma.user.create({ data: {} })).id
+        : currentUserId;
 
     // 招待コードがあれば、繋ぐ前に使う。使えなければ繋がずに、理由を付けて断る
     if (invite) {
@@ -51,9 +60,9 @@ export class AccountService {
 
     await this.prisma.account.create({
       data: {
-        provider: 'google',
-        providerAccountId: google.sub,
-        email: google.email,
+        provider,
+        providerAccountId: profile.id,
+        email: profile.email,
         userId,
       },
     });

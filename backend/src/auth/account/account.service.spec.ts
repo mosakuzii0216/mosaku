@@ -35,8 +35,8 @@ describe('AccountService', () => {
   it('初めてのGoogleは、今の匿名ユーザーにそのまま紐づける', async () => {
     const anon = await prisma.user.create({ data: {} });
 
-    const userId = await service.login(anon.id, {
-      sub: 'sub-1',
+    const userId = await service.login(anon.id, 'google', {
+      id: 'sub-1',
       email: 'a@example.com',
     });
 
@@ -48,9 +48,9 @@ describe('AccountService', () => {
 
   it('同じGoogleでもう一度ログインすると、同じユーザーを返す', async () => {
     const anon = await prisma.user.create({ data: {} });
-    await service.login(anon.id, { sub: 'sub-1' });
+    await service.login(anon.id, 'google', { id: 'sub-1' });
 
-    const userId = await service.login(anon.id, { sub: 'sub-1' });
+    const userId = await service.login(anon.id, 'google', { id: 'sub-1' });
 
     expect(userId).toBe(anon.id);
     expect(await prisma.account.count()).toBe(1);
@@ -58,13 +58,15 @@ describe('AccountService', () => {
 
   it('別の端末の匿名メモを、Googleのユーザーへ引き継ぐ', async () => {
     const owner = await prisma.user.create({ data: {} });
-    await service.login(owner.id, { sub: 'sub-1' });
+    await service.login(owner.id, 'google', { id: 'sub-1' });
     const otherDevice = await prisma.user.create({ data: {} });
     await prisma.memo.create({
       data: { title: '別の端末のメモ', content: {}, userId: otherDevice.id },
     });
 
-    const userId = await service.login(otherDevice.id, { sub: 'sub-1' });
+    const userId = await service.login(otherDevice.id, 'google', {
+      id: 'sub-1',
+    });
 
     expect(userId).toBe(owner.id);
     const memos = await prisma.memo.findMany({ where: { userId: owner.id } });
@@ -76,12 +78,32 @@ describe('AccountService', () => {
 
   it('Googleでつないだユーザが別のGoogleでログインしたら、別のユーザを作る', async () => {
     const someone = await prisma.user.create({ data: {} });
-    await service.login(someone.id, { sub: 'sub-1' });
+    await service.login(someone.id, 'google', { id: 'sub-1' });
 
-    const userId = await service.login(someone.id, { sub: 'sub-2' });
+    const userId = await service.login(someone.id, 'google', { id: 'sub-2' });
 
     expect(userId).not.toBe(someone.id);
     expect(await prisma.user.count()).toBe(2);
+  });
+
+  it('Xでつないだユーザが初めてのGoogleでログインしたら、別のユーザを作る', async () => {
+    const someone = await prisma.user.create({ data: {} });
+    await service.login(someone.id, 'x', { id: 'x-1' });
+
+    const userId = await service.login(someone.id, 'google', { id: 'sub-1' });
+
+    expect(userId).not.toBe(someone.id);
+    expect(await prisma.user.count()).toBe(2);
+  });
+
+  it('同じIDでも、GoogleとXは別の人として見分ける', async () => {
+    const googleUser = await prisma.user.create({ data: {} });
+    await service.login(googleUser.id, 'google', { id: '1' });
+    const xUser = await prisma.user.create({ data: {} });
+
+    const userId = await service.login(xUser.id, 'x', { id: '1' });
+
+    expect(userId).toBe(xUser.id);
   });
 
   it('パスキーだけで登録したユーザーには、初めてGoogleをそのまま繋ぐ', async () => {
@@ -95,7 +117,7 @@ describe('AccountService', () => {
       },
     });
 
-    const userId = await service.login(owner.id, { sub: 'sub-1' });
+    const userId = await service.login(owner.id, 'google', { id: 'sub-1' });
 
     expect(userId).toBe(owner.id);
     expect(await prisma.user.count()).toBe(1);
@@ -106,7 +128,7 @@ describe('AccountService', () => {
     const invitation = await invitations.create(developer.id);
     const anon = await prisma.user.create({ data: {} });
 
-    await service.login(anon.id, { sub: 'sub-1' }, invitation.code);
+    await service.login(anon.id, 'google', { id: 'sub-1' }, invitation.code);
 
     expect(await invitations.check(invitation.code)).toBe('used');
   });
@@ -115,7 +137,7 @@ describe('AccountService', () => {
     const anon = await prisma.user.create({ data: {} });
 
     await expect(
-      service.login(anon.id, { sub: 'sub-1' }, 'EEEEEEEE'),
+      service.login(anon.id, 'google', { id: 'sub-1' }, 'EEEEEEEE'),
     ).rejects.toMatchObject({ reason: 'not_found' });
     expect(await prisma.account.count()).toBe(0);
   });
@@ -124,9 +146,9 @@ describe('AccountService', () => {
     const developer = await prisma.user.create({ data: { isDeveloper: true } });
     const invitation = await invitations.create(developer.id);
     const anon = await prisma.user.create({ data: {} });
-    await service.login(anon.id, { sub: 'sub-1' });
+    await service.login(anon.id, 'google', { id: 'sub-1' });
 
-    await service.login(anon.id, { sub: 'sub-1' }, invitation.code);
+    await service.login(anon.id, 'google', { id: 'sub-1' }, invitation.code);
 
     expect(await invitations.check(invitation.code)).toBeNull();
   });

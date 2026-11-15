@@ -16,7 +16,7 @@ import {
   GOOGLE_STATE_COOKIE,
   GOOGLE_VERIFIER_COOKIE,
 } from './google.constants';
-import { AccountService, GoogleProfile } from '../account/account.service';
+import { AccountService, ProviderProfile } from '../account/account.service';
 import { CurrentUser } from '../current-user.decorator';
 import { USER_COOKIE } from '../anonymous-user.middleware';
 import type { User } from '../../../generated/prisma/client';
@@ -93,7 +93,7 @@ export class GoogleController {
       return res.redirect(`${frontend}/?login=failed`);
     }
 
-    let profile: GoogleProfile;
+    let profile: ProviderProfile;
     try {
       // ⑧ 引換券と鍵を出して、証明書(id_token)をもらう
       const { tokens } = await this.client.getToken({
@@ -107,7 +107,7 @@ export class GoogleController {
       });
       const payload = ticket.getPayload();
       if (!payload?.sub) throw new Error('証明書にsubがありません');
-      profile = { sub: payload.sub, email: payload.email };
+      profile = { id: payload.sub, email: payload.email };
     } catch (e) {
       this.logger.warn(`Googleログインの確認に失敗しました: ${String(e)}`);
       return res.redirect(`${frontend}/?login=failed`);
@@ -118,6 +118,7 @@ export class GoogleController {
     try {
       userId = await this.accountService.login(
         user.id,
+        'google',
         profile,
         typeof invite === 'string' ? invite : undefined,
       );
