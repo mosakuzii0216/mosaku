@@ -1,5 +1,5 @@
-import { Controller, Get, Query, Res } from '@nestjs/common';
-import type { Response } from 'express';
+import { Controller, Get, Query, Req, Res } from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { createHash, randomBytes } from 'node:crypto';
 import {
   X_INVITE_COOKIE,
@@ -7,11 +7,21 @@ import {
   X_VERIFIER_COOKIE,
   xRedirectUri,
 } from './x.constants';
+import { CurrentUser } from '../current-user.decorator';
+import { USER_COOKIE } from '../anonymous-user.middleware';
+import { XClient } from './x.client';
+import { AccountService } from '../account/account.service';
+import type { User } from '../../../generated/prisma/client';
 
 const TEN_MINUTES_MS = 10 * 60 * 1000;
+const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
 @Controller('auth/x')
 export class XController {
+  constructor(
+    private readonly client: XClient,
+    private readonly accountService: AccountService,
+  ) {}
   // 合言葉と鍵を作って預け、Xのログイン画面へ送る
   @Get('start')
   start(@Res() res: Response, @Query('invite') invite?: string) {
@@ -45,5 +55,52 @@ export class XController {
       code_challenge_method: 'S256',
     });
     res.redirect(`https://x.com/i/oauth2/authorize?${params.toString()}`);
+  }
+
+  // Xから戻ってきたら、合言葉を照らし合わせ、Xの人をmosakuのユーザにつないで名札を渡す
+  @Get('callback')
+  async callback(
+    @CurrentUser() user: User,
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('code') code?: string,
+    @Query('state') state?: string,
+  ) {
+    const frontend = process.env.FRONTEND_URL ?? 'http://localhost:5173';
+    const savedState: unknown = req.signedCookies?.[X_STATE_COOKIE];
+    const verifier: unknown = req.signedCookies?.[X_VERIFIER_COOKIE];
+
+    // 使い捨て。うまくいってもいかなくても、二度は使わせない
+    res.clearCookie(X_STATE_COOKIE, { path: '/auth/x' });
+    res.clearCookie(X_VERIFIER_COOKIE, { path: '/auth/x' });
+    res.clearCookie(X_INVITE_COOKIE, { path: '/auth/x' });
+
+    // 自分が始めたログインか確かめる。違えばXには問い合わせずに戻す
+    if (
+      !code ||
+      typeof savedState !== 'string' ||
+      typeof verifier !== 'string' ||
+      state !== savedState
+    ) {
+      return res.redirect(`${frontend}/?login=failed`);
+    }
+
+    // 引換券と鍵を出して、Xの人のIDを読む
+    const xUserId = await this.client.fetchUserId(code, verifier);
+    // Xの人を、mosakuのユーザにつなぐ
+    const userId = await this.accountService.login(user.id, 'x', {
+      id: xUserId,
+    });
+
+    // つないだユーザの名札を渡して、画面へ戻す
+    res.cookie(USER_COOKIE, userId, {
+      httpOnly: true,
+      signed: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: ONE_YEAR_MS,
+      path: '/',
+    });
+    res.redirect(frontend);
   }
 }
