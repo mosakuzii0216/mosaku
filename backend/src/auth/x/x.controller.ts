@@ -12,6 +12,7 @@ import { USER_COOKIE } from '../anonymous-user.middleware';
 import { XClient } from './x.client';
 import { AccountService } from '../account/account.service';
 import type { User } from '../../../generated/prisma/client';
+import { InvitationError } from '../../invitation/invitation.service';
 
 const TEN_MINUTES_MS = 10 * 60 * 1000;
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
@@ -70,6 +71,7 @@ export class XController {
     const frontend = process.env.FRONTEND_URL ?? 'http://localhost:5173';
     const savedState: unknown = req.signedCookies?.[X_STATE_COOKIE];
     const verifier: unknown = req.signedCookies?.[X_VERIFIER_COOKIE];
+    const invite: unknown = req.signedCookies?.[X_INVITE_COOKIE];
 
     // 使い捨て。うまくいってもいかなくても、二度は使わせない
     res.clearCookie(X_STATE_COOKIE, { path: '/auth/x' });
@@ -94,10 +96,20 @@ export class XController {
       this.logger.warn(`Xログインの確認に失敗しました: ${String(e)}`);
       return res.redirect(`${frontend}/?login=failed`);
     }
-    // Xの人を、mosakuのユーザにつなぐ
-    const userId = await this.accountService.login(user.id, 'x', {
-      id: xUserId,
-    });
+    // Xの人を、mosakuのユーザにつなぐ。初めてのXなら、預かった招待コードを使う
+    let userId: string;
+    try {
+      userId = await this.accountService.login(
+        user.id,
+        'x',
+        { id: xUserId },
+        typeof invite === 'string' ? invite : undefined,
+      );
+    } catch (e) {
+      // 招待コードを使えなければ、登録せずに理由を付けて画面へ戻す
+      if (!(e instanceof InvitationError)) throw e;
+      return res.redirect(`${frontend}/?invite=${e.reason}`);
+    }
 
     // つないだユーザの名札を渡して、画面へ戻す
     res.cookie(USER_COOKIE, userId, {

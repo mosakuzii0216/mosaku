@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { XClient } from '../src/auth/x/x.client';
+import { InvitationService } from '../src/invitation/invitation.service';
 
 const FRONTEND = process.env.FRONTEND_URL ?? 'http://localhost:5173';
 
@@ -37,9 +38,12 @@ describe('Xでログイン(e2e)', () => {
   });
 
   // 匿名の名札をもらってからstartを通り、Xへ渡すはずだった合言葉を取り出す
-  async function startLogin(agent: ReturnType<typeof request.agent>) {
+  async function startLogin(
+    agent: ReturnType<typeof request.agent>,
+    query = '',
+  ) {
     await agent.get('/me').expect(200);
-    const res = await agent.get('/auth/x/start').expect(302);
+    const res = await agent.get(`/auth/x/start${query}`).expect(302);
     return new URL(res.headers.location).searchParams.get('state');
   }
 
@@ -109,6 +113,31 @@ describe('Xでログイン(e2e)', () => {
       .expect(302);
 
     expect(res.headers.location).toBe(`${FRONTEND}/?login=failed`);
+    expect(await prisma.account.count()).toBe(0);
+  });
+
+  it('招待コードを預けて登録すると、そのコードを使う', async () => {
+    const invitations = app.get(InvitationService);
+    const developer = await prisma.user.create({ data: { isDeveloper: true } });
+    const invitation = await invitations.create(developer.id);
+    const agent = request.agent(app.getHttpServer());
+    const state = await startLogin(agent, `?invite=${invitation.code}`);
+
+    await agent
+      .get(`/auth/x/callback?code=fake-code&state=${state}`)
+      .expect(302);
+    expect(await invitations.check(invitation.code)).toBe('used');
+  });
+
+  it('預けた招待コードが使えなければ、登録せずに理由を付けて戻す', async () => {
+    const agent = request.agent(app.getHttpServer());
+    const state = await startLogin(agent, '?invite=EEEE-EEEE');
+
+    const res = await agent
+      .get(`/auth/x/callback?code=fake-code&state=${state}`)
+      .expect(302);
+
+    expect(res.headers.location).toBe(`${FRONTEND}/?invite=not_found`);
     expect(await prisma.account.count()).toBe(0);
   });
 });
