@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Req, Res } from '@nestjs/common';
+import { Controller, Get, Logger, Query, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { createHash, randomBytes } from 'node:crypto';
 import {
@@ -18,6 +18,7 @@ const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
 @Controller('auth/x')
 export class XController {
+  private readonly logger = new Logger(XController.name);
   constructor(
     private readonly client: XClient,
     private readonly accountService: AccountService,
@@ -85,8 +86,14 @@ export class XController {
       return res.redirect(`${frontend}/?login=failed`);
     }
 
-    // 引換券と鍵を出して、Xの人のIDを読む
-    const xUserId = await this.client.fetchUserId(code, verifier);
+    // 引換券と鍵を出して、Xの人のIDを読む。Xに断られたら、つながずに戻す
+    let xUserId: string;
+    try {
+      xUserId = await this.client.fetchUserId(code, verifier);
+    } catch (e) {
+      this.logger.warn(`Xログインの確認に失敗しました: ${String(e)}`);
+      return res.redirect(`${frontend}/?login=failed`);
+    }
     // Xの人を、mosakuのユーザにつなぐ
     const userId = await this.accountService.login(user.id, 'x', {
       id: xUserId,

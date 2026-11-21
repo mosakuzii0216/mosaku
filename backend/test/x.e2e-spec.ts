@@ -85,4 +85,30 @@ describe('Xでログイン(e2e)', () => {
     expect(account.provider).toBe('x');
     expect(account.providerAccountId).toBe('x-user-1');
   });
+
+  it('GET /auth/x/callback は合言葉が違えば、Xに問い合わせに戻す', async () => {
+    const agent = request.agent(app.getHttpServer());
+    await startLogin(agent);
+
+    const res = await agent
+      .get('/auth/x/callback?code=fake-code&state=wrong')
+      .expect(302);
+
+    expect(res.headers.location).toBe(`${FRONTEND}/?login=failed`);
+    expect(fetchUserId).not.toHaveBeenCalled();
+    expect(await prisma.account.count()).toBe(0);
+  });
+
+  it('GET /auth/x/callback はXに断られたら、つながずに戻す', async () => {
+    fetchUserId.mockRejectedValueOnce(new Error('Xに断られた'));
+    const agent = request.agent(app.getHttpServer());
+    const state = await startLogin(agent);
+
+    const res = await agent
+      .get(`/auth/x/callback?code=fake-code&state=${state}`)
+      .expect(302);
+
+    expect(res.headers.location).toBe(`${FRONTEND}/?login=failed`);
+    expect(await prisma.account.count()).toBe(0);
+  });
 });
