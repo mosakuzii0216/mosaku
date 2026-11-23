@@ -13,6 +13,7 @@ type Props = {
   theme: Theme;
   hasPasskey: boolean;
   hasGoogle: boolean;
+  hasX: boolean;
   isPremium: boolean;
   onQueryChange: (q: string) => void;
   onThemeChange: (theme: Theme) => void;
@@ -28,6 +29,7 @@ export function AppHeader({
   theme,
   hasPasskey,
   hasGoogle,
+  hasX,
   isPremium,
   onQueryChange,
   onThemeChange,
@@ -37,9 +39,9 @@ export function AppHeader({
   isAiOpen,
   onToggleAi,
 }: Props) {
-  const registered = hasPasskey || hasGoogle;
+  const registered = hasPasskey || hasGoogle || hasX;
   // 登録に使ったもの。例：Google・パスキー
-  const ways = [hasGoogle && "Google", hasPasskey && "パスキー"]
+  const ways = [hasGoogle && "Google", hasX && "X", hasPasskey && "パスキー"]
     .filter(Boolean)
     .join("・");
 
@@ -99,8 +101,8 @@ export function AppHeader({
             </p>
           )}
         </div>
-        {/* Googleがまだなら出す。パスキーだけで登録した人も、ここからGoogleでつなげる */}
-        {!hasGoogle && <GoogleLogin onCheck={checkInvitation} />}
+        {/* GoogleもXもまだなら出す。パスキーだけで登録した人も、ここからGoogleでつなげる */}
+        {!hasGoogle && !hasX && <GoogleLogin onCheck={checkInvitation} />}
         {/* 招待で登録した人と開発者は、招待コードを作れる */}
         {isPremium && (
           <button className="ghost-button invite-open" onClick={onOpenInvite}>

@@ -3,6 +3,7 @@ const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 export type Me = {
   hasPasskey: boolean;
   hasGoogle: boolean;
+  hasX: boolean;
   isPremium: boolean;
 };
 
