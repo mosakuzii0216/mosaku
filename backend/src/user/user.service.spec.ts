@@ -131,6 +131,24 @@ describe('UserService', () => {
     expect(await service.hasGoogle(user.id)).toBe(true);
   });
 
+  it('hasX()はGoogleとだけ連携していればfalseを返す', async () => {
+    const user = await prisma.user.create({ data: {} });
+    await prisma.account.create({
+      data: { provider: 'google', providerAccountId: 'sub-1', userId: user.id },
+    });
+
+    expect(await service.hasX(user.id)).toBe(false);
+  });
+
+  it('hasX()はXと連携していればtrueを返す', async () => {
+    const user = await prisma.user.create({ data: {} });
+    await prisma.account.create({
+      data: { provider: 'x', providerAccountId: 'x-1', userId: user.id },
+    });
+
+    expect(await service.hasX(user.id)).toBe(true);
+  });
+
   it('isPremium()は招待コードを使って登録した人と開発者だけtrueを返す', async () => {
     const developer = await prisma.user.create({ data: { isDeveloper: true } });
     const invited = await prisma.user.create({ data: {} });

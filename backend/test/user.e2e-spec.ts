@@ -34,6 +34,7 @@ describe('Me (e2e)', () => {
     expect(res.body).toEqual({
       hasPasskey: false,
       hasGoogle: false,
+      hasX: false,
       isPremium: false,
     });
   });
@@ -57,6 +58,7 @@ describe('Me (e2e)', () => {
     expect(res.body).toEqual({
       hasPasskey: true,
       hasGoogle: false,
+      hasX: false,
       isPremium: false,
     });
   });
@@ -74,6 +76,25 @@ describe('Me (e2e)', () => {
     expect(res.body).toEqual({
       hasPasskey: false,
       hasGoogle: true,
+      hasX: false,
+      isPremium: false,
+    });
+  });
+
+  it('GET /me はXと連携したユーザにhasX: trueを返す', async () => {
+    const agent = request.agent(app.getHttpServer());
+    await agent.get('/me').expect(200);
+    const user = await prisma.user.findFirstOrThrow();
+    await prisma.account.create({
+      data: { provider: 'x', providerAccountId: 'x-1', userId: user.id },
+    });
+
+    const res = await agent.get('/me').expect(200);
+
+    expect(res.body).toEqual({
+      hasPasskey: false,
+      hasGoogle: false,
+      hasX: true,
       isPremium: false,
     });
   });
@@ -92,6 +113,7 @@ describe('Me (e2e)', () => {
     expect(res.body).toEqual({
       hasPasskey: false,
       hasGoogle: false,
+      hasX: false,
       isPremium: true,
     });
   });
