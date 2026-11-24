@@ -47,14 +47,6 @@ export class UserService {
     return count > 0;
   }
 
-  // Xと連携しているか
-  async hasX(userId: string): Promise<boolean> {
-    const count = await this.prisma.account.count({
-      where: { userId, provider: 'x' },
-    });
-    return count > 0;
-  }
-
   // パスキーかGoogleか、本登録の手段を1つでも持っているか
   async isRegistered(userId: string): Promise<boolean> {
     const [passkeys, accounts] = await Promise.all([
