@@ -86,26 +86,6 @@ describe('AccountService', () => {
     expect(await prisma.user.count()).toBe(2);
   });
 
-  it('Xでつないだユーザが初めてのGoogleでログインしたら、別のユーザを作る', async () => {
-    const someone = await prisma.user.create({ data: {} });
-    await service.login(someone.id, 'x', { id: 'x-1' });
-
-    const userId = await service.login(someone.id, 'google', { id: 'sub-1' });
-
-    expect(userId).not.toBe(someone.id);
-    expect(await prisma.user.count()).toBe(2);
-  });
-
-  it('同じIDでも、GoogleとXは別の人として見分ける', async () => {
-    const googleUser = await prisma.user.create({ data: {} });
-    await service.login(googleUser.id, 'google', { id: '1' });
-    const xUser = await prisma.user.create({ data: {} });
-
-    const userId = await service.login(xUser.id, 'x', { id: '1' });
-
-    expect(userId).toBe(xUser.id);
-  });
-
   it('パスキーだけで登録したユーザーには、初めてGoogleをそのまま繋ぐ', async () => {
     const owner = await prisma.user.create({ data: {} });
     await prisma.passkey.create({

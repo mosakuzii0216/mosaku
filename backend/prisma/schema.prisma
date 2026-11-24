@@ -64,7 +64,7 @@ model Passkey {
 
 model Account {
   id                String   @id @default(cuid())
-  // どのサービスか。"google"か"x"
+  // どのサービスか。今は"google"だけ
   provider          String
   // そのサービスでの本人ID(googleならsub)。メアドは変わることがあるので、見分けはこちらでする
   providerAccountId String   @map("provider_account_id")

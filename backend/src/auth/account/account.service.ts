@@ -6,10 +6,10 @@ import {
   InvitationService,
 } from '../../invitation/invitation.service';
 
-// どこでログインしたか。DBのaccounts.providerに、この文字のまま入る
-export type Provider = 'google' | 'x';
+// どこでログインしたか。DBのaccounts.providerに、この文字のまま入る。今はGoogleだけ
+export type Provider = 'google';
 
-// そのサービスでの本人。idはGoogleならsub、XならユーザID
+// そのサービスでの本人。idはGoogleならsub
 export type ProviderProfile = { id: string; email?: string };
 
 @Injectable()
@@ -20,7 +20,7 @@ export class AccountService {
     private readonly invitationService: InvitationService,
   ) {}
 
-  // GoogleやXの本人をmosakuのユーザに繋ぎ、そのユーザIDを返す
+  // Googleの本人をmosakuのユーザに繋ぎ、そのユーザIDを返す
   async login(
     currentUserId: string,
     provider: Provider,
@@ -43,7 +43,7 @@ export class AccountService {
     }
 
     // 初めて見るアカウント: まだどことも繋いでいなければ(匿名・パスキーだけ)、そのまま紐づける
-    // もうGoogleかXlllllll:whereをつないだユーザ(共有の端末など)なら別人かもしれないので、新しく作る
+    // もうGoogleをつないだユーザ(共有の端末など)なら別人かもしれないので、新しく作る
     const connected = await this.prisma.account.count({
       where: { userId: currentUserId },
     });
