@@ -1,0 +1,48 @@
+:root {
+  color-scheme: dark;
+  background: #0e1a17;
+}
+
+body {
+  margin: 0;
+  font-family: "Zen Kaku Gothic New", sans-serif;
+  line-height: 1.9;
+  color: #b9cbc2;
+}
+
+/* 読みやすい幅で、真ん中に置く */
+.legal {
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+}
+
+h1,
+h2 {
+  font-family: "Zen Old Mincho", serif;
+  color: #edf3ee;
+}
+
+h2 {
+  margin-top: 40px;
+  font-size: 19px;
+}
+
+a {
+  color: #e9b98f;
+}
+
+/* 表は細い線で区切るだけにして、狭い画面でも折り返して読めるようにする */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(185, 203, 194, 0.16);
+}
