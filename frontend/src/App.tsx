@@ -109,7 +109,6 @@ export default function App({ loginFailed = false, inviteFailure }: Props) {
           theme={theme}
           hasPasskey={me.hasPasskey}
           hasGoogle={me.hasGoogle}
-          hasX={me.hasX}
           isPremium={me.isPremium}
           onQueryChange={setQuery}
           onThemeChange={setTheme}
@@ -160,7 +159,7 @@ export default function App({ loginFailed = false, inviteFailure }: Props) {
         />
         <div className="drawer-foot">
           {/* 未登録のうちは、メモがこの端末にしか無いことを伝える */}
-          {!me.hasPasskey && !me.hasGoogle && !me.hasX && (
+          {!me.hasPasskey && !me.hasGoogle && (
             <p className="drawer-hint">
               メモは今、この端末でだけ開けます。「設定」から登録すると、他の端末でも開けます
             </p>

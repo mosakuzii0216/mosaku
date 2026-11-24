@@ -8,7 +8,6 @@ const base = {
   theme: "yoru" as const,
   hasPasskey: false,
   hasGoogle: false,
-  hasX: false,
   isPremium: false,
   onQueryChange: () => {},
   onThemeChange: () => {},
@@ -127,18 +126,6 @@ describe("AppHeader", () => {
     expect(
       screen.getByRole("button", { name: "Googleで続ける" }),
     ).toBeInTheDocument();
-  });
-
-  // 別のGoogleでログインすると新しいユーザになるので、Xでつないだ人には出さない
-  it("Xで登録済みなら、Xと出して、Googleで続けるは出さない", async () => {
-    render(<AppHeader {...base} hasX />);
-
-    await userEvent.click(screen.getByRole("button", { name: "設定" }));
-
-    expect(screen.getByText("登録済み：X")).toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: "Googleで続ける" }),
-    ).not.toBeInTheDocument();
   });
 
   it("未登録なら、ログアウトは出さない", async () => {
