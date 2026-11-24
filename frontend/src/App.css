@@ -489,6 +489,11 @@
   margin-bottom: var(--s3);
 }
 
+/* Googleで続けるの下に、規約に同意する一文を小さく添える */
+.login-terms {
+  font-size: 12px;
+}
+
 /* 招待コードの欄。目安箱の書く欄と同じ枠にする */
 .invite-input {
   /* Safariは欄の幅を文字数から決めて、メニューより広くしてしまう。0まで縮めてよいことにして、メニューの幅に納める */
@@ -568,6 +573,20 @@
   width: 100%;
   box-sizing: border-box;
   margin-top: var(--s4);
+}
+
+/* 規約とプライバシーポリシーへのリンク。メニューの一番下に小さく並べる */
+.legal-links {
+  display: flex;
+  gap: var(--s4);
+  margin-top: var(--s4);
+  font-size: 12px;
+}
+
+/* アプリの中のリンクは、アクセントの色にする */
+.login-terms a,
+.legal-links a {
+  color: var(--accent);
 }
 
 /* 目安箱。説明、書く欄、送るボタンを縦に並べる */

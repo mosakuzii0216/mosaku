@@ -115,6 +115,11 @@ export function AppHeader({
             ログアウト
           </button>
         )}
+        {/* 規約とプライバシーポリシーは、登録していてもいなくても読めるようにする */}
+        <p className="legal-links">
+          <a href="/terms.html">利用規約</a>
+          <a href="/privacy.html">プライバシーポリシー</a>
+        </p>
       </Menu>
     </header>
   );

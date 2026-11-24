@@ -8,6 +8,19 @@ describe("GoogleLogin", () => {
     vi.restoreAllMocks();
   });
 
+  it("続けると規約とプライバシーポリシーに同意することを伝え、それぞれのページへつなぐ", () => {
+    render(<GoogleLogin onCheck={vi.fn()} />);
+
+    expect(screen.getByText(/に同意したことになります/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "利用規約" })).toHaveAttribute(
+      "href",
+      "/terms.html",
+    );
+    expect(
+      screen.getByRole("link", { name: "プライバシーポリシー" }),
+    ).toHaveAttribute("href", "/privacy.html");
+  });
+
   it("コードを打たなければ、確かめずにGoogleへ行く", async () => {
     // 本当には移らずに、行き先だけ受け取る
     const go = vi.spyOn(window.location, "assign").mockImplementation(() => {});

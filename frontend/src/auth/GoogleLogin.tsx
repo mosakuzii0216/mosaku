@@ -55,6 +55,11 @@ export function GoogleLogin({ onCheck }: Props) {
         </p>
       )}
       <button className="ghost-button">Googleで続ける</button>
+      <p className="login-terms">
+        続けると、<a href="/terms.html">利用規約</a>と
+        <a href="/privacy.html">プライバシーポリシー</a>
+        に同意したことになります
+      </p>
     </form>
   );
 }

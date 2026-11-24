@@ -128,6 +128,21 @@ describe("AppHeader", () => {
     ).toBeInTheDocument();
   });
 
+  // 未登録だとGoogleで続けるの欄にも同じリンクが出るので、登録済みで見る
+  it("設定の一番下に、利用規約とプライバシーポリシーへのリンクがある", async () => {
+    render(<AppHeader {...base} hasGoogle />);
+
+    await userEvent.click(screen.getByRole("button", { name: "設定" }));
+
+    expect(screen.getByRole("link", { name: "利用規約" })).toHaveAttribute(
+      "href",
+      "/terms.html",
+    );
+    expect(
+      screen.getByRole("link", { name: "プライバシーポリシー" }),
+    ).toHaveAttribute("href", "/privacy.html");
+  });
+
   it("未登録なら、ログアウトは出さない", async () => {
     render(<AppHeader {...base} />);
 
