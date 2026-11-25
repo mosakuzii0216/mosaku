@@ -1,9 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import type { Request, Response, NextFunction } from 'express';
 import { UserService } from '../user/user.service';
-
-export const USER_COOKIE = 'mosaku_uid';
-const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
+import { USER_COOKIE, setUserCookie } from './user-cookie';
 
 @Injectable()
 export class AnonymousUserMiddleware implements NestMiddleware {
@@ -18,14 +16,7 @@ export class AnonymousUserMiddleware implements NestMiddleware {
     // Cookieが無い・壊れている・もうDBに居ないときだけ発行する
     // 毎回発行すると、遅れて届いた古い返事が新しいCookieを上書きしてしまう
     if (user.id !== current) {
-      res.cookie(USER_COOKIE, user.id, {
-        httpOnly: true,
-        signed: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: ONE_YEAR_MS,
-        path: '/',
-      });
+      setUserCookie(res, user.id);
     }
 
     req.user = user;

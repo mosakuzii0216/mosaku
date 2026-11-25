@@ -15,7 +15,7 @@ import type {
   AuthenticationResponseJSON,
 } from '@simplewebauthn/server';
 import { UserService } from '../../user/user.service';
-import { USER_COOKIE } from '../anonymous-user.middleware';
+import { setUserCookie } from '../user-cookie';
 
 export const CHALLENGE_COOKIE = 'mosaku_challenge';
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
@@ -109,14 +109,7 @@ export class PasskeyController {
     await this.userService.merge(user.id, ownerId);
 
     // 以後このブラウザは本登録ユーザとして振る舞う
-    res.cookie(USER_COOKIE, ownerId, {
-      httpOnly: true,
-      signed: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 365 * 24 * 60 * 60 * 1000,
-      path: '/',
-    });
+    setUserCookie(res, ownerId);
     res.clearCookie(CHALLENGE_COOKIE, { path: '/' });
 
     return { userId: ownerId };

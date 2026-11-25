@@ -18,12 +18,11 @@ import {
 } from './google.constants';
 import { AccountService, ProviderProfile } from '../account/account.service';
 import { CurrentUser } from '../current-user.decorator';
-import { USER_COOKIE } from '../anonymous-user.middleware';
 import type { User } from '../../../generated/prisma/client';
 import { InvitationError } from '../../invitation/invitation.service';
+import { setUserCookie } from '../user-cookie';
 
 const TEN_MINUTES_MS = 10 * 60 * 1000;
-const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
 @Controller('auth/google')
 export class GoogleController {
@@ -129,14 +128,7 @@ export class GoogleController {
     }
 
     // ⑪ つないだユーザーの名札を渡して、画面へ戻す
-    res.cookie(USER_COOKIE, userId, {
-      httpOnly: true,
-      signed: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: ONE_YEAR_MS,
-      path: '/',
-    });
+    setUserCookie(res, userId);
     res.redirect(frontend);
   }
 }

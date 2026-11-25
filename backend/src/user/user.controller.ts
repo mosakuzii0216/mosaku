@@ -9,7 +9,7 @@ import {
 import type { Response } from 'express';
 import { UserService } from './user.service';
 import { CurrentUser } from '../auth/current-user.decorator';
-import { USER_COOKIE } from '../auth/anonymous-user.middleware';
+import { clearUserCookie, setUserCookie } from '../auth/user-cookie';
 
 @Controller('me')
 export class UserController {
@@ -17,7 +17,12 @@ export class UserController {
 
   // 画面の出し分けに要るものだけ返す。idはCookieの中身なので返さない。
   @Get()
-  async me(@CurrentUser() user: { id: string }) {
+  async me(
+    @CurrentUser() user: { id: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    // 画面を開くたびに呼ばれるので、ここで名札を付け直して期限を延ばす
+    setUserCookie(res, user.id);
     const [hasPasskey, hasGoogle, isPremium] = await Promise.all([
       this.userService.hasPasskey(user.id),
       this.userService.hasGoogle(user.id),
@@ -30,11 +35,6 @@ export class UserController {
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie(USER_COOKIE, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-    });
+    clearUserCookie(res);
   }
 }
