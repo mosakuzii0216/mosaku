@@ -112,4 +112,57 @@ describe('Me (e2e)', () => {
       await prisma.user.findUnique({ where: { id: before.id } }),
     ).not.toBeNull();
   });
+
+  it('GET /meは、名札の期限を延ばすために同じ名札を付け直す', async () => {
+    const agent = request.agent(app.getHttpServer());
+    const first = await agent.get('/me').expect(200);
+
+    const res = await agent.get('/me').expect(200);
+
+    expect(userCookie(res)).toBe(userCookie(first));
+  });
+
+  describe('本番のように、名札をmosaku.jp全体に付けるとき', () => {
+    beforeEach(() => {
+      process.env.COOKIE_DOMAIN = 'mosaku.jp';
+    });
+
+    afterEach(() => {
+      delete process.env.COOKIE_DOMAIN;
+    });
+
+    it('GET /meは、前の名札を消してから、mosaku.jp全体に名札を付ける', async () => {
+      const res = await request(app.getHttpServer()).get('/me').expect(200);
+
+      const cookie = setCookies(res);
+      expect(cookie[0]).toMatch(/^mosaku_uid=;/);
+      expect(cookie[0]).not.toContain('Domain=');
+      expect(cookie[1]).toMatch(/^mosaku_uid=s%3A/);
+      expect(cookie[1]).toContain('Domain=mosaku.jp');
+    });
+
+    it('POST /me/logoutは前の名札もmosaku.jp全体の名札も消す', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/me/logout')
+        .expect(204);
+
+      const cleared = setCookies(res).filter((c) =>
+        c.startsWith('mosaku_uid=;'),
+      );
+      expect(cleared.some((c) => !c.includes('Domain='))).toBe(true);
+      expect(cleared.some((c) => c.includes('Domain=mosaku.jp'))).toBe(true);
+    });
+  });
 });
+
+// 返事のSet-Cookieを、1つずつの配列にする
+function setCookies(res: request.Response): string[] {
+  return ([] as string[]).concat(res.headers['set-cookie'] ?? []);
+}
+
+// 返事のSet-Cookieから、名札の「名前=値」だけを取り出す
+function userCookie(res: request.Response): string | undefined {
+  return setCookies(res)
+    .find((c) => c.startsWith('mosaku_uid='))
+    ?.split(';')[0];
+}
