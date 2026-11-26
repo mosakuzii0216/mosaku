@@ -20,7 +20,7 @@ import { AccountService, ProviderProfile } from '../account/account.service';
 import { CurrentUser } from '../current-user.decorator';
 import type { User } from '../../../generated/prisma/client';
 import { InvitationError } from '../../invitation/invitation.service';
-import { setUserCookie } from '../user-cookie';
+import { cookieDomain, setUserCookie } from '../user-cookie';
 
 const TEN_MINUTES_MS = 10 * 60 * 1000;
 
@@ -48,6 +48,8 @@ export class GoogleController {
       secure: process.env.NODE_ENV === 'production',
       maxAge: TEN_MINUTES_MS,
       path: '/auth/google',
+      // 行きがmosaku.jp/apiを通っても、帰りのapi.mosaku.jpで読めるようにする
+      domain: cookieDomain(),
     };
     res.cookie(GOOGLE_STATE_COOKIE, state, options);
     res.cookie(GOOGLE_VERIFIER_COOKIE, codeVerifier, options);
@@ -77,10 +79,11 @@ export class GoogleController {
     const verifier: unknown = req.signedCookies?.[GOOGLE_VERIFIER_COOKIE];
     const invite: unknown = req.signedCookies?.[GOOGLE_INVITE_COOKIE];
 
-    // 使い捨て。うまくいってもいかなくても、二度は使わせない
-    res.clearCookie(GOOGLE_STATE_COOKIE, { path: '/auth/google' });
-    res.clearCookie(GOOGLE_VERIFIER_COOKIE, { path: '/auth/google' });
-    res.clearCookie(GOOGLE_INVITE_COOKIE, { path: '/auth/google' });
+    // 消すときは、預けたときと同じpathとdomainを渡す
+    const clear = { path: '/auth/google', domain: cookieDomain() };
+    res.clearCookie(GOOGLE_STATE_COOKIE, clear);
+    res.clearCookie(GOOGLE_VERIFIER_COOKIE, clear);
+    res.clearCookie(GOOGLE_INVITE_COOKIE, clear);
 
     // ⑦ 自分が始めたログインか確かめる。違えばGoogleには問い合わせずに戻す
     if (

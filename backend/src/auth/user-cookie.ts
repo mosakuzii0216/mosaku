@@ -5,8 +5,8 @@ export const USER_COOKIE = 'mosaku_uid';
 
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
-// 本番はmosaku.jp全体に名札を付けて、画面(mosaku.jp)からもAPI(api.mosaku.jp)からも同じ名札が見えるようにする
-function cookieDomain(): string | undefined {
+// 本番はmosaku.jp全体にCookieを付けて、画面(mosaku.jp)からもAPI(api.mosaku.jp)からも同じCookieが見えるようにする
+export function cookieDomain(): string | undefined {
   return process.env.COOKIE_DOMAIN || undefined;
 }
 

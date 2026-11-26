@@ -155,4 +155,50 @@ describe('Googleログイン (e2e)', () => {
     expect(res.headers.location).toBe(`${FRONTEND}/?invite=not_found`);
     expect(await prisma.account.count()).toBe(0);
   });
+
+  describe('本番のように、Cookieをmosaku.jp全体に付けるとき', () => {
+    beforeEach(() => {
+      process.env.COOKIE_DOMAIN = 'mosaku.jp';
+    });
+
+    afterEach(() => {
+      delete process.env.COOKIE_DOMAIN;
+    });
+
+    // 行きがmosaku.jp/apiを通っても、帰りのapi.mosaku.jpで読めるようにする
+    it('GET /auth/google/start は、合言葉と鍵と招待コードをmosaku.jp全体に預ける', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/auth/google/start')
+        .expect(302);
+
+      const cookies = googleCookies(res);
+      expect(cookies).toHaveLength(3);
+      for (const c of cookies) expect(c).toContain('Domain=mosaku.jp');
+    });
+
+    it('GET /auth/google/callback は、mosaku.jp全体に預けたCookieを消す', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/auth/google/callback?=code=fake-code&state=wrong')
+        .expect(302);
+
+      // 3つとも中身を空にして、預けたときと同じ場所から消す
+      const cleared = googleCookies(res);
+      expect(cleared.map((c) => c.split(';')[0])).toEqual([
+        'mosaku_google_state=',
+        'mosaku_google_verifier=',
+        'mosaku_google_invite=',
+      ]);
+      for (const c of cleared) {
+        expect(c).toContain('Domain=mosaku.jp');
+        expect(c).toContain('Path=/auth/google');
+      }
+    });
+  });
 });
+
+// 返事のSet-Cookieから、Googleログインの行き帰りに使うCookieだけを取り出す
+function googleCookies(res: request.Response): string[] {
+  return ([] as string[])
+    .concat(res.headers['set-cookie'] ?? [])
+    .filter((c) => c.startsWith('mosaku_google_'));
+}
