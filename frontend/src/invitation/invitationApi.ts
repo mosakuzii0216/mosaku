@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+import { API_BASE } from "../apiBase";
 
 // 招待コードを使えない理由。backendのCheckFailureと同じ4つ
 export type InviteFailure = "not_found" | "used" | "expired" | "revoked";

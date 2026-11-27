@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+import { API_BASE } from "../apiBase";
 
 // 目安箱に声を送る。誰が送ったかはサーバがCookieで知るので、Cookieも送る
 export async function sendFeedback(message: string): Promise<void> {

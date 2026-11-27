@@ -1,6 +1,5 @@
 import type { Memo, MemoRepository } from "./types";
-
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+import { API_BASE } from "../apiBase";
 
 // 保存は、画面を閉じても送り終わるまで続けてもらう。
 // ただし続けてもらえるのは64KB。超えると送れなくなるので、そのときは普通に送る

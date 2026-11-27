@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
+import { API_BASE } from "./apiBase";
 
 // 画面を描く前に1回だけ呼ぶ。匿名IDのCookieを先に受け取っておけば、
 // そのあと同時に飛ぶリクエストが全部同じCookieを持っていける

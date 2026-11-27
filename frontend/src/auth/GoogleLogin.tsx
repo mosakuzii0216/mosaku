@@ -1,8 +1,8 @@
 import { useState, type SubmitEvent } from "react";
 import type { InviteFailure } from "../invitation/invitationApi";
 import { inviteMessage } from "../invitation/inviteMessage";
+import { API_BASE } from "../apiBase";
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:3000";
 const START = `${API_BASE}/auth/google/start`;
 
 type Props = {
