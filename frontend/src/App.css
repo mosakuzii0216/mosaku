@@ -195,6 +195,38 @@
   z-index: 50;
 }
 
+/* 保存できたら、知らせの左に墨を一滴落とす */
+.memo-status.is-saved::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: var(--s2);
+  vertical-align: middle;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* 落ちた墨が、紙ににじむように広がる。動きを減らす設定の人には動かさない */
+@media (prefers-reduced-motion: no-preference) {
+  .memo-status.is-saved::before {
+    animation: ink-drop 0.9s ease-out;
+  }
+}
+
+@keyframes ink-drop {
+  from {
+    transform: scale(0);
+    box-shadow: 0 0 0 0 var(--accent-border);
+  }
+  40% {
+    transform: scale(1.3);
+  }
+  to {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
 .memo-open {
   /* 枠を外して、区切り線だけ */
   flex: 1;
