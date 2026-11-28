@@ -19,6 +19,8 @@ export function MemoForm({
   onNew,
   children,
 }: Props) {
+  // 保存が終わった知らせにだけ、墨の印を付ける
+  const isSaved = status === "保存しました" || status === "更新しました";
   return (
     <>
       <p className="memo-date">{date}</p>
@@ -38,7 +40,13 @@ export function MemoForm({
           </button>
         )}
       </div>
-      <p className="memo-status">{status}</p>
+      {/* 知らせが変わるたびに作り直して、にじむ動きを頭から見せる */}
+      <p
+        key={status}
+        className={isSaved ? "memo-status is-saved" : "memo-status"}
+      >
+        {status}
+      </p>
     </>
   );
 }

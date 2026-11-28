@@ -49,4 +49,16 @@ describe("MemoForm", () => {
 
     expect(screen.getByText("2026年10月12日(月)")).toBeInTheDocument();
   });
+
+  it("保存が終わった知らせには、墨の印を付ける", () => {
+    render(<MemoForm {...base} status="更新しました" />);
+
+    expect(screen.getByText("更新しました")).toHaveClass("is-saved");
+  });
+
+  it("保存中の知らせには、印を付けない", () => {
+    render(<MemoForm {...base} status="保存中..." />);
+
+    expect(screen.getByText("保存中...")).not.toHaveClass("is-saved");
+  });
 });
